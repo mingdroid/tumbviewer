@@ -9,11 +9,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.OnApplyWindowInsetsListener;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.view.WindowInsetsCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,8 +23,9 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nutrition.express.R;
 import com.nutrition.express.application.BaseActivity;
-import com.nutrition.express.download.DownloadFragment;
+import com.nutrition.express.common.CommonPagerAdapter;
 import com.nutrition.express.download.DownloadManagerActivity;
+import com.nutrition.express.downloading.DownloadingActivity;
 import com.nutrition.express.following.FollowingActivity;
 import com.nutrition.express.likes.LikesActivity;
 import com.nutrition.express.main.DashboardFragment;
@@ -32,7 +33,6 @@ import com.nutrition.express.main.UserContract;
 import com.nutrition.express.main.UserPresenter;
 import com.nutrition.express.main.VideoDashboardFragment;
 import com.nutrition.express.model.event.EventRefresh;
-import com.nutrition.express.model.event.EventStatusBar;
 import com.nutrition.express.model.rest.bean.UserInfo;
 import com.nutrition.express.search.SearchActivity;
 import com.nutrition.express.settings.SettingsActivity;
@@ -42,9 +42,18 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main2Activity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, UserContract.View {
+    private AppBarLayout appBarLayout;
     private DrawerLayout drawerLayout;
+    private ViewPager viewPager;
+    private MenuItem videoItem, photoItem;
+
+    private VideoDashboardFragment videoDashboardFragment;
+    private DashboardFragment photoFragment;
 
     private UserContract.Presenter presenter;
 
@@ -55,6 +64,7 @@ public class Main2Activity extends BaseActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        appBarLayout = findViewById(R.id.appBarLayout);
         drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -63,6 +73,8 @@ public class Main2Activity extends BaseActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        videoItem = navigationView.getMenu().getItem(0);
+        photoItem = navigationView.getMenu().getItem(1);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.container), new OnApplyWindowInsetsListener() {
             @Override
@@ -73,7 +85,7 @@ public class Main2Activity extends BaseActivity
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.appBarLayout), new OnApplyWindowInsetsListener() {
             @Override
             public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-                v.setBackgroundResource(R.color.colorPrimaryDark);
+//                v.setBackgroundResource(R.color.colorPrimaryDark);
                 return insets;
             }
         });
@@ -85,7 +97,42 @@ public class Main2Activity extends BaseActivity
             }
         });
 
-        showVideoFragment();
+        List<Fragment> fragments = new ArrayList<>(2);
+        List<String> titles = new ArrayList<>(2);
+
+        videoDashboardFragment = new VideoDashboardFragment();
+        photoFragment = new DashboardFragment();
+        fragments.add(videoDashboardFragment);
+        fragments.add(photoFragment);
+        titles.add(getString(R.string.page_video));
+        titles.add(getString(R.string.page_photo));
+
+        viewPager = findViewById(R.id.viewPager);
+        viewPager.setAdapter(new CommonPagerAdapter(getSupportFragmentManager(), fragments, titles));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    setTitle(R.string.page_video);
+                    videoItem.setChecked(true);
+                } else {
+                    setTitle(R.string.page_photo);
+                    photoItem.setChecked(true);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        setTitle(R.string.page_video);
+        videoItem.setChecked(true);
 
         presenter = new UserPresenter(this);
         presenter.getMyInfo();
@@ -106,9 +153,9 @@ public class Main2Activity extends BaseActivity
     @Override
     public void showMyInfo(UserInfo info) {
         String userName = info.getUser().getBlogs().get(0).getName();
-        SimpleDraweeView avatar = (SimpleDraweeView) findViewById(R.id.user_avatar);
+        SimpleDraweeView avatar = findViewById(R.id.user_avatar);
         FrescoUtils.setTumblrAvatarUri(avatar, userName, 128);
-        TextView name = (TextView) findViewById(R.id.user_name);
+        TextView name = findViewById(R.id.user_name);
         name.setText(userName);
     }
 
@@ -117,7 +164,15 @@ public class Main2Activity extends BaseActivity
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (viewPager.getCurrentItem() == 0 && !videoDashboardFragment.isAtTop()) {
+                appBarLayout.setExpanded(true);
+                videoDashboardFragment.scrollToTop();
+            } else if (viewPager.getCurrentItem() == 1 && !photoFragment.isAtTop()) {
+                appBarLayout.setExpanded(true);
+                photoFragment.scrollToTop();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -152,12 +207,9 @@ public class Main2Activity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_video) {
-            showVideoFragment();
-        } else if (id == R.id.nav_photo) {
-            showPhotoFragment();
-        } else if (id == R.id.nav_downloading) {
-            showDownloadFragment();
+        if (id == R.id.nav_downloading) {
+            Intent intent = new Intent(this, DownloadingActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
@@ -176,40 +228,6 @@ public class Main2Activity extends BaseActivity
         return true;
     }
 
-    private VideoDashboardFragment videoDashboardFragment;
-
-    private void showVideoFragment() {
-        if (videoDashboardFragment == null) {
-            videoDashboardFragment = new VideoDashboardFragment();
-        }
-        showFragment(videoDashboardFragment, "video");
-        setTitle(R.string.page_video);
-    }
-
-    private DashboardFragment photoFragment;
-    private void showPhotoFragment() {
-        if (photoFragment == null) {
-            photoFragment = new DashboardFragment();
-        }
-        showFragment(photoFragment, "photo");
-        setTitle(R.string.page_photo);
-    }
-
-    private DownloadFragment downloadFragment;
-    private void showDownloadFragment() {
-        if (downloadFragment == null) {
-            downloadFragment = new DownloadFragment();
-        }
-        showFragment(downloadFragment, "download");
-        setTitle(R.string.download_toolbar_title);
-    }
-
-    private void showFragment(Fragment fragment, String tag) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment, tag)
-                .commit();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -225,24 +243,6 @@ public class Main2Activity extends BaseActivity
         if (photoFragment != null) {
             photoFragment.refreshData();
         }
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void toggleStatusBar(EventStatusBar eventStatusBar) {
-        int flag = View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        View view = getWindow().getDecorView();
-        if (eventStatusBar.getStatus() == View.VISIBLE) {
-            view.setSystemUiVisibility(view.getSystemUiVisibility() & ~flag);
-        } else {
-            view.setSystemUiVisibility(view.getSystemUiVisibility() | flag);
-        }
-        Log.d("toggleStatusBar", "->" + (eventStatusBar.getStatus() == View.GONE));
     }
 
 }

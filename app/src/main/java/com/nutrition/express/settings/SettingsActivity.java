@@ -29,7 +29,6 @@ import com.nutrition.express.R;
 import com.nutrition.express.common.CommonRVAdapter;
 import com.nutrition.express.common.CommonViewHolder;
 import com.nutrition.express.login.LoginActivity;
-import com.nutrition.express.main.v2.Main2Activity;
 import com.nutrition.express.model.data.DataManager;
 import com.nutrition.express.model.data.bean.TumblrAccount;
 import com.nutrition.express.model.event.EventRefresh;
@@ -228,8 +227,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     private void switchToAccount(TumblrAccount account) {
         DataManager.getInstance().switchToAccount(account);
-        Intent intent = new Intent(this, Main2Activity.class);
-        startActivity(intent);
+        EventBus.getDefault().postSticky(new EventRefresh());
+        finish();
     }
 
     private void showSwitchDialog(final TumblrAccount account, String accountName) {

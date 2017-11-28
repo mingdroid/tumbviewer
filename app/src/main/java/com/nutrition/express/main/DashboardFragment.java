@@ -10,15 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.nutrition.express.R;
 import com.nutrition.express.blogposts.PhotoPostVH;
 import com.nutrition.express.common.CommonRVAdapter;
 import com.nutrition.express.common.CommonViewHolder;
 import com.nutrition.express.model.data.bean.PhotoPostsItem;
-import com.nutrition.express.model.event.EventStatusBar;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -30,55 +26,31 @@ public class DashboardFragment extends Fragment
         implements DashboardContract.View, CommonRVAdapter.OnLoadListener {
     private DashboardPresenter presenter;
     private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
     private CommonRVAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
-    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE ||
-                    newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                Fresco.getImagePipeline().resume();
-            } else {
-                Fresco.getImagePipeline().pause();
-            }
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (dy > 10 && status == View.VISIBLE) {
-                //hide
-                status = View.GONE;
-                EventBus.getDefault().post(new EventStatusBar(status));
-            } else if (dy < -10 && status == View.GONE) {
-                //show
-                status = View.VISIBLE;
-                EventBus.getDefault().post(new EventStatusBar(status));
-            }
-        }
-    };
     private boolean loaded = false;
-    private int status = View.VISIBLE;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
+        refreshLayout = view.findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 presenter.refresh();
             }
         });
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(layoutManager);
 
         if (adapter == null) {
             adapter = getAdapter();
         }
         recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(onScrollListener);
 
         if (presenter == null) {
             presenter = new DashboardPresenter(this, getType());
@@ -103,7 +75,6 @@ public class DashboardFragment extends Fragment
         if (presenter != null) {
             presenter.onDetach();
         }
-        recyclerView.removeOnScrollListener(onScrollListener);
         recyclerView = null;
         refreshLayout = null;
     }
@@ -174,6 +145,10 @@ public class DashboardFragment extends Fragment
             presenter = new DashboardPresenter(this, getType());
         }
         presenter.getDashboard();
+    }
+
+    public boolean isAtTop() {
+        return layoutManager.findFirstCompletelyVisibleItemPosition() == 0;
     }
 
     public void scrollToTop() {

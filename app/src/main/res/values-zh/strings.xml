@@ -93,4 +93,6 @@
         <item>仅图片</item>
     </array>
     <string name="likes_title">%1$s 的喜欢</string>
+    <string name="downloading">下载中</string>
+    <string name="downloaded">已下载</string>
 </resources>

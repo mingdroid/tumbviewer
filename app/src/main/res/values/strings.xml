@@ -97,4 +97,6 @@
         <item>Only Photo</item>
     </array>
     <string name="likes_title">%1$s \'s likes</string>
+    <string name="downloading">Downloading</string>
+    <string name="downloaded">Downloaded</string>
 </resources>

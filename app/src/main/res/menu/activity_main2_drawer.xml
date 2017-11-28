@@ -3,20 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_video"
-            android:icon="@mipmap/ic_video_library_black_24dp"
-            android:title="@string/page_video" />
-        <item
-            android:id="@+id/nav_photo"
-            android:icon="@mipmap/ic_photo_library_black_24dp"
-            android:title="@string/page_photo" />
-        <item
-            android:id="@+id/nav_downloading"
-            android:icon="@mipmap/ic_file_download"
-            android:title="@string/download_toolbar_title" />
-    </group>
 
     <item android:title="@string/page_user">
         <menu>
@@ -26,15 +12,23 @@
             <item android:id="@+id/nav_following"
                 android:icon="@mipmap/ic_following"
                 android:title="@string/page_user_following" />
-            <item
-                android:id="@+id/nav_downloaded"
-                android:icon="@mipmap/ic_done_all_white"
-                android:title="@string/video_download" />
-            <item
-                android:id="@+id/nav_settings"
-                android:icon="@mipmap/ic_settings"
-                android:title="@string/page_user_setting" />
+
         </menu>
     </item>
+
+    <group>
+        <item
+            android:id="@+id/nav_downloading"
+            android:icon="@mipmap/ic_file_download"
+            android:title="@string/downloading" />
+        <item
+            android:id="@+id/nav_downloaded"
+            android:icon="@mipmap/ic_done_all_white"
+            android:title="@string/downloaded" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@mipmap/ic_settings"
+            android:title="@string/page_user_setting" />
+    </group>
 
 </menu>

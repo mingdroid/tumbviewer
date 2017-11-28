@@ -7,18 +7,18 @@ properties.load(new FileInputStream(proFile))
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.1'
 
     defaultConfig {
         applicationId "com.nutrition.humblr"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 27
-        versionName "0.9.7"
+        versionCode 29
+        versionName "0.9.8"
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [ eventBusIndex : 'com.nutrition.express.MyEventBusIndex' ]
+                arguments = [eventBusIndex: 'com.nutrition.express.MyEventBusIndex']
             }
         }
     }
