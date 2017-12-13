@@ -6,7 +6,6 @@ import com.nutrition.express.model.data.bean.PhotoPostsItem;
 import com.nutrition.express.model.data.bean.VideoPostsItem;
 import com.nutrition.express.model.rest.ApiService.BlogService;
 import com.nutrition.express.model.rest.ApiService.UserService;
-import com.nutrition.express.model.rest.ResponseListener;
 import com.nutrition.express.model.rest.RestCallback;
 import com.nutrition.express.model.rest.RestClient;
 import com.nutrition.express.model.rest.bean.BaseBean;
@@ -23,7 +22,7 @@ import retrofit2.Call;
  * Created by huang on 11/8/16.
  */
 
-public class LikesPresenter implements LikesContract.LikesPresenter, ResponseListener {
+public class LikesPresenter implements LikesContract.LikesPresenter {
     private LikesContract.View view;
     private UserService userService;
     private BlogService blogService;
@@ -48,7 +47,17 @@ public class LikesPresenter implements LikesContract.LikesPresenter, ResponseLis
                 before = System.currentTimeMillis() / 1000;
             }
             call = userService.getLikes(limit, before);
-            call.enqueue(new RestCallback<BlogLikes>(this, "likes"));
+            call.enqueue(new RestCallback<BlogLikes>() {
+                @Override
+                public void onSuccess(BlogLikes blogLikes) {
+                    showPosts(blogLikes);
+                }
+
+                @Override
+                public void onError(int code, String message) {
+                    showError(code, message);
+                }
+            });
         }
     }
 
@@ -66,7 +75,17 @@ public class LikesPresenter implements LikesContract.LikesPresenter, ResponseLis
             options.put("limit", "" + limit);
             options.put("before", "" + before);
             call = blogService.getBlogLikes(name, options);
-            call.enqueue(new RestCallback<BlogLikes>(this, "likes"));
+            call.enqueue(new RestCallback<BlogLikes>() {
+                @Override
+                public void onSuccess(BlogLikes blogLikes) {
+                    showPosts(blogLikes);
+                }
+
+                @Override
+                public void onError(int code, String message) {
+                    showError(code, message);
+                }
+            });
         }
     }
 
@@ -92,13 +111,11 @@ public class LikesPresenter implements LikesContract.LikesPresenter, ResponseLis
         }
     }
 
-    @Override
-    public void onResponse(BaseBean baseBean, String tag) {
+    private void showPosts(BlogLikes likes) {
         if (view == null) {
             return;
         }
         call = null;
-        BlogLikes likes = (BlogLikes) baseBean.getResponse();
         List<PostsItem> data = likes.getList();
         total += data.size();
         if (data.size() > 0) {
@@ -124,22 +141,12 @@ public class LikesPresenter implements LikesContract.LikesPresenter, ResponseLis
         }
     }
 
-    @Override
-    public void onError(int code, String error, String tag) {
+    private void showError(int code, String error) {
         if (view == null) {
             return;
         }
         call = null;
         view.onError(code, error);
-    }
-
-    @Override
-    public void onFailure(Throwable t, String tag) {
-        if (view == null) {
-            return;
-        }
-        call = null;
-        view.onFailure(t);
     }
 
 }

@@ -106,13 +106,6 @@ public class ReblogActivity extends AppCompatActivity implements ReblogContract.
     }
 
     @Override
-    public void onFailure(Throwable t) {
-        Toast.makeText(this, R.string.reblog_failure, Toast.LENGTH_SHORT).show();
-        postView.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
     public void onError(int code, String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
         postView.setVisibility(View.VISIBLE);

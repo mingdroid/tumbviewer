@@ -5,6 +5,5 @@ package com.nutrition.express.common;
  */
 
 public interface BaseView {
-    void onFailure(Throwable t);
     void onError(int code, String error);
 }

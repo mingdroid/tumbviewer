@@ -101,11 +101,6 @@ public class UserFragment extends Fragment implements UserContract.View, View.On
     }
 
     @Override
-    public void onFailure(Throwable t) {
-        loaded = false;
-    }
-
-    @Override
     public void onError(int code, String error) {
         loaded = false;
     }

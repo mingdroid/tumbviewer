@@ -137,15 +137,6 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     }
 
     @Override
-    public void onFailure(Throwable t) {
-        Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-        //// TODO: 10/18/16 show a failure view
-    }
-
-    @Override
     public void onError(int code, String error) {
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
         if (progressDialog != null) {

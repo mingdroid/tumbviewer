@@ -136,11 +136,6 @@ public class LikesFragment extends Fragment
     }
 
     @Override
-    public void onFailure(Throwable t) {
-        adapter.showLoadingFailure(t.getMessage());
-    }
-
-    @Override
     public void onError(int code, String error) {
         adapter.showLoadingFailure(getString(R.string.load_failure_des, code, error));
     }

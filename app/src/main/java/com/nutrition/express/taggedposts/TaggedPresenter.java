@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.nutrition.express.model.data.bean.PhotoPostsItem;
 import com.nutrition.express.model.data.bean.VideoPostsItem;
 import com.nutrition.express.model.rest.ApiService.TaggedService;
-import com.nutrition.express.model.rest.ResponseListener;
 import com.nutrition.express.model.rest.RestCallback;
 import com.nutrition.express.model.rest.RestClient;
 import com.nutrition.express.model.rest.bean.BaseBean;
@@ -20,7 +19,7 @@ import retrofit2.Call;
  * Created by huang on 11/21/16.
  */
 
-public class TaggedPresenter implements TaggedContract.Presenter, ResponseListener {
+public class TaggedPresenter implements TaggedContract.Presenter {
     private TaggedService service;
     private Call<BaseBean<List<PostsItem>>> call;
     private TaggedContract.View view;
@@ -36,7 +35,39 @@ public class TaggedPresenter implements TaggedContract.Presenter, ResponseListen
     private void getData(String tag) {
         if (call == null) {
             call = service.getTaggedPosts(tag, "html", featuredTimestamp, LIMIT);
-            call.enqueue(new RestCallback<List<PostsItem>>(this, "tag"));
+            call.enqueue(new RestCallback<List<PostsItem>>() {
+                @Override
+                public void onSuccess(List<PostsItem> list) {
+                    if (view == null) {
+                        return;
+                    }
+                    call = null;
+                    //trim to only show videos and photos
+                    List<PhotoPostsItem> postsItems = new ArrayList<>(list.size());
+                    for (PostsItem item: list) {
+                        if (TextUtils.equals(item.getType(), "video")) {
+                            postsItems.add(new VideoPostsItem(item));
+                        } else if (TextUtils.equals(item.getType(), "photo")) {
+                            postsItems.add(new PhotoPostsItem(item));
+                        }
+                    }
+                    if (list.size() > 0 &&
+                            (featuredTimestamp = list.get(list.size() - 1).getFeatured_timestamp()) > 0) {
+                        view.showTaggedPosts(postsItems, true);
+                    } else {
+                        view.showTaggedPosts(postsItems, false);
+                    }
+                }
+
+                @Override
+                public void onError(int code, String message) {
+                    if (view == null) {
+                        return;
+                    }
+                    call = null;
+                    view.onError(code, message);
+                }
+            });
         }
     }
 
@@ -58,48 +89,6 @@ public class TaggedPresenter implements TaggedContract.Presenter, ResponseListen
     @Override
     public void nextTaggedPosts(String tag) {
         getData(tag);
-    }
-
-    @Override
-    public void onResponse(BaseBean baseBean, String tag) {
-        if (view == null) {
-            return;
-        }
-        call = null;
-        List<PostsItem> list = (List<PostsItem>) baseBean.getResponse();
-        //trim to only show videos and photos
-        List<PhotoPostsItem> postsItems = new ArrayList<>(list.size());
-        for (PostsItem item: list) {
-            if (TextUtils.equals(item.getType(), "video")) {
-                postsItems.add(new VideoPostsItem(item));
-            } else if (TextUtils.equals(item.getType(), "photo")) {
-                postsItems.add(new PhotoPostsItem(item));
-            }
-        }
-        if (list.size() > 0 &&
-                (featuredTimestamp = list.get(list.size() - 1).getFeatured_timestamp()) > 0) {
-            view.showTaggedPosts(postsItems, true);
-        } else {
-            view.showTaggedPosts(postsItems, false);
-        }
-    }
-
-    @Override
-    public void onError(int code, String error, String tag) {
-        if (view == null) {
-            return;
-        }
-        call = null;
-        view.onError(code, error);
-    }
-
-    @Override
-    public void onFailure(Throwable t, String tag) {
-        if (view == null) {
-            return;
-        }
-        call = null;
-        view.onFailure(t);
     }
 
 }

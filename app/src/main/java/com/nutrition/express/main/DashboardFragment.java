@@ -98,14 +98,6 @@ public class DashboardFragment extends Fragment
     }
 
     @Override
-    public void onFailure(Throwable t) {
-        adapter.showLoadingFailure(t.getMessage());
-        if (refreshLayout != null) {
-            refreshLayout.setRefreshing(false);
-        }
-    }
-
-    @Override
     public void onError(int code, String error) {
         adapter.showLoadingFailure(getString(R.string.load_failure_des, code, error));
         if (refreshLayout != null) {
@@ -148,7 +140,8 @@ public class DashboardFragment extends Fragment
     }
 
     public boolean isAtTop() {
-        return layoutManager.findFirstCompletelyVisibleItemPosition() == 0;
+        return !(layoutManager != null &&
+                layoutManager.findFirstCompletelyVisibleItemPosition() > 0);
     }
 
     public void scrollToTop() {

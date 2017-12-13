@@ -1,7 +1,6 @@
 package com.nutrition.express.following;
 
 import com.nutrition.express.model.rest.ApiService.UserService;
-import com.nutrition.express.model.rest.ResponseListener;
 import com.nutrition.express.model.rest.RestCallback;
 import com.nutrition.express.model.rest.RestClient;
 import com.nutrition.express.model.rest.bean.BaseBean;
@@ -13,7 +12,7 @@ import retrofit2.Call;
  * Created by huang on 10/18/16.
  */
 
-public class FollowingPresenter implements FollowingContract.FollowersPresenter, ResponseListener {
+public class FollowingPresenter implements FollowingContract.FollowersPresenter {
     private FollowingContract.View view;
     private UserService service;
     private Call<BaseBean<FollowingBlog>> followingCall;
@@ -39,7 +38,29 @@ public class FollowingPresenter implements FollowingContract.FollowersPresenter,
     private void getFollowingBlog() {
         if (followingCall == null) {
             followingCall = service.getFollowing(defaultLimit, offset);
-            followingCall.enqueue(new RestCallback<FollowingBlog>(this, "following"));
+            followingCall.enqueue(new RestCallback<FollowingBlog>() {
+                @Override
+                public void onSuccess(FollowingBlog blogs) {
+                    if (view == null) {
+                        return;
+                    }
+                    followingCall = null;
+                    offset += blogs.getBlogs().size();
+                    if (blogs.getBlogs().size() < defaultLimit || offset >= blogs.getTotal_blogs()) {
+                        hasNext = false;
+                    }
+                    view.showFollowing(blogs.getBlogs(), hasNext);
+                }
+
+                @Override
+                public void onError(int code, String message) {
+                    if (view == null) {
+                        return;
+                    }
+                    followingCall = null;
+                    view.onError(code, message);
+                }
+            });
         }
     }
 
@@ -51,38 +72,6 @@ public class FollowingPresenter implements FollowingContract.FollowersPresenter,
     @Override
     public void onDetach() {
         view = null;
-    }
-
-    @Override
-    public void onResponse(BaseBean baseBean, String tag) {
-        if (view == null) {
-            return;
-        }
-        followingCall = null;
-        FollowingBlog blogs = (FollowingBlog) baseBean.getResponse();
-        offset += blogs.getBlogs().size();
-        if (blogs.getBlogs().size() < defaultLimit || offset >= blogs.getTotal_blogs()) {
-            hasNext = false;
-        }
-        view.showFollowing(blogs.getBlogs(), hasNext);
-    }
-
-    @Override
-    public void onError(int code, String error, String tag) {
-        if (view == null) {
-            return;
-        }
-        followingCall = null;
-        view.onError(code, error);
-    }
-
-    @Override
-    public void onFailure(Throwable t, String tag) {
-        if (view == null) {
-            return;
-        }
-        followingCall = null;
-        view.onFailure(t);
     }
 
 }

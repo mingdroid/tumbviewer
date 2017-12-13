@@ -6,7 +6,6 @@ import com.nutrition.express.model.data.DataManager;
 import com.nutrition.express.model.data.bean.PhotoPostsItem;
 import com.nutrition.express.model.data.bean.VideoPostsItem;
 import com.nutrition.express.model.rest.ApiService.UserService;
-import com.nutrition.express.model.rest.ResponseListener;
 import com.nutrition.express.model.rest.RestCallback;
 import com.nutrition.express.model.rest.RestClient;
 import com.nutrition.express.model.rest.bean.BaseBean;
@@ -24,7 +23,7 @@ import retrofit2.Call;
  * Created by huang on 11/2/16.
  */
 
-public class DashboardPresenter implements DashboardContract.Presenter, ResponseListener {
+public class DashboardPresenter implements DashboardContract.Presenter {
     private DashboardContract.View view;
     private UserService userService;
     private Call<BaseBean<BlogPosts>> call;
@@ -48,7 +47,25 @@ public class DashboardPresenter implements DashboardContract.Presenter, Response
             options.put("offset", "" + offset);
             options.put("type", type);
             call = userService.getDashboard(options);
-            call.enqueue(new RestCallback<BlogPosts>(this, "dashboard"));
+            call.enqueue(new RestCallback<BlogPosts>() {
+                @Override
+                public void onSuccess(BlogPosts blogPosts) {
+                    if (view == null) {
+                        return;
+                    }
+                    call = null;
+                    showPosts(blogPosts);
+                }
+
+                @Override
+                public void onError(int code, String message) {
+                    if (view == null) {
+                        return;
+                    }
+                    call = null;
+                    view.onError(code, message);
+                }
+            });
         }
     }
 
@@ -80,13 +97,8 @@ public class DashboardPresenter implements DashboardContract.Presenter, Response
         view = null;
     }
 
-    @Override
-    public void onResponse(BaseBean baseBean, String tag) {
-        if (view == null) {
-            return;
-        }
-        call = null;
-        List<PostsItem> postsItems = ((BlogPosts) baseBean.getResponse()).getList();
+    private void showPosts(BlogPosts blogPosts) {
+        List<PostsItem> postsItems = blogPosts.getList();
         offset += postsItems.size();
         if (postsItems.size() < defaultLimit) {
             hasNext = false;
@@ -115,24 +127,6 @@ public class DashboardPresenter implements DashboardContract.Presenter, Response
                 }
             }
         }
-    }
-
-    @Override
-    public void onError(int code, String error, String tag) {
-        if (view == null) {
-            return;
-        }
-        call = null;
-        view.onError(code, error);
-    }
-
-    @Override
-    public void onFailure(Throwable t, String tag) {
-        if (view == null) {
-            return;
-        }
-        call = null;
-        view.onFailure(t);
     }
 
     private List<PostsItem> removeDuplicate(List<PostsItem> postsItems) {

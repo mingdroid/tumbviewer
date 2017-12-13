@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.nutrition.express.BuildConfig;
+import com.nutrition.express.model.Error;
 import com.nutrition.express.model.data.DataManager;
 import com.nutrition.express.model.event.EventError401;
 import com.nutrition.express.model.event.EventError429;
@@ -24,13 +25,9 @@ import retrofit2.Response;
 /**
  * Created by huang on 2/18/16.
  */
-public class RestCallback<T> implements Callback<BaseBean<T>> {
-    private ResponseListener listener;
-    private String tag;
+public abstract class RestCallback<T> implements Callback<BaseBean<T>> {
 
-    public RestCallback(ResponseListener listener, String tag) {
-        this.listener = listener;
-        this.tag = tag;
+    public RestCallback() {
     }
 
     @Override
@@ -38,7 +35,7 @@ public class RestCallback<T> implements Callback<BaseBean<T>> {
         if (response.isSuccessful()) {
             // status code [200, 299]
             BaseBean<T> body = response.body();
-            listener.onResponse(body, tag);
+            onSuccess(body.getResponse());
         } else {
             // status code [400, 599]
             // the server return a JsonObject that contain error message.
@@ -47,7 +44,7 @@ public class RestCallback<T> implements Callback<BaseBean<T>> {
                         new TypeToken<ErrorBean>(){}.getType());
                 handleError(errorBean);
             } catch (IOException | JsonSyntaxException e) {
-                listener.onFailure(e, tag);
+                onError(response.code(), response.message());
             }
         }
         Headers headers = response.headers();
@@ -65,11 +62,10 @@ public class RestCallback<T> implements Callback<BaseBean<T>> {
         if (BuildConfig.DEBUG) {
             t.printStackTrace();
         }
-//        if (t.getMessage().equals("Canceled")) {
         if (TextUtils.equals(t.getMessage(), "Canceled")) {
-            listener.onError(0, "Failed, touch to retry", tag);
+            onError(0, "Canceled, touch to retry");
         } else {
-            listener.onFailure(t, tag);
+            onError(Error.ERROR_REST_FAILURE, t.getMessage());
         }
     }
 
@@ -81,7 +77,7 @@ public class RestCallback<T> implements Callback<BaseBean<T>> {
                 DataManager dataManager = DataManager.getInstance();
                 dataManager.removeAccount(dataManager.getPositiveAccount());
                 if (dataManager.switchToNextRoute()) {
-                    listener.onError(401, "Failed, touch to retry", tag);
+                    onError(Error.ERROR_REST_RETRY, "Failed, touch to retry");
                 } else {
                     EventBus.getDefault().post(new EventError401());
                 }
@@ -90,14 +86,17 @@ public class RestCallback<T> implements Callback<BaseBean<T>> {
                 //429 request limit exceeded
                 DataManager dataManager = DataManager.getInstance();
                 if (dataManager.switchToNextRoute()) {
-                    listener.onError(429, "Failed, touch to retry", tag);
+                    onError(Error.ERROR_REST_RETRY, "Failed, touch to retry");
                 } else {
                     EventBus.getDefault().post(new EventError429());
                 }
             } else {
-                listener.onError(errorBean.getMeta().getStatus(), errorBean.getMeta().getMsg(), tag);
+                onError(errorBean.getMeta().getStatus(), errorBean.getMeta().getMsg());
             }
         }
     }
+
+    public abstract void onSuccess(T t);
+    public abstract void onError(int code, String message);
 
 }

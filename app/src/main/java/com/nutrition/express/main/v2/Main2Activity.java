@@ -141,11 +141,6 @@ public class Main2Activity extends BaseActivity
     }
 
     @Override
-    public void onFailure(Throwable t) {
-
-    }
-
-    @Override
     public void onError(int code, String error) {
 
     }

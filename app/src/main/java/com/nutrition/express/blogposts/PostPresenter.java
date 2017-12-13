@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.nutrition.express.model.data.bean.PhotoPostsItem;
 import com.nutrition.express.model.data.bean.VideoPostsItem;
 import com.nutrition.express.model.rest.ApiService.BlogService;
-import com.nutrition.express.model.rest.ResponseListener;
 import com.nutrition.express.model.rest.RestCallback;
 import com.nutrition.express.model.rest.RestClient;
 import com.nutrition.express.model.rest.bean.BaseBean;
@@ -22,7 +21,7 @@ import retrofit2.Call;
 /**
  * Created by huang on 5/17/16.
  */
-public class PostPresenter implements PostContract.Presenter, ResponseListener {
+public class PostPresenter implements PostContract.Presenter {
     public static final String[] TYPES = {"", "video", "photo"};
     public static final String FILTER_TYPE = "filter_type";
 
@@ -52,7 +51,25 @@ public class PostPresenter implements PostContract.Presenter, ResponseListener {
             para.put("limit", Integer.toString(limit));
             para.put("offset", Integer.toString(offset));
             call = blogService.getBlogPosts(blogName, TYPES[type], para);
-            call.enqueue(new RestCallback<BlogPosts>(this, "posts"));
+            call.enqueue(new RestCallback<BlogPosts>() {
+                @Override
+                public void onSuccess(BlogPosts blogPosts) {
+                    if (view == null) {
+                        return;
+                    }
+                    call = null;
+                    showPosts(blogPosts);
+                }
+
+                @Override
+                public void onError(int code, String message) {
+                    if (view == null) {
+                        return;
+                    }
+                    call = null;
+                    showError(code, message);
+                }
+            });
         }
     }
 
@@ -86,13 +103,7 @@ public class PostPresenter implements PostContract.Presenter, ResponseListener {
         return type;
     }
 
-    @Override
-    public void onResponse(BaseBean baseBean, String tag) {
-        if (view == null) {
-            return;
-        }
-        call = null;
-        BlogPosts blogPosts = (BlogPosts) baseBean.getResponse();
+    private void showPosts(BlogPosts blogPosts) {
         offset += blogPosts.getList().size();
         boolean hasNext = true;
         if (blogPosts.getList().size() < limit || offset >= blogPosts.getCount()) {
@@ -136,8 +147,7 @@ public class PostPresenter implements PostContract.Presenter, ResponseListener {
         }
     }
 
-    @Override
-    public void onError(int code, String error, String tag) {
+    private void showError(int code, String error) {
         if (code == 0) {
             // 0 means call is canceled
             // ignore
@@ -148,15 +158,6 @@ public class PostPresenter implements PostContract.Presenter, ResponseListener {
         }
         call = null;
         view.onError(code, error);
-    }
-
-    @Override
-    public void onFailure(Throwable t, String tag) {
-        if (view == null) {
-            return;
-        }
-        call = null;
-        view.onFailure(t);
     }
 
 }
