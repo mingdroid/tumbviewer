@@ -1,12 +1,7 @@
 package com.nutrition.express.download;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
@@ -20,14 +15,9 @@ import android.view.MenuItem;
 
 import com.nutrition.express.R;
 import com.nutrition.express.common.CommonPagerAdapter;
-import com.nutrition.express.downloadservice.DownloadService;
-import com.nutrition.express.util.DownloadManager;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.functions.Consumer;
-import zlc.season.rxdownload2.entity.DownloadRecord;
 
 /**
  * Created by huang on 2/17/17.
@@ -37,43 +27,25 @@ public class DownloadManagerActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private VideoFragment videoFragment;
     private PhotoFragment photoFragment;
-    private int videoIndex;
-    private int photoIndex;
-
-    private DownloadService downloadService;
-    private boolean isBound;
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            downloadService = ((DownloadService.LocalBinder) service).getService();
-            setContentData(true);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download_manager);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
+        Toolbar toolbar = findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(R.string.download_toolbar_title);
         }
-        CollapsingToolbarLayout collapsingToolbarLayout =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
+        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
         collapsingToolbarLayout.setTitleEnabled(false);
 
 
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewPager);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -86,17 +58,15 @@ public class DownloadManagerActivity extends AppCompatActivity {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                if (tab.getPosition() == videoIndex) {
+                if (tab.getPosition() == 0) {
                     videoFragment.scrollToTop();
-                } else if (tab.getPosition() == photoIndex) {
+                } else if (tab.getPosition() == 1) {
                     photoFragment.scrollToTop();
                 }
             }
         });
 
-//        doBindService();
-//        getDownloadStatus();
-        setContentData(false);
+        setContentData();
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
@@ -110,47 +80,15 @@ public class DownloadManagerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setContentData(boolean hasDownloadingData) {
+    private void setContentData() {
         List<Fragment> list = new ArrayList<>();
         List<String> titles = new ArrayList<>();
 
         videoFragment = new VideoFragment();
         photoFragment = new PhotoFragment();
-        if (hasDownloadingData) {
-            DownloadFragment downloadFragment = new DownloadFragment();
-            downloadFragment.setDownloadService(downloadService);
-            list.add(downloadFragment);
-            titles.add(getString(R.string.video_download));
-        }
         list.add(videoFragment);
-        videoIndex = list.size() - 1;
         titles.add(getString(R.string.download_video_title));
         list.add(photoFragment);
-        photoIndex = list.size() - 1;
-        titles.add(getString(R.string.download_photo_title));
-
-        CommonPagerAdapter pagerAdapter =
-                new CommonPagerAdapter(getSupportFragmentManager(), list, titles);
-        viewPager.setAdapter(pagerAdapter);
-    }
-
-    private void setContentData(List<DownloadRecord> records) {
-        List<Fragment> list = new ArrayList<>();
-        List<String> titles = new ArrayList<>();
-
-        videoFragment = new VideoFragment();
-        photoFragment = new PhotoFragment();
-        if (records != null && records.size() > 0) {
-            DownloadFragment downloadFragment = new DownloadFragment();
-            downloadFragment.setDownloadRecords(records);
-            list.add(downloadFragment);
-            titles.add(getString(R.string.video_download));
-        }
-        list.add(videoFragment);
-        videoIndex = list.size() - 1;
-        titles.add(getString(R.string.download_video_title));
-        list.add(photoFragment);
-        photoIndex = list.size() - 1;
         titles.add(getString(R.string.download_photo_title));
 
         CommonPagerAdapter pagerAdapter =
@@ -160,39 +98,6 @@ public class DownloadManagerActivity extends AppCompatActivity {
 
     protected ActionMode startMultiChoice(ActionMode.Callback callback) {
         return startSupportActionMode(callback);
-    }
-
-    private void doBindService() {
-        bindService(new Intent(this, DownloadService.class), connection, Context.BIND_AUTO_CREATE);
-        isBound = true;
-    }
-
-    private void doUnbindService() {
-        if (isBound) {
-            unbindService(connection);
-            isBound = false;
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        doUnbindService();
-    }
-
-    private void getDownloadStatus() {
-        DownloadManager.getInstance().getRxDownload().getTotalDownloadRecords()
-                .subscribe(new Consumer<List<DownloadRecord>>() {
-                    @Override
-                    public void accept(List<DownloadRecord> downloadRecords) throws Exception {
-                        setContentData(downloadRecords);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        setContentData(null);
-                    }
-                });
     }
 
 }

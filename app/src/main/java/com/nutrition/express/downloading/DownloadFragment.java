@@ -1,4 +1,4 @@
-package com.nutrition.express.download;
+package com.nutrition.express.downloading;
 
 import android.graphics.drawable.ClipDrawable;
 import android.os.Bundle;
@@ -49,7 +49,7 @@ public class DownloadFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_download, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = CommonRVAdapter.newBuilder()
                 .addItemType(TransferRequest.class, R.layout.item_download, new CommonRVAdapter.CreateViewHolder() {

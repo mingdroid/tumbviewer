@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.nutrition.express.R;
-import com.nutrition.express.download.DownloadFragment;
 
 public class DownloadingActivity extends AppCompatActivity {
 
