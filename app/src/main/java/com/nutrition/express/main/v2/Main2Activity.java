@@ -13,16 +13,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.WindowInsetsCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nutrition.express.R;
 import com.nutrition.express.application.BaseActivity;
+import com.nutrition.express.blogposts.PostListActivity;
 import com.nutrition.express.common.CommonPagerAdapter;
 import com.nutrition.express.download.DownloadManagerActivity;
 import com.nutrition.express.downloading.DownloadingActivity;
@@ -33,6 +36,7 @@ import com.nutrition.express.main.UserContract;
 import com.nutrition.express.main.UserPresenter;
 import com.nutrition.express.main.VideoDashboardFragment;
 import com.nutrition.express.model.event.EventRefresh;
+import com.nutrition.express.model.rest.bean.BlogInfoItem;
 import com.nutrition.express.model.rest.bean.UserInfo;
 import com.nutrition.express.search.SearchActivity;
 import com.nutrition.express.settings.SettingsActivity;
@@ -147,11 +151,38 @@ public class Main2Activity extends BaseActivity
 
     @Override
     public void showMyInfo(UserInfo info) {
-        String userName = info.getUser().getBlogs().get(0).getName();
-        SimpleDraweeView avatar = findViewById(R.id.user_avatar);
-        FrescoUtils.setTumblrAvatarUri(avatar, userName, 128);
-        TextView name = findViewById(R.id.user_name);
-        name.setText(userName);
+        List<BlogInfoItem> list = info.getUser().getBlogs();
+        final String[] names = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            names[i] = list.get(i).getName();
+        }
+
+        final SimpleDraweeView avatar = findViewById(R.id.user_avatar);
+        final AppCompatSpinner spinner = findViewById(R.id.user_name);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, names);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                FrescoUtils.setTumblrAvatarUri(avatar, names[position], 128);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Main2Activity.this, PostListActivity.class);
+                intent.putExtra("blog_name", (String) spinner.getSelectedItem());
+                intent.putExtra("is_admin", true);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

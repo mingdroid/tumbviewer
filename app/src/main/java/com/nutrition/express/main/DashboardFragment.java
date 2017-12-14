@@ -140,8 +140,7 @@ public class DashboardFragment extends Fragment
     }
 
     public boolean isAtTop() {
-        return !(layoutManager != null &&
-                layoutManager.findFirstCompletelyVisibleItemPosition() > 0);
+        return (recyclerView == null || !recyclerView.canScrollVertically(-1));
     }
 
     public void scrollToTop() {

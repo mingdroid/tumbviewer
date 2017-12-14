@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.PowerManager;
 
-import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory;
@@ -36,7 +35,6 @@ public class ExoPlayerInstance {
     private final DataSource.Factory mediaDataSourceFactory;
     private final DefaultExtractorsFactory defaultExtractorsFactory;
     private final TrackSelector trackSelector;
-    private final DefaultLoadControl defaultLoadControl;
 
     private SimpleExoPlayer player;
 
@@ -69,11 +67,10 @@ public class ExoPlayerInstance {
                         defaultBandwidthMeter, CacheControl.FORCE_NETWORK));
         TrackSelection.Factory factory = new AdaptiveTrackSelection.Factory(defaultBandwidthMeter);
         trackSelector = new DefaultTrackSelector(factory);
-        defaultLoadControl = new DefaultLoadControl();
     }
 
     private void initPlayer() {
-        player = ExoPlayerFactory.newSimpleInstance(context, trackSelector, defaultLoadControl);
+        player = ExoPlayerFactory.newSimpleInstance(context, trackSelector);
     }
 
     public SimpleExoPlayer getPlayer() {

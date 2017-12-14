@@ -71,9 +71,10 @@ public class PostListActivity extends BaseActivity implements FollowBlogContract
         if (intent != null) {
             isAdmin = intent.getBooleanExtra("is_admin", false);
         }
-        if (!isAdmin) {
-            getMenuInflater().inflate(R.menu.menu_blog, menu);
-            followItem = menu.findItem(R.id.blog_follow);
+        getMenuInflater().inflate(R.menu.menu_blog, menu);
+        followItem = menu.findItem(R.id.blog_follow);
+        if (isAdmin) {
+            followItem.setVisible(false);
         }
         return super.onCreateOptionsMenu(menu);
     }

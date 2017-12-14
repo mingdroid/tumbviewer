@@ -16,16 +16,16 @@
         android:id="@+id/user_avatar"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
         app:roundAsCircle="true"
         />
 
-    <TextView
+    <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:layout_marginTop="@dimen/nav_header_vertical_spacing"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        />
 
 
 </LinearLayout>
