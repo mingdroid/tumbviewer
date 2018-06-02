@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -48,8 +47,6 @@ public class PostListActivity extends BaseActivity implements FollowBlogContract
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(blogName);
         }
-        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
-        collapsingToolbarLayout.setTitleEnabled(false);
 
         postListFragment = new PostListFragment();
         postListFragment.setArguments(blogBundle);

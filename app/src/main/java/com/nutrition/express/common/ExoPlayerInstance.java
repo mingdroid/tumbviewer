@@ -3,13 +3,9 @@ package com.nutrition.express.common;
 import android.content.Context;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.PowerManager;
 
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
@@ -20,10 +16,8 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.nutrition.express.R;
 import com.nutrition.express.application.ExpressApplication;
-
-import okhttp3.CacheControl;
-import okhttp3.OkHttpClient;
 
 /**
  * Created by huang on 2/17/17.
@@ -31,18 +25,13 @@ import okhttp3.OkHttpClient;
 
 public class ExoPlayerInstance {
     private Context context;
-    private final Handler mainHandler;
     private final DataSource.Factory mediaDataSourceFactory;
-    private final DefaultExtractorsFactory defaultExtractorsFactory;
     private final TrackSelector trackSelector;
 
     private SimpleExoPlayer player;
 
     private AudioManager am;
     private AudioManager.OnAudioFocusChangeListener afChangeListener;
-
-    private PowerManager powerManager;
-    private PowerManager.WakeLock wakeLock;
 
     private OnDisconnectListener onDisconnectListener;
 
@@ -59,12 +48,8 @@ public class ExoPlayerInstance {
     private ExoPlayerInstance() {
         this.context = ExpressApplication.getApplication();
         DefaultBandwidthMeter defaultBandwidthMeter = new DefaultBandwidthMeter();
-        mainHandler = new Handler();
-        defaultExtractorsFactory = new DefaultExtractorsFactory();
-        mediaDataSourceFactory = new DefaultDataSourceFactory(context, defaultBandwidthMeter,
-                new OkHttpDataSourceFactory(new OkHttpClient.Builder().build(),
-                        Util.getUserAgent(context, "Tumbviewer"),
-                        defaultBandwidthMeter, CacheControl.FORCE_NETWORK));
+        mediaDataSourceFactory = new DefaultDataSourceFactory(context,
+                Util.getUserAgent(context, context.getString(R.string.app_name)), defaultBandwidthMeter);
         TrackSelection.Factory factory = new AdaptiveTrackSelection.Factory(defaultBandwidthMeter);
         trackSelector = new DefaultTrackSelector(factory);
     }
@@ -85,9 +70,8 @@ public class ExoPlayerInstance {
             return;
         }
         requestAudioFocus();
-        keepScreenOn();
-        MediaSource source = new ExtractorMediaSource(uri,
-                mediaDataSourceFactory, defaultExtractorsFactory, mainHandler, null);
+        MediaSource source = new ExtractorMediaSource.Factory(mediaDataSourceFactory)
+                .createMediaSource(uri);
         player.prepare(source);
         player.setPlayWhenReady(true);
         this.onDisconnectListener = onDisconnectListener;
@@ -104,7 +88,6 @@ public class ExoPlayerInstance {
         if (player != null && !fullScreenMode) {
             disconnectPrevious();
             abandonAudioFocus();
-            abandonScreenOn();
             player.release();
             player = null;
         }
@@ -159,20 +142,6 @@ public class ExoPlayerInstance {
 
     void startFullScreenMode() {
         fullScreenMode = true;
-    }
-
-    void keepScreenOn() {
-        if (powerManager == null) {
-            powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        }
-        wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Humblr");
-        wakeLock.acquire();
-    }
-
-    void abandonScreenOn() {
-        if (wakeLock != null && wakeLock.isHeld()) {
-            wakeLock.release();
-        }
     }
 
     interface OnDisconnectListener {

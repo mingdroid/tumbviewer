@@ -307,7 +307,7 @@ public class ImageViewerActivity extends AppCompatActivity
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
                         .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
-                        .setPlaceholderImage(R.color.loading_color)
+                        .setPlaceholderImage(R.color.divider_color)
                         .build();
                 draweeView.setHierarchy(hierarchy);
 

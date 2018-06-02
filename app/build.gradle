@@ -6,20 +6,24 @@ def properties = new Properties()
 properties.load(new FileInputStream(proFile))
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '27.0.1'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.nutrition.humblr"
         minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 30
-        versionName "0.9.8"
+        targetSdkVersion 27
+        versionCode 62
+        versionName "1.0.0"
 
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [eventBusIndex: 'com.nutrition.express.MyEventBusIndex']
             }
+        }
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
         }
     }
 
@@ -53,23 +57,23 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.google.android:flexbox:0.3.1'
-    implementation 'com.google.android.exoplayer:exoplayer:2.6.0'
-    implementation 'com.google.android.exoplayer:extension-okhttp:2.6.0'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.google.android:flexbox:0.3.2'
+    implementation 'com.google.android.exoplayer:exoplayer:2.7.3'
+    implementation 'com.google.android.exoplayer:extension-okhttp:2.7.3'
 
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
-    implementation 'com.facebook.fresco:fresco:1.5.0'
-    implementation 'com.facebook.fresco:animated-gif:1.5.0'
+    implementation 'com.facebook.fresco:fresco:1.9.0'
+    implementation 'com.facebook.fresco:animated-gif:1.9.0'
 
     implementation 'com.orhanobut:logger:2.1.1'
 
@@ -79,10 +83,10 @@ dependencies {
     annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.1.1'
 
 //    implementation 'com.tumblr:jumblr:0.0.11'
-    compile('com.crashlytics.sdk.android:crashlytics:2.7.0@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
         transitive = true
     }
-    compile('com.crashlytics.sdk.android:answers:1.3.13@aar') {
+    implementation('com.crashlytics.sdk.android:answers:1.4.2@aar') {
         transitive = true
     }
 }

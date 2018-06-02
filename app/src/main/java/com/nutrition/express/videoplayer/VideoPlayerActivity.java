@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.util.Util;
 import com.nutrition.express.R;
 import com.nutrition.express.common.ExoPlayerInstance;
@@ -21,7 +21,7 @@ import com.nutrition.express.common.ExoPlayerInstance;
 
 public class VideoPlayerActivity extends AppCompatActivity {
     private ExoPlayerInstance playerInstance;
-    private SimpleExoPlayerView playerView;
+    private PlayerView playerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         SimpleExoPlayer player = playerInstance.getPlayer();
 
         setContentView(R.layout.activity_video_player);
-        playerView = (SimpleExoPlayerView) findViewById(R.id.player_view);
+        playerView = findViewById(R.id.player_view);
         playerView.setPlayer(player);
         if (playerPosition == C.TIME_UNSET) {
             player.seekToDefaultPosition(playerWindow);

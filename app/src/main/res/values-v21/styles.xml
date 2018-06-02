@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="BaseAppTheme">
         <!-- Customize your theme here. -->
-        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="ImageViewerTheme" parent="AppTheme.Transparent">

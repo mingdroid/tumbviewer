@@ -46,7 +46,7 @@ public class FollowingPresenter implements FollowingContract.FollowersPresenter 
                     }
                     followingCall = null;
                     offset += blogs.getBlogs().size();
-                    if (blogs.getBlogs().size() < defaultLimit || offset >= blogs.getTotal_blogs()) {
+                    if (blogs.getBlogs().size() == 0 || offset >= blogs.getTotal_blogs()) {
                         hasNext = false;
                     }
                     view.showFollowing(blogs.getBlogs(), hasNext);

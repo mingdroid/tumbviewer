@@ -18,8 +18,6 @@ import android.widget.TextView;
 import com.nutrition.express.R;
 import com.nutrition.express.common.CommonRVAdapter;
 import com.nutrition.express.common.CommonViewHolder;
-import com.nutrition.express.downloadservice.DownloadService;
-import com.nutrition.express.downloadservice.TransferRequest;
 import com.nutrition.express.util.DownloadManager;
 
 import java.util.ArrayList;
@@ -39,7 +37,6 @@ import zlc.season.rxdownload2.entity.DownloadStatus;
  */
 
 public class DownloadFragment extends Fragment {
-    private DownloadService downloadService;
     private RxDownload rxDownload;
     private HashSet<Disposable> disposables = new HashSet<>();
 
@@ -52,12 +49,6 @@ public class DownloadFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = CommonRVAdapter.newBuilder()
-                .addItemType(TransferRequest.class, R.layout.item_download, new CommonRVAdapter.CreateViewHolder() {
-                    @Override
-                    public CommonViewHolder createVH(View view) {
-                        return new DownloadVH(view);
-                    }
-                })
                 .addItemType(DownloadRecord.class, R.layout.item_download, new CommonRVAdapter.CreateViewHolder() {
                     @Override
                     public CommonViewHolder createVH(View view) {
@@ -77,11 +68,6 @@ public class DownloadFragment extends Fragment {
         for (Disposable disposable : disposables) {
             disposable.dispose();
         }
-    }
-
-    @Deprecated
-    public void setDownloadService(DownloadService downloadService) {
-        this.downloadService = downloadService;
     }
 
     @Deprecated
@@ -129,46 +115,6 @@ public class DownloadFragment extends Fragment {
             adapter.append(data.toArray(), false);
         } else {
             adapter.append(null, false);
-        }
-    }
-
-    private class DownloadVH extends CommonViewHolder<TransferRequest>
-            implements View.OnClickListener, DownloadService.DownloadProgress {
-        private TextView urlView;
-
-        private TransferRequest request;
-
-        DownloadVH(View itemView) {
-            super(itemView);
-            urlView = (TextView) itemView.findViewById(R.id.url);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void bindView(TransferRequest request) {
-            this.request = request;
-            urlView.setText(request.getVideoUrl());
-            downloadService.getDownloadState(request, this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            downloadService.startDownloadTarget(request);
-        }
-
-        @Override
-        public void update(long bytesRead, long contentLength, boolean done) {
-            if (ViewCompat.isAttachedToWindow(itemView)) {
-            }
-        }
-
-        @Override
-        public void onDownloadFailed() {
-        }
-
-        @Override
-        public void onDownloadFinish() {
-            adapter.remove(getAdapterPosition());
         }
     }
 

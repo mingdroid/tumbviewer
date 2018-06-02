@@ -61,7 +61,6 @@
     <string name="reblog_failure">出错了，请重试！</string>
     <string name="reblog_success">已转发</string>
     <string name="reblog_comment_hint">愿意的话，可以添加你的内容。</string>
-    <string name="blog_post">博客</string>
     <string name="reblog_post">发布</string>
     <string name="delete_positive">删除</string>
     <string name="delete_title">删除这条博客？</string>

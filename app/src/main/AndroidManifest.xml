@@ -76,8 +76,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
-        <service android:name=".downloadservice.DownloadService" />
-
         <activity
             android:name=".main.v2.Main2Activity"
             android:launchMode="singleTask"

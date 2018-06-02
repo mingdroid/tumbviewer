@@ -38,6 +38,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.video.VideoListener;
 import com.nutrition.express.R;
 import com.nutrition.express.videoplayer.VideoPlayerActivity;
 
@@ -134,12 +135,12 @@ public class CommonExoPlayerView extends FrameLayout {
         componentListener = new ComponentListener();
 
         LayoutInflater.from(context).inflate(R.layout.item_video_control, this);
-        controlLayout = (LinearLayout) findViewById(R.id.video_control_layout);
-        time = (TextView) findViewById(R.id.time);
-        timeCurrent = (TextView) findViewById(R.id.time_current);
-        fullscreen = (ImageView) findViewById(R.id.video_fullscreen);
+        controlLayout = findViewById(R.id.video_control_layout);
+        time = findViewById(R.id.time);
+        timeCurrent = findViewById(R.id.time_current);
+        fullscreen = findViewById(R.id.video_fullscreen);
         fullscreen.setOnClickListener(componentListener);
-        progressBar = (SeekBar) findViewById(R.id.video_controller_progress);
+        progressBar = findViewById(R.id.video_controller_progress);
         progressBar.setOnSeekBarChangeListener(componentListener);
         progressBar.setMax(PROGRESS_BAR_MAX);
 
@@ -237,7 +238,7 @@ public class CommonExoPlayerView extends FrameLayout {
         player = playerInstance.getPlayer();
         player.setVideoTextureView(videoView);
         player.addListener(componentListener);
-        player.setVideoListener(componentListener);
+        player.addVideoListener(componentListener);
         playerInstance.prepare(uri, componentListener);
         isConnected = true;
     }
@@ -245,7 +246,7 @@ public class CommonExoPlayerView extends FrameLayout {
     private void disconnect() {
         if (player != null) {
             player.removeListener(componentListener);
-            player.setVideoListener(null);
+            player.removeVideoListener(componentListener);
             player = null;
             playerInstance.stopPlayer();
             playerInstance.abandonAudioFocus();
@@ -359,10 +360,10 @@ public class CommonExoPlayerView extends FrameLayout {
         // Remove scheduled updates.
         removeCallbacks(updateProgressAction);
         // Schedule an update if necessary.
-        int playbackState = player == null ? ExoPlayer.STATE_IDLE : player.getPlaybackState();
-        if (playbackState != ExoPlayer.STATE_IDLE && playbackState != ExoPlayer.STATE_ENDED) {
+        int playbackState = player == null ? Player.STATE_IDLE : player.getPlaybackState();
+        if (playbackState != Player.STATE_IDLE && playbackState != Player.STATE_ENDED) {
             long delayMs;
-            if (player.getPlayWhenReady() && playbackState == ExoPlayer.STATE_READY) {
+            if (player.getPlayWhenReady() && playbackState == Player.STATE_READY) {
                 delayMs = 1000 - (position % 1000);
                 if (delayMs < 200) {
                     delayMs += 1000;
@@ -414,8 +415,8 @@ public class CommonExoPlayerView extends FrameLayout {
 //        Log.d("onDetachedFromWindow", "true");
     }
 
-    private final class ComponentListener implements ExoPlayer.EventListener,
-            SimpleExoPlayer.VideoListener, SeekBar.OnSeekBarChangeListener, OnClickListener,
+    private final class ComponentListener implements Player.EventListener,
+            VideoListener, SeekBar.OnSeekBarChangeListener, OnClickListener,
             ExoPlayerInstance.OnDisconnectListener {
 
         //ExoPlayerInstance.OnDisconnectListener
@@ -486,8 +487,9 @@ public class CommonExoPlayerView extends FrameLayout {
         }
 
         //Override ExoPlayer.EventListener
+
         @Override
-        public void onTimelineChanged(Timeline timeline, Object manifest) {
+        public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
 
         }
 
@@ -510,8 +512,10 @@ public class CommonExoPlayerView extends FrameLayout {
                 show();
                 playerInstance.abandonAudioFocus();
                 loadingBar.setVisibility(GONE);
+                setKeepScreenOn(true);
             } else {
                 loadingBar.setVisibility(GONE);
+                setKeepScreenOn(false);
             }
             updatePlayPauseButton();
             updateProgress();
@@ -525,7 +529,17 @@ public class CommonExoPlayerView extends FrameLayout {
         }
 
         @Override
-        public void onPositionDiscontinuity() {
+        public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+        }
+
+        @Override
+        public void onPositionDiscontinuity(int reason) {
+
+        }
+
+        @Override
+        public void onSeekProcessed() {
 
         }
 

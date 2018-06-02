@@ -6,9 +6,8 @@
     <string name="load_finish">The end</string>
     <string name="load_failed">Loading failed</string>
     <string name="load_failure_des">%1$d \n %2$s</string>
-    <string name="blog_follow">FOLLOW</string>
-    <string name="blog_unfollow">UNFOLLOW</string>
-    <string name="blog_post">POSTS</string>
+    <string name="blog_follow">Follow</string>
+    <string name="blog_unfollow">Unfollow</string>
 
     <string name="login_success">Login success</string>
     <string name="copy_to_clipboard">Have copied to clipboard</string>
@@ -90,7 +89,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="post_filter">filter</string>
+    <string name="post_filter">Filter</string>
     <array name="post_filter_type">
         <item>Video and photo</item>
         <item>Only Video</item>
