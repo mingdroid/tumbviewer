@@ -40,6 +40,7 @@ public class RxDownload {
     public static final int FILE_EXIST = -2;
     public static final int ERROR = -3;
     public static final int PROCESSING = 0;
+    public static final String FILE_NAME = "records";
 
     private OkHttpClient okHttpClient;
     private File parent;
@@ -52,7 +53,7 @@ public class RxDownload {
                 .readTimeout(5, TimeUnit.MINUTES);
         okHttpClient = builder.build();
         parent = FileUtils.getVideoDir();
-        records = Utils.read("records", new TypeToken<ArrayList<Record>>(){}.getType());
+        records = Utils.read(FILE_NAME, new TypeToken<ArrayList<Record>>(){}.getType());
         if (records == null) {
             records = new ArrayList<>();
         }
@@ -97,11 +98,12 @@ public class RxDownload {
         }
         downloadingMap.put(url, listener);
         records.add(record);
+        //todo save records
+//        Utils.store(FILE_NAME, records);
         Observable<Integer> observable = Observable.create(emitter -> {
             if (BuildConfig.DEBUG) {
                 TrafficStats.setThreadStatsTag(parsed.hashCode());
             }
-
             Request.Builder builder = new Request.Builder();
             builder.url(parsed);
             builder.tag(listener);
@@ -114,6 +116,8 @@ public class RxDownload {
                 .subscribe(data -> {
                     downloadingMap.remove(url);
                     records.remove(record);
+                    //todo save records
+//                    Utils.store(FILE_NAME, records);
                 }, error -> {
                     error.printStackTrace();
                     dst.delete();
