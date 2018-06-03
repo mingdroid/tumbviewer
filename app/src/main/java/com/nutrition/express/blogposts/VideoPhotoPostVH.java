@@ -8,13 +8,15 @@ import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.nutrition.express.R;
 import com.nutrition.express.common.CommonExoPlayerView;
 import com.nutrition.express.common.ExoPlayerInstance;
 import com.nutrition.express.model.data.bean.OnlineVideo;
 import com.nutrition.express.model.data.bean.VideoPostsItem;
-import com.nutrition.express.util.DownloadManager;
+import com.nutrition.express.model.download.RxDownload;
+import com.nutrition.express.util.Utils;
 
 /**
  * Created by huang on 2/23/17.
@@ -71,12 +73,16 @@ public class VideoPhotoPostVH extends PhotoPostVH<VideoPostsItem> implements Vie
                 }
             }
         } else if (v.getId() == R.id.post_download) {
-//            TransferRequest video = new TransferRequest(postsItem.getVideo_url(),
-//                    postsItem.getThumbnail_url());
-//            Intent intent = new Intent(context, DownloadService.class);
-//            intent.putExtra(DownloadService.DOWNLOAD_REQUEST, video);
-//            context.startService(intent);
-            DownloadManager.getInstance().download(postsItem.getVideo_url());
+            if (Utils.canWrite2Storage()) {
+                int status = RxDownload.getInstance().start(postsItem.getVideo_url(), null);
+                if (status == RxDownload.PROCESSING) {
+                    Toast.makeText(context, R.string.download_start, Toast.LENGTH_SHORT).show();
+                } else if (status == RxDownload.FILE_EXIST) {
+                    Toast.makeText(context, R.string.video_exist, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, R.string.reblog_failure, Toast.LENGTH_SHORT).show();
+                }
+            }
         } else {
             super.onClick(v);
         }

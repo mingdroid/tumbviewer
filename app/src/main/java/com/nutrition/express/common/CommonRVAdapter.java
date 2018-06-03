@@ -2,6 +2,7 @@ package com.nutrition.express.common;
 
 import android.graphics.Color;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
@@ -130,6 +131,18 @@ public class CommonRVAdapter extends RecyclerView.Adapter<CommonViewHolder> {
         } else {
             return state == LOADING_FINISH ? data.size() : data.size() + 1;
         }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull CommonViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        holder.onAttach();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull CommonViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.onDetach();
     }
 
     /**

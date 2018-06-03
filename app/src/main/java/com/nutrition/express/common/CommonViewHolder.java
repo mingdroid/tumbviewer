@@ -14,4 +14,12 @@ public class CommonViewHolder<T> extends RecyclerView.ViewHolder {
 
     public void bindView(T t) {
     }
+
+    public void onAttach() {
+
+    }
+
+    public void onDetach() {
+
+    }
 }
