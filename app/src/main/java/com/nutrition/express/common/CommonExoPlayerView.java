@@ -482,7 +482,9 @@ public class CommonExoPlayerView extends FrameLayout {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             dragging = false;
-            player.seekTo(positionValue(seekBar.getProgress()));
+            if (player != null) {
+                player.seekTo(positionValue(seekBar.getProgress()));
+            }
             hideAfterTimeout();
         }
 

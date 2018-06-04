@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -83,23 +84,17 @@ public class ImageViewerActivity extends AppCompatActivity
                     ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.CENTER_CROP));
             postponeEnterTransition();
         }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_view_image);
-        saveButton = (FloatingActionButton) findViewById(save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                save();
-            }
-        });
-        saveButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                saveAll();
-                return true;
-            }
-        });
+        saveButton = findViewById(save);
+        saveButton.setOnClickListener((view) -> save());
+        saveButton.setOnLongClickListener(
+                v -> {
+                    saveAll();
+                    return true;
+                });
 
-        final CoordinatorLayout container = (CoordinatorLayout) findViewById(R.id.container);
+        final CoordinatorLayout container = findViewById(R.id.container);
         colorDrawable = new ColorDrawable(getResources().getColor(R.color.divider_color));
         container.setBackgroundDrawable(colorDrawable);
         ViewCompat.setOnApplyWindowInsetsListener(container, new OnApplyWindowInsetsListener() {
@@ -125,8 +120,8 @@ public class ImageViewerActivity extends AppCompatActivity
                 return insets;
             }
         });
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        indicator = (LinearLayout) findViewById(R.id.indicator_container);
+        viewPager = findViewById(R.id.viewPager);
+        indicator = findViewById(R.id.indicator_container);
         selectedIndex = getIntent().getIntExtra("selected_index", 0);
         List<String> photoUrls = getIntent().getStringArrayListExtra("image_urls");
         convert2Uri(photoUrls);

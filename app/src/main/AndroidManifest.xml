@@ -48,7 +48,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".imageviewer.ImageViewerActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/ImageViewerTheme" />
         <activity
             android:name=".imageviewer.PhotoViewActivity"
