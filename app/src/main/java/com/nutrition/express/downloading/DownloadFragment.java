@@ -106,6 +106,7 @@ public class DownloadFragment extends Fragment {
         @Override
         public void update(long bytesRead, long contentLength, boolean done) {
             if (done) {
+                if (getAdapterPosition() == RecyclerView.NO_POSITION) return;
                 adapter.remove(getAdapterPosition());
             } else {
                 int percent = (int) (100 * bytesRead / contentLength);

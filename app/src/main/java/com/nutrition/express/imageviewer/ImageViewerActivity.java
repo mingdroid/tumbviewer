@@ -84,7 +84,9 @@ public class ImageViewerActivity extends AppCompatActivity
                     ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.CENTER_CROP));
             postponeEnterTransition();
         }
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
         setContentView(R.layout.activity_view_image);
         saveButton = findViewById(save);
         saveButton.setOnClickListener((view) -> save());

@@ -159,6 +159,7 @@ public class Main2Activity extends BaseActivity
 
         final SimpleDraweeView avatar = findViewById(R.id.user_avatar);
         final AppCompatSpinner spinner = findViewById(R.id.user_name);
+        if (spinner == null) return;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, names);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

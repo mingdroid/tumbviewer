@@ -450,8 +450,10 @@ public class CommonExoPlayerView extends FrameLayout {
             } else if (v == fullscreen) {
                 Intent playerIntent = new Intent(getContext(), VideoPlayerActivity.class);
                 playerIntent.putExtra("uri", uri);
-                playerIntent.putExtra("position", player.getCurrentPosition());
-                playerIntent.putExtra("windowIndex", player.getCurrentWindowIndex());
+                if (player != null) {
+                    playerIntent.putExtra("position", player.getCurrentPosition());
+                    playerIntent.putExtra("windowIndex", player.getCurrentWindowIndex());
+                }
                 playerIntent.putExtra("rotation", getWidth() > getHeight());
                 getContext().startActivity(playerIntent);
                 disconnect();

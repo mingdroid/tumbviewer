@@ -1,5 +1,6 @@
 package com.nutrition.express.imageviewer;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -34,6 +35,9 @@ public class PhotoViewActivity extends AppCompatActivity {
                     ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
             getWindow().setSharedElementReturnTransition(DraweeTransition.createTransitionSet(
                     ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.FIT_CENTER));
+        }
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         setContentView(R.layout.activity_photo_view);
 
