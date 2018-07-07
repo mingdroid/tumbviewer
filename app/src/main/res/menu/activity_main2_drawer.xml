@@ -29,6 +29,11 @@
             android:id="@+id/nav_settings"
             android:icon="@mipmap/ic_settings"
             android:title="@string/page_user_setting" />
+        <item
+            android:id="@+id/nav_tags_search"
+            android:icon="@mipmap/ic_search_white_24dp"
+            android:title="@string/tags_search" />
+
     </group>
 
 </menu>

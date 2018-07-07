@@ -94,4 +94,5 @@
     <string name="likes_title">%1$s 的喜欢</string>
     <string name="downloading">下载中</string>
     <string name="downloaded">已下载</string>
+    <string name="tags_search">tags search</string>
 </resources>

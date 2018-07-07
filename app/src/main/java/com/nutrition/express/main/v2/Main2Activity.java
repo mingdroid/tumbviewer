@@ -40,6 +40,7 @@ import com.nutrition.express.model.rest.bean.BlogInfoItem;
 import com.nutrition.express.model.rest.bean.UserInfo;
 import com.nutrition.express.search.SearchActivity;
 import com.nutrition.express.settings.SettingsActivity;
+import com.nutrition.express.taggedposts.TaggedActivity;
 import com.nutrition.express.util.FrescoUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -249,6 +250,8 @@ public class Main2Activity extends BaseActivity
         } else if (id == R.id.nav_like) {
             Intent intent = new Intent(this, LikesActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_tags_search) {
+            startActivity(new Intent(this, TaggedActivity.class));
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
