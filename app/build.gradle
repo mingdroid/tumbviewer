@@ -15,8 +15,8 @@ android {
         applicationId "com.nutrition.humblr"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 92
-        versionName "1.0.4"
+        versionCode 98
+        versionName "1.0.5"
 
         javaCompileOptions {
             annotationProcessorOptions {
