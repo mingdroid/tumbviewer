@@ -1,12 +1,19 @@
 package com.nutrition.express.model.download;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.content.Intent;
 import android.net.TrafficStats;
+import android.net.Uri;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.reflect.TypeToken;
 import com.nutrition.express.BuildConfig;
+import com.nutrition.express.application.ExpressApplication;
+import com.nutrition.express.application.SystemDownload;
 import com.nutrition.express.util.FileUtils;
 import com.nutrition.express.util.Utils;
 
@@ -53,6 +60,7 @@ public class RxDownload {
                 .readTimeout(5, TimeUnit.MINUTES);
         okHttpClient = builder.build();
         parent = FileUtils.getVideoDir();
+        if (!parent.exists()) parent.mkdirs();
         records = Utils.read(FILE_NAME, new TypeToken<ArrayList<Record>>(){}.getType());
         if (records == null) {
             records = new ArrayList<>();
@@ -114,16 +122,26 @@ public class RxDownload {
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(data -> {
+                    //add video to system media
+                    Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    intent.setData(Uri.fromFile(dst));
+                    ExpressApplication.getApplication().sendBroadcast(intent);
+
                     downloadingMap.remove(url);
                     records.remove(record);
                     //todo save records
 //                    Utils.store(FILE_NAME, records);
                 }, error -> {
+                    Crashlytics.logException(error);
                     error.printStackTrace();
                     dst.delete();
                     downloadingMap.remove(url);
                 });
         return PROCESSING;
+    }
+
+    public long startWithDownloadManager(final String url) {
+        return SystemDownload.downloadVideo(ExpressApplication.getApplication(), url);
     }
 
     @WorkerThread
