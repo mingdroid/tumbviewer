@@ -2,13 +2,14 @@ package com.nutrition.express.likes;
 
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.nutrition.express.R;
 import com.nutrition.express.application.BaseActivity;
 

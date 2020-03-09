@@ -2,9 +2,6 @@ package com.nutrition.express.reblog;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,6 +11,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.Toolbar;
 
 import com.nutrition.express.R;
 import com.nutrition.express.model.data.DataManager;

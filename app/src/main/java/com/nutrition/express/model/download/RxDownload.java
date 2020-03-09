@@ -1,13 +1,12 @@
 package com.nutrition.express.model.download;
 
-import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
 import android.net.TrafficStats;
 import android.net.Uri;
-import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.WorkerThread;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.reflect.TypeToken;

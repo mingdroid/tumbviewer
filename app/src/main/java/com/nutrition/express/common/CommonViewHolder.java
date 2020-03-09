@@ -1,7 +1,8 @@
 package com.nutrition.express.common;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by huang on 10/19/16.

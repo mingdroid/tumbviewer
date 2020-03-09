@@ -164,7 +164,7 @@
         android:text="@string/page_user_blog"
         android:padding="@dimen/cn_text_size_body"
         />
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_blog_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

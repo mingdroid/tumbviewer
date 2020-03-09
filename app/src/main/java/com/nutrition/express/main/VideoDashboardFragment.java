@@ -10,6 +10,8 @@ import com.nutrition.express.common.CommonViewHolder;
 import com.nutrition.express.common.ExoPlayerInstance;
 import com.nutrition.express.model.data.bean.VideoPostsItem;
 
+import ai.daypop.adx.NativeAdx;
+
 /**
  * Created by huang on 11/2/16.
  */
@@ -19,12 +21,8 @@ public class VideoDashboardFragment extends DashboardFragment {
     protected CommonRVAdapter getAdapter() {
         CommonRVAdapter.Builder builder = CommonRVAdapter.newBuilder();
         builder.addItemType(VideoPostsItem.class, R.layout.item_video_post,
-                new CommonRVAdapter.CreateViewHolder() {
-                    @Override
-                    public CommonViewHolder createVH(View view) {
-                        return new VideoPhotoPostVH(view, playerInstance);
-                    }
-                });
+                view -> new VideoPhotoPostVH(view, playerInstance));
+        builder.addItemType(NativeAdx.class, R.layout.item_ad, AdViewHolder::new);
         builder.setLoadListener(this);
         return builder.build();
     }

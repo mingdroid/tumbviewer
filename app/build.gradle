@@ -8,13 +8,13 @@ def properties = new Properties()
 properties.load(new FileInputStream(proFile))
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.3'
 
     defaultConfig {
         applicationId "com.nutrition.humblr"
-        minSdkVersion 16
-        targetSdkVersion 27
+        minSdkVersion 21
+        targetSdkVersion 29
         versionCode 98
         versionName "1.0.5"
 
@@ -59,10 +59,12 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation 'com.android.support:design:27.1.1'
-    implementation 'com.google.android:flexbox:0.3.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation 'com.google.android:flexbox:1.1.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.7.3'
     implementation 'com.google.android.exoplayer:extension-okhttp:2.7.3'
 
@@ -93,5 +95,6 @@ dependencies {
     implementation('com.crashlytics.sdk.android:answers:1.4.2@aar') {
         transitive = true
     }
+    implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
