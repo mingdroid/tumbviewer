@@ -2,9 +2,9 @@ package com.nutrition.express.model.data.bean;
 
 import android.net.Uri;
 
-import com.nutrition.express.application.ExpressApplication;
-import com.nutrition.express.common.BaseVideoBean;
-import com.nutrition.express.model.rest.bean.PostsItem;
+import com.nutrition.express.application.TumbApp;
+import com.nutrition.express.model.api.bean.BaseVideoBean;
+import com.nutrition.express.model.api.bean.PostsItem;
 
 /**
  * Created by huang on 2/23/17.
@@ -19,7 +19,7 @@ public class OnlineVideo extends BaseVideoBean {
         thumbnailUri = thumbnailUrl == null ? Uri.EMPTY : Uri.parse(thumbnailUrl);
         int videoWidth = postsItem.getThumbnail_width();
         int videoHeight = postsItem.getThumbnail_height();
-        width = ExpressApplication.width;
+        width = TumbApp.Companion.getApp().getWidth();
         if (videoWidth > 0) {
             height = width * videoHeight / videoWidth;
         } else {

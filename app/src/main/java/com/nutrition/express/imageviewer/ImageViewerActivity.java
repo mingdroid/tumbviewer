@@ -1,30 +1,14 @@
 package com.nutrition.express.imageviewer;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.SharedElementCallback;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.OnApplyWindowInsetsListener;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
 import android.text.TextUtils;
 import android.transition.Transition;
 import android.view.View;
@@ -34,6 +18,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
@@ -42,14 +34,12 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.DraweeTransition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nutrition.express.R;
-import com.nutrition.express.common.DismissFrameLayout;
+import com.nutrition.express.application.BaseActivity;
+import com.nutrition.express.common.DragFrameLayout;
 import com.nutrition.express.imageviewer.zoomable.ZoomableDraweeView;
-import com.nutrition.express.model.data.DataManager;
-import com.nutrition.express.model.event.EventPermission;
+import com.nutrition.express.model.data.AppData;
 import com.nutrition.express.util.FileUtils;
-import com.nutrition.express.util.FrescoUtils;
-
-import org.greenrobot.eventbus.EventBus;
+import com.nutrition.express.util.FrescoUtilsKt;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -61,8 +51,8 @@ import static com.nutrition.express.R.id.save;
 /**
  * Created by huang on 1/21/16.
  */
-public class ImageViewerActivity extends AppCompatActivity
-        implements DismissFrameLayout.OnDismissListener {
+public class ImageViewerActivity extends BaseActivity
+        implements DragFrameLayout.OnDismissListener {
     private final String ACTION = "SAVE_IMAGE";
     private ViewPager viewPager;
     private LinearLayout indicator;
@@ -76,6 +66,7 @@ public class ImageViewerActivity extends AppCompatActivity
     private ColorDrawable colorDrawable;
     private int ALPHA_MAX = 0xFF;
 
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,44 +134,35 @@ public class ImageViewerActivity extends AppCompatActivity
             finish();
             return;
         }
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
-                new IntentFilter(ACTION));
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().getSharedElementEnterTransition().addListener(
-                    new Transition.TransitionListener() {
-                        @Override
-                        public void onTransitionStart(Transition transition) {
-                        }
+        getWindow().getSharedElementEnterTransition().addListener(
+                new Transition.TransitionListener() {
+                    @Override
+                    public void onTransitionStart(Transition transition) {
+                    }
 
-                        @Override
-                        public void onTransitionEnd(Transition transition) {
-                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                                getWindow().getSharedElementEnterTransition().removeListener(this);
-                                if (!FileUtils.imageSaved(photoUris.get(selectedIndex))) {
-                                    saveButton.show();
-                                }
+                    @Override
+                    public void onTransitionEnd(Transition transition) {
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                            getWindow().getSharedElementEnterTransition().removeListener(this);
+                            if (!FileUtils.INSTANCE.imageSaved(photoUris.get(selectedIndex))) {
+                                saveButton.show();
                             }
-                            isTransitionEnd = true;
                         }
+                        isTransitionEnd = true;
+                    }
 
-                        @Override
-                        public void onTransitionCancel(Transition transition) {
-                        }
+                    @Override
+                    public void onTransitionCancel(Transition transition) {
+                    }
 
-                        @Override
-                        public void onTransitionPause(Transition transition) {
-                        }
+                    @Override
+                    public void onTransitionPause(Transition transition) {
+                    }
 
-                        @Override
-                        public void onTransitionResume(Transition transition) {
-                        }
-                    });
-        } else {
-            if (!FileUtils.imageSaved(photoUris.get(selectedIndex))) {
-                saveButton.show();
-            }
-            isTransitionEnd = true;
-        }
+                    @Override
+                    public void onTransitionResume(Transition transition) {
+                    }
+                });
     }
 
     @Override
@@ -198,7 +180,7 @@ public class ImageViewerActivity extends AppCompatActivity
     @Override
     public void onCancel() {
         colorDrawable.setAlpha(ALPHA_MAX);
-        if (!FileUtils.imageSaved(photoUris.get(selectedIndex))) {
+        if (!FileUtils.INSTANCE.imageSaved(photoUris.get(selectedIndex))) {
             saveButton.show();
         }
     }
@@ -238,7 +220,7 @@ public class ImageViewerActivity extends AppCompatActivity
             }
             mImageViews[position].setImageResource(R.mipmap.radiobutton_select);
             if (isTransitionEnd) {
-                if (FileUtils.imageSaved(photoUris.get(position))) {
+                if (FileUtils.INSTANCE.imageSaved(photoUris.get(position))) {
                     saveButton.hide();
                 } else {
                     saveButton.show();
@@ -298,7 +280,7 @@ public class ImageViewerActivity extends AppCompatActivity
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            DismissFrameLayout layout;
+            DragFrameLayout layout;
             ZoomableDraweeView draweeView;
             if (viewCache.size() == 0) {
                 draweeView = new ZoomableDraweeView(container.getContext());
@@ -310,12 +292,12 @@ public class ImageViewerActivity extends AppCompatActivity
                         .build();
                 draweeView.setHierarchy(hierarchy);
 
-                layout = new DismissFrameLayout(container.getContext());
+                layout = new DragFrameLayout(container.getContext());
                 layout.setDismissListener(ImageViewerActivity.this);
                 layout.setLayoutParams(new ViewPager.LayoutParams());
                 layout.addView(draweeView);
             } else {
-                layout = (DismissFrameLayout) viewCache.removeFirst();
+                layout = (DragFrameLayout) viewCache.removeFirst();
                 draweeView = (ZoomableDraweeView) layout.getChildAt(0);
             }
             DraweeController controller = Fresco.newDraweeControllerBuilder()
@@ -355,7 +337,7 @@ public class ImageViewerActivity extends AppCompatActivity
     public void finishAfterTransition() {
         int pos = viewPager.getCurrentItem();
         if (selectedIndex != pos) {
-            DataManager.getInstance().setPosition(viewPager.getCurrentItem());
+            AppData.INSTANCE.setPhotoIndex(viewPager.getCurrentItem());
             View view = viewPager.findViewWithTag("name" + pos);
             setSharedElementCallback(view);
         }
@@ -389,63 +371,49 @@ public class ImageViewerActivity extends AppCompatActivity
                 });
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            boolean success = intent.getBooleanExtra("success", false);
-            if (success) {
-                savedCount++;
-                Uri uri = intent.getParcelableExtra("uri");
-                if (photoUris.get(viewPager.getCurrentItem()).equals(uri)) {
-                    saveButton.hide();
-                }
-            } else {
-                failureCount++;
+
+    private void onSaveSuccess(Uri uri) {
+        if (uri != Uri.EMPTY) {
+            savedCount++;
+            if (photoUris.get(viewPager.getCurrentItem()).equals(uri)) {
+                saveButton.hide();
             }
-            if (savedCount + failureCount == desiredSavedCount) {
-                if (failureCount > 0) {
-                    Toast.makeText(ImageViewerActivity.this, R.string.pic_saved_failure,
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(ImageViewerActivity.this, R.string.pic_saved,
-                            Toast.LENGTH_SHORT).show();
-                }
+        } else {
+            failureCount++;
+        }
+        if (savedCount + failureCount == desiredSavedCount) {
+            if (failureCount > 0) {
+                Toast.makeText(ImageViewerActivity.this, R.string.pic_saved_failure,
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(ImageViewerActivity.this, R.string.pic_saved,
+                        Toast.LENGTH_SHORT).show();
             }
         }
-    };
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
     }
 
     private void save() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            EventBus.getDefault().post(new EventPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE));
-        } else {
-            desiredSavedCount = 1;
-            savedCount = 0;
-            failureCount = 0;
-            FrescoUtils.save(photoUris.get(viewPager.getCurrentItem()), ACTION);
-        }
+        requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .observe(this, granted -> {
+                    if (granted) {
+                        desiredSavedCount = 1;
+                        savedCount = 0;
+                        failureCount = 0;
+                        FrescoUtilsKt.save(photoUris.get(viewPager.getCurrentItem()))
+                                .observe(this, this::onSaveSuccess);
+                    }
+                });
     }
 
     private void saveAll() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            EventBus.getDefault().post(new EventPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE));
-        } else {
-            desiredSavedCount = 0;
-            savedCount = 0;
-            failureCount = 0;
-            for (Uri uri : photoUris) {
-                if (!FileUtils.imageSaved(uri)) {
-                    FrescoUtils.save(uri, ACTION);
-                    desiredSavedCount++;
-                }
-            }
-        }
+        requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .observe(this, granted -> {
+                    if (granted) {
+                        desiredSavedCount = photoUris.size();
+                        savedCount = 0;
+                        failureCount = 0;
+                        FrescoUtilsKt.saveAll(photoUris).observe(this, this::onSaveSuccess);
+                    }
+                });
     }
 }

@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.nutrition.express.BuildConfig;
-import com.nutrition.express.application.ExpressApplication;
+import com.nutrition.express.application.TumbApp;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -75,7 +75,7 @@ public class LocalPersistenceHelper {
     public static void storeShortContent(String name, Object object) {
         Gson gson = new Gson();
         String content  = gson.toJson(object);
-        File file = new File(ExpressApplication.getApplication().getFilesDir(), name);
+        File file = new File(TumbApp.Companion.getApp().getFilesDir(), name);
         storeShortContent(file, content);
     }
 
@@ -86,7 +86,7 @@ public class LocalPersistenceHelper {
      * @return the target object, a java bean object.
      */
     public static <T> T getShortContent(String name, Type typeOfT) {
-        File file = new File(ExpressApplication.getApplication().getFilesDir(), name);
+        File file = new File(TumbApp.Companion.getApp().getFilesDir(), name);
         String content = getShortContent(file);
         if (BuildConfig.DEBUG) {
             Log.d("TAG", "getShortContent: " + content);

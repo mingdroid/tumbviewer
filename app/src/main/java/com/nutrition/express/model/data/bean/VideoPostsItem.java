@@ -1,6 +1,6 @@
 package com.nutrition.express.model.data.bean;
 
-import com.nutrition.express.model.rest.bean.PostsItem;
+import com.nutrition.express.model.api.bean.PostsItem;
 
 /**
  * Created by huang on 2/23/17.

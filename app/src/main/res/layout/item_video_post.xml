@@ -46,7 +46,7 @@
             />
     </LinearLayout>
 
-   <com.nutrition.express.common.CommonExoPlayerView
+   <com.nutrition.express.common.MyExoPlayerView
        android:id="@+id/post_video"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -115,12 +115,15 @@
             app:srcCompat="@drawable/selector_like"
             android:background="?attr/selectableItemBackgroundBorderless"
             />
-        <ViewStub
-            android:id="@+id/stub_delete_forever"
-            android:inflatedId="@id/post_delete"
-            android:layout="@layout/item_delete_forever"
+        <ImageView
+            android:id="@+id/post_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_gravity="center"
+            app:srcCompat="@mipmap/ic_delete_forever"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:visibility="gone"
             />
     </LinearLayout>
 

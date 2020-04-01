@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/container"
+    android:id="@+id/content"
     android:fitsSystemWindows="true"
     tools:context="com.nutrition.express.main.v2.Main2Activity">
 

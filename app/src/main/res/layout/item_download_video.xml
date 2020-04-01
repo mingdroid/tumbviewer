@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <com.nutrition.express.common.CommonExoPlayerView
+    <com.nutrition.express.common.MyExoPlayerView
         android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

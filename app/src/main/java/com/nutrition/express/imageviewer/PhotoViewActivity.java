@@ -17,7 +17,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.DraweeTransition;
 import com.nutrition.express.R;
-import com.nutrition.express.common.DismissFrameLayout;
+import com.nutrition.express.common.DragFrameLayout;
 import com.nutrition.express.imageviewer.zoomable.ZoomableDraweeView;
 
 /**
@@ -45,10 +45,10 @@ public class PhotoViewActivity extends AppCompatActivity {
         Uri uri = getIntent().getParcelableExtra("photo_source");
         String transitionName = getIntent().getStringExtra("transition_name");
 
-        DismissFrameLayout layout = (DismissFrameLayout) findViewById(R.id.dismiss_layout);
+        DragFrameLayout layout = findViewById(R.id.dismiss_layout);
         colorDrawable = new ColorDrawable(getResources().getColor(R.color.divider_color));
-        layout.setBackgroundDrawable(colorDrawable);
-        layout.setDismissListener(new DismissFrameLayout.OnDismissListener() {
+        layout.setBackground(colorDrawable);
+        layout.setDismissListener(new DragFrameLayout.OnDismissListener() {
             @Override
             public void onDismiss() {
                 finishAction(null);
@@ -67,8 +67,8 @@ public class PhotoViewActivity extends AppCompatActivity {
         });
 
         colorDrawable = new ColorDrawable(getResources().getColor(R.color.divider_color));
-        layout.setBackgroundDrawable(colorDrawable);
-        ZoomableDraweeView draweeView = (ZoomableDraweeView) findViewById(R.id.photoView);
+        layout.setBackground(colorDrawable);
+        ZoomableDraweeView draweeView = findViewById(R.id.photoView);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             draweeView.setTransitionName(transitionName);
         }

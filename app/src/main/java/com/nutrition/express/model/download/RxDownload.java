@@ -8,13 +8,10 @@ import android.util.Log;
 
 import androidx.annotation.WorkerThread;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.reflect.TypeToken;
 import com.nutrition.express.BuildConfig;
-import com.nutrition.express.application.ExpressApplication;
-import com.nutrition.express.application.SystemDownload;
+import com.nutrition.express.application.TumbApp;
 import com.nutrition.express.util.FileUtils;
-import com.nutrition.express.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +29,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okio.BufferedSink;
 import okio.Okio;
+
+import static com.nutrition.express.util.UtilsKt.md5sum;
+import static com.nutrition.express.util.UtilsKt.read;
 
 public class RxDownload {
     private static class Holder {
@@ -58,9 +58,9 @@ public class RxDownload {
                 .addNetworkInterceptor(new ProgressInterceptor())
                 .readTimeout(5, TimeUnit.MINUTES);
         okHttpClient = builder.build();
-        parent = FileUtils.getVideoDir();
+        parent = FileUtils.INSTANCE.getVideoDir();
         if (!parent.exists()) parent.mkdirs();
-        records = Utils.read(FILE_NAME, new TypeToken<ArrayList<Record>>(){}.getType());
+        records = read(FILE_NAME, new TypeToken<ArrayList<Record>>(){}.getType());
         if (records == null) {
             records = new ArrayList<>();
         }
@@ -96,7 +96,7 @@ public class RxDownload {
                 extension = lastPath.substring(index);
             }
         }
-        File dst = new File(parent, Utils.md5sum(url) + extension);
+        File dst = new File(parent, md5sum(url) + extension);
         if (dst.exists()) return FILE_EXIST;
         final HubProgressListener listener = new HubProgressListener();
         final Record record = new Record(url);
@@ -124,23 +124,18 @@ public class RxDownload {
                     //add video to system media
                     Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                     intent.setData(Uri.fromFile(dst));
-                    ExpressApplication.getApplication().sendBroadcast(intent);
+                    TumbApp.Companion.getApp().sendBroadcast(intent);
 
                     downloadingMap.remove(url);
                     records.remove(record);
                     //todo save records
 //                    Utils.store(FILE_NAME, records);
                 }, error -> {
-                    Crashlytics.logException(error);
                     error.printStackTrace();
                     dst.delete();
                     downloadingMap.remove(url);
                 });
         return PROCESSING;
-    }
-
-    public long startWithDownloadManager(final String url) {
-        return SystemDownload.downloadVideo(ExpressApplication.getApplication(), url);
     }
 
     @WorkerThread
@@ -151,6 +146,7 @@ public class RxDownload {
             BufferedSink sink = Okio.buffer(Okio.sink(dst));
             sink.writeAll(response.body().source());
             sink.close();
+            response.close();
             Log.d("RxDownload", "-> end");
             return true;
         } catch (IOException e) {

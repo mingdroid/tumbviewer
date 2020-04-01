@@ -1,47 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="LockedOrientationActivity"
-    package="com.nutrition.express">
+    package="com.nutrition.express"
+    tools:ignore="LockedOrientationActivity">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name=".application.ExpressApplication"
+        android:name=".application.TumbApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <uses-library
-            android:name="com.sec.android.app.multiwindow"
-            android:required="false" />
-
-        <meta-data
-            android:name="com.sec.android.support.multiwindow"
-            android:value="true" />
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="4e8da9af39f63a65a9453747840bd9e68c65f676"
-            />
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1345960513966700~8570375881"/>
-
+        <activity android:name=".ui.downloading.DownloadingActivity"></activity>
+        <activity android:name=".ui.download.DownloadedActivity" />
+        <activity android:name=".ui.post.blog.PostListActivity" />
+        <activity android:name=".ui.following.FollowingActivity" />
+        <activity android:name=".ui.likes.LikesActivity" />
         <activity
-            android:name=".main.MainActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".blogposts.PostListActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".login.LoginActivity"
+            android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
@@ -50,12 +31,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.reblog.ReblogActivity" />
+        <activity android:name=".ui.register.RegisterActivity" />
+        <activity android:name=".ui.search.SearchActivity" />
+        <activity android:name=".ui.settings.SettingsActivity" />
         <activity
-            android:name=".likes.LikesActivity"
+            android:name=".ui.post.tagged.TaggedActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".following.FollowingActivity"
-            android:screenOrientation="portrait" />
+
+        <uses-library
+            android:name="com.sec.android.app.multiwindow"
+            android:required="false" />
+
+        <meta-data
+            android:name="com.sec.android.support.multiwindow"
+            android:value="true" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="4e8da9af39f63a65a9453747840bd9e68c65f676" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1345960513966700~8570375881" />
+
         <activity
             android:name=".imageviewer.ImageViewerActivity"
             android:theme="@style/ImageViewerTheme" />
@@ -63,39 +60,18 @@
             android:name=".imageviewer.PhotoViewActivity"
             android:theme="@style/ImageViewerTheme" />
         <activity
-            android:name=".videoplayer.VideoPlayerActivity"
+            android:name=".ui.video.VideoPlayerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/VideoPlayerTheme" />
         <activity
-            android:name=".settings.SettingsActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".taggedposts.TaggedActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".register.RegisterActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".reblog.ReblogActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".download.DownloadManagerActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".main.v2.Main2Activity"
+            android:name=".ui.main.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Drawer"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".search.SearchActivity"
+            android:name=".downloading.DownloadingActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".downloading.DownloadingActivity"
-            android:screenOrientation="portrait"
-            />
     </application>
 
 </manifest>

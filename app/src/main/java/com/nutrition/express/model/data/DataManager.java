@@ -7,20 +7,22 @@ import android.webkit.CookieSyncManager;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.nutrition.express.application.Constants;
-import com.nutrition.express.application.ExpressApplication;
+import com.nutrition.express.application.Constant;
+import com.nutrition.express.application.TumbApp;
 import com.nutrition.express.model.data.bean.TumblrAccount;
 import com.nutrition.express.model.data.bean.TumblrApp;
 import com.nutrition.express.model.helper.LocalPersistenceHelper;
-import com.nutrition.express.model.rest.bean.UserInfoItem;
-import com.nutrition.express.settings.SettingsActivity;
-import com.nutrition.express.util.PreferencesUtils;
+import com.nutrition.express.model.api.bean.UserInfoItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.nutrition.express.util.PreferencesUtilsKt.getBoolean;
+import static com.nutrition.express.util.PreferencesUtilsKt.getString;
+import static com.nutrition.express.util.PreferencesUtilsKt.putString;
 
 /**
  * Created by huang on 10/18/16.
@@ -54,7 +56,7 @@ public class DataManager {
     private DataManager() {
         loadTumblrAccounts();
         checkAccounts();
-        isSimpleMode = PreferencesUtils.getBoolean(SettingsActivity.POST_SIMPLE_MODE, false);
+        isSimpleMode = getBoolean("post_simple_mode", false);
     }
 
     private void loadTumblrAccounts() {
@@ -63,13 +65,13 @@ public class DataManager {
         if (tumblrAccountList == null) {
             tumblrAccountList = new ArrayList<>();
             //check for updating from version 0.9.3
-            String token = PreferencesUtils.getString("access_token");
-            String secret = PreferencesUtils.getString("access_secret");
+            String token = getString("access_token");
+            String secret = getString("access_secret");
             if (!TextUtils.isEmpty(token)) {
                 List<TumblrApp> tumblrAppList = LocalPersistenceHelper.getShortContent(TUMBLR_APP,
                         new TypeToken<ArrayList<TumblrApp>>(){}.getType());
                 if (tumblrAppList == null || tumblrAppList.size() == 0) {
-                    addAccount(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET, token, secret);
+                    addAccount(Constant.CONSUMER_KEY, Constant.CONSUMER_SECRET, token, secret);
                 } else {
                     for (TumblrApp app : tumblrAppList) {
                         if (app.isUsing()) {
@@ -78,8 +80,8 @@ public class DataManager {
                     }
                 }
 
-                PreferencesUtils.putString("access_token", null);
-                PreferencesUtils.putString("access_secret", null);
+                putString("access_token", null);
+                putString("access_secret", null);
             }
         }
     }
@@ -184,7 +186,7 @@ public class DataManager {
             CookieManager.getInstance().flush();
         } else {
             CookieSyncManager cookieSyncManager =
-                    CookieSyncManager.createInstance(ExpressApplication.getApplication());
+                    CookieSyncManager.createInstance(TumbApp.Companion.getApp());
             cookieSyncManager.startSync();
             CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.removeAllCookie();
@@ -210,7 +212,7 @@ public class DataManager {
     }
 
     public HashMap<String, String> getDefaultTumplrApps() {
-        return new Gson().fromJson(Constants.API_KEYS,
+        return new Gson().fromJson(Constant.API_KEYS,
                 new TypeToken<HashMap<String, String>>(){}.getType());
     }
 

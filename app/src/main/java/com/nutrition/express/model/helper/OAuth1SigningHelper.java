@@ -16,7 +16,7 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import static com.nutrition.express.application.Constants.REDIRECT_URI;
+import static com.nutrition.express.application.Constant.REDIRECT_URI;
 
 /**
  * Created by huang on 10/18/16.
