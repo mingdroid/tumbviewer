@@ -16,7 +16,7 @@ class UserRepo(val context: CoroutineContext) {
 
     fun getFollowing(limit: Int, offset: Int): LiveData<Resource<FollowingBlog>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             emit(callFromNet {
                 userService.getFollowing(limit, offset)
             })
@@ -25,7 +25,7 @@ class UserRepo(val context: CoroutineContext) {
 
     fun getLikes(limit: Int, before: Long): LiveData<Resource<BlogLikes>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             emit(callFromNet {
                 userService.getLikes(limit, before)
             })
@@ -34,7 +34,7 @@ class UserRepo(val context: CoroutineContext) {
 
     fun getInfo(): LiveData<Resource<UserInfo>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             emit(callFromNet {
                 userService.getInfo()
             })
@@ -43,7 +43,7 @@ class UserRepo(val context: CoroutineContext) {
 
     fun getDashboard(options: Map<String, String>): LiveData<Resource<BlogPosts>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             emit(callFromNet {
                 userService.getDashboard(options)
             })
@@ -52,56 +52,56 @@ class UserRepo(val context: CoroutineContext) {
 
     fun follow(url: String): LiveData<Resource<String>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             val result = callFromNet {
                 userService.follow(url)
             }
-            if (result.status == Status.SUCCESS) {
-                emit(Resource.success(url))
-            } else {
-                emit(Resource.error(result.code, result.message, null))
+            when (result) {
+                is Resource.Success -> emit(Resource.Success(url))
+                is Resource.Error -> emit(Resource.Error(result.code, result.message))
+                is Resource.Loading -> {}
             }
         }
     }
 
     fun unfollow(url: String): LiveData<Resource<String>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             val result = callFromNet {
                 userService.unfollow(url)
             }
-            if (result.status == Status.SUCCESS) {
-                emit(Resource.success(url))
-            } else {
-                emit(Resource.error(result.code, result.message, null))
+            when (result) {
+                is Resource.Success -> emit(Resource.Success(url))
+                is Resource.Error -> emit(Resource.Error(result.code, result.message))
+                is Resource.Loading -> {}
             }
         }
     }
 
     fun like(id: Long, key: String): LiveData<Resource<Long>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             val result = callFromNet {
                 userService.like(id, key)
             }
-            if (result.status == Status.SUCCESS) {
-                emit(Resource.success(id))
-            } else {
-                emit(Resource.error(result.code, result.message, null))
+            when (result) {
+                is Resource.Success -> emit(Resource.Success(id))
+                is Resource.Error -> emit(Resource.Error(result.code, result.message))
+                is Resource.Loading -> {}
             }
         }
     }
 
     fun unlike(id: Long, key: String): LiveData<Resource<Long>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             val result = callFromNet {
                 userService.unlike(id, key)
             }
-            if (result.status == Status.SUCCESS) {
-                emit(Resource.success(id))
-            } else {
-                emit(Resource.error(result.code, result.message, null))
+            when (result) {
+                is Resource.Success -> emit(Resource.Success(id))
+                is Resource.Error -> emit(Resource.Error(result.code, result.message))
+                is Resource.Loading -> {}
             }
         }
     }

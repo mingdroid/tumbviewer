@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
-import com.nutrition.express.model.api.Status
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.api.repo.TaggedRepo
 
 class TaggedViewModel : ViewModel() {
@@ -18,7 +18,7 @@ class TaggedViewModel : ViewModel() {
     }
 
     fun retryIfFailed() {
-        if (postData.value?.status == Status.ERROR) {
+        if (postData.value is Resource.Error) {
             _postData.value = _postData.value
         }
     }

@@ -17,7 +17,7 @@ import com.nutrition.express.application.toast
 import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.common.MyExoPlayer
 import com.nutrition.express.databinding.ActivityTaggedBinding
-import com.nutrition.express.model.api.Status
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.data.bean.PhotoPostsItem
 import com.nutrition.express.model.data.bean.VideoPostsItem
 import com.nutrition.express.model.api.bean.PostsItem
@@ -47,14 +47,8 @@ class TaggedActivity : BaseActivity() {
         volumeControlStream = STREAM_MUSIC
 
         taggedViewModel.postData.observe(this, Observer {
-            when (it.status) {
-                Status.LOADING -> {
-
-                }
-                Status.ERROR -> {
-                    adapter.showLoadingFailure(getString(R.string.load_failure_des, it.code, it.message))
-                }
-                Status.SUCCESS -> {
+            when (it) {
+                is Resource.Success -> {
                     val list = it.data
                     if (list != null && list.isNotEmpty()) {
                         featuredTimestamp = list[list.size - 1].postsItem.featured_timestamp
@@ -63,11 +57,13 @@ class TaggedActivity : BaseActivity() {
                     featuredTimestamp?.let { time -> hasNextPage = time > 0 }
                     adapter.append(list?.toTypedArray(), hasNextPage)
                 }
+                is Resource.Error -> adapter.showLoadingFailure(getString(R.string.load_failure_des, it.code, it.message))
+                is Resource.Loading -> {}
             }
         })
         blogViewModel.deletePostData.observe(this, Observer {
-            when (it.status) {
-                Status.SUCCESS -> {
+            when (it) {
+                is Resource.Success -> {
                     val list = adapter.getData()
                     for (index in list.indices) {
                         val item = list[index]
@@ -78,9 +74,8 @@ class TaggedActivity : BaseActivity() {
                         }
                     }
                 }
-                Status.ERROR -> {
-                    it.message?.let { msg -> toast(msg) }
-                }
+                is Resource.Error -> toast(it.message)
+                is Resource.Loading -> {}
             }
         })
     }

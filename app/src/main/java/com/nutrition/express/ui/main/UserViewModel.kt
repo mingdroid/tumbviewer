@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
-import com.nutrition.express.model.api.Status
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.api.repo.UserRepo
 import java.util.*
 
@@ -47,7 +47,7 @@ class UserViewModel : ViewModel() {
 
     //retry to get user info
     fun retryIfFailed() {
-        if (userInfoData.value?.status == Status.ERROR) {
+        if (userInfoData.value is Resource.Error) {
             _userData.value = true
         }
     }

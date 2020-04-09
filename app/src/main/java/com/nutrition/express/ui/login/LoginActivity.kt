@@ -18,7 +18,7 @@ import com.nutrition.express.application.BaseActivity
 import com.nutrition.express.application.Constant
 import com.nutrition.express.application.toast
 import com.nutrition.express.databinding.ActivityWebBinding
-import com.nutrition.express.model.api.Status
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.data.AppData
 import com.nutrition.express.ui.login.LoginType.NEW_ACCOUNT
 import com.nutrition.express.ui.login.LoginType.NEW_ROUTE
@@ -99,28 +99,23 @@ class LoginActivity : BaseActivity() {
             }
         }
         loginViewModel.requestToken.observe(this, Observer {
-            when (it.status) {
-                Status.LOADING -> showProgress()
-                Status.ERROR -> {
-                    dismissProgress()
-                    it.message?.let { msg -> toast(msg) }
-                }
-                Status.SUCCESS -> {
+            when (it) {
+                is Resource.Success -> {
                     dismissProgress()
                     it.data?.let { data ->
                         binding.webView.loadUrl(Constant.AUTHORIZE_URL + "?oauth_token=" + data.token)
                     }
                 }
+                is Resource.Error -> {
+                    dismissProgress()
+                    toast(it.message)
+                }
+                is Resource.Loading -> showProgress()
             }
         })
         loginViewModel.accessToken.observe(this, Observer {
-            when (it.status) {
-                Status.LOADING -> showProgress()
-                Status.ERROR -> {
-                    dismissProgress()
-                    it.message?.let { msg -> toast(msg) }
-                }
-                Status.SUCCESS -> {
+            when (it) {
+                is Resource.Success -> {
                     dismissProgress()
                     toast(R.string.login_success)
                     if (type == NEW_ACCOUNT) {
@@ -130,6 +125,11 @@ class LoginActivity : BaseActivity() {
                         gotoMainActivity()
                     }
                 }
+                is Resource.Error -> {
+                    dismissProgress()
+                    toast(it.message)
+                }
+                is Resource.Loading -> showProgress()
             }
         })
         loginViewModel.setType(type)

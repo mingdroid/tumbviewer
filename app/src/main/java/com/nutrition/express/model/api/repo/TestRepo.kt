@@ -12,14 +12,14 @@ class TestRepo(val context: CoroutineContext) {
 
     fun getUserInfo(uid: String): LiveData<Resource<String>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             val result = callFromNet {
                 service.getUserInfo()
             }
-            if (result.status == Status.SUCCESS) {
-                emit(Resource.success(uid))
-            } else {
-                emit(Resource.error(result.code, result.message, null))
+            when (result) {
+                is Resource.Success -> emit(Resource.Success(uid))
+                is Resource.Error -> emit(Resource.Error(result.code, result.message))
+                is Resource.Loading -> {}
             }
         }
     }

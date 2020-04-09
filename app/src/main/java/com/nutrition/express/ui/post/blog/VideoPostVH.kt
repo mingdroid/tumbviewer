@@ -84,6 +84,20 @@ class VideoPostVH(view: View) : BasePostVH(view) {
         }
     }
 
+    override fun onLike(id: Long?) {
+        if (postsItem?.id == id) {
+            postsItem?.isLiked = true
+            binding.postLike.isSelected = true
+        }
+    }
+
+    override fun onUnLike(id: Long?) {
+        if (postsItem?.id == id) {
+            postsItem?.isLiked = false
+            binding.postLike.isSelected = false
+        }
+    }
+
     override fun bindView(item: Any) {
         onlineVideo = (item as VideoPostsItem).onlineVideo
         if (item.postsItem.video_url.isNullOrEmpty()) {

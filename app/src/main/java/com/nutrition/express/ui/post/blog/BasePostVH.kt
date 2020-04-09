@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,7 @@ import com.nutrition.express.R
 import com.nutrition.express.common.CommonViewHolder
 import com.nutrition.express.databinding.ItemTrailBinding
 import com.nutrition.express.imageviewer.ImageViewerActivity
-import com.nutrition.express.model.api.Status
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.api.bean.PhotoItem
 import com.nutrition.express.model.api.bean.PostsItem
@@ -37,7 +38,7 @@ import com.nutrition.express.util.setTumblrAvatarUri
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
-open class BasePostVH(view: View) : CommonViewHolder(view) {
+abstract class BasePostVH(view: View) : CommonViewHolder(view) {
     protected var isSimpleMode: Boolean = false
     protected val userViewModel: UserViewModel
     protected val blogViewModel: BlogViewModel
@@ -55,12 +56,12 @@ open class BasePostVH(view: View) : CommonViewHolder(view) {
         userViewModel = provider.get()
         blogViewModel = provider.get()
         userViewModel.likeData.observe(activity, Observer {
-            if (it.status == Status.SUCCESS) {
+            if (it is Resource.Success) {
                 onLike(it.data)
             }
         })
         userViewModel.unLikeData.observe(activity, Observer {
-            if (it.status == Status.SUCCESS) {
+            if (it is Resource.Success) {
                 onUnLike(it.data)
             }
         })
@@ -71,13 +72,9 @@ open class BasePostVH(view: View) : CommonViewHolder(view) {
         isSimpleMode = AppData.modeData.value ?: false
     }
 
-    protected open fun onLike(id: Long?) {
+    abstract fun onLike(id: Long?)
 
-    }
-
-    protected open fun onUnLike(id: Long?) {
-
-    }
+    abstract fun onUnLike(id: Long?)
 
     protected fun setPhotoContent(postContent: FlexboxLayout, postsItem: PostsItem) {
         postContent.removeAllViews()

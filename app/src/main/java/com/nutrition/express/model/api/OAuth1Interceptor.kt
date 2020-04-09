@@ -1,12 +1,10 @@
 package com.nutrition.express.model.api
 
-import android.util.Log
 import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.helper.OAuth1SigningHelper
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.internal.toLongOrDefault
 import okio.Buffer
 import java.util.*
 
@@ -17,8 +15,6 @@ class OAuth1Interceptor : Interceptor {
         if (request.url.host == "api.tumblr.com" && AppData.isLogin() && auth.isNullOrEmpty()) {
             request = signRequest(request)
         }
-        //todo
-        Log.d("OAuth1Interceptor", "thread: ${Thread.currentThread().id}")
         val response = chain.proceed(request)
         val headers = response.headers;
         AppData.dayLimit = headers["X-RateLimit-PerDay-Limit"]?.toLongOrNull() ?: 0

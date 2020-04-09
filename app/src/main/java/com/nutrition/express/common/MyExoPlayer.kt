@@ -28,13 +28,11 @@ object MyExoPlayer: LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onAppPause() {
-        Log.d("MyExoPlayer", "onAppPause: ")
         pause()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onAppStop() {
-        Log.d("MyExoPlayer", "onAppStop: ")
         release()
     }
 

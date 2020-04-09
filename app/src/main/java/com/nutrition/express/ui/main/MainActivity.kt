@@ -23,7 +23,7 @@ import com.nutrition.express.application.BaseActivity
 import com.nutrition.express.application.toast
 import com.nutrition.express.common.CommonPagerAdapter
 import com.nutrition.express.databinding.ActivityMain2Binding
-import com.nutrition.express.model.api.Status
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.api.bean.UserInfo
 import com.nutrition.express.ui.download.DownloadedActivity
@@ -49,10 +49,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private fun getUserInfo(uid: String) {
         testViewModel.userInfoData.observe(this, Observer {
-            when (it.status) {
-                Status.SUCCESS -> TODO()
-                Status.ERROR -> TODO()
-                Status.LOADING -> TODO()
+            when (it) {
+                is Resource.Success -> {}
+                is Resource.Error -> {}
+                is Resource.Loading -> {}
             }
         })
         testViewModel.setUserId(uid)
@@ -155,24 +155,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun initViewModel() {
-        userModel.userInfoData.observe(this, Observer { resource ->
-            when (resource.status) {
-                Status.SUCCESS -> resource.data?.let { setUserInfo(it) }
-                Status.LOADING -> {}
-                Status.ERROR -> {}
+        userModel.userInfoData.observe(this, Observer {
+            when (it) {
+                is Resource.Success -> it.data?.let { userInfo -> setUserInfo(userInfo) }
+                is Resource.Error -> {}
+                is Resource.Loading -> {}
             }
         })
         userModel.fetchUserInfo()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d("MainActivity", "onStart:")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d("MainActivity", "onStop: ${System.currentTimeMillis()}")
     }
 
     private fun setUserInfo(userInfo: UserInfo) {

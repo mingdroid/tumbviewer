@@ -37,6 +37,20 @@ open class PhotoPostVH(view: View): BasePostVH(view) {
         }
     }
 
+    override fun onLike(id: Long?) {
+        if (postsItem?.id == id) {
+            postsItem?.isLiked = true
+            binding.postLike.isSelected = true
+        }
+    }
+
+    override fun onUnLike(id: Long?) {
+        if (postsItem?.id == id) {
+            postsItem?.isLiked = false
+            binding.postLike.isSelected = false
+        }
+    }
+
     override fun bindView(item: Any) {
         val postsItem = (item as PhotoPostsItem).postsItem
         this.postsItem = postsItem

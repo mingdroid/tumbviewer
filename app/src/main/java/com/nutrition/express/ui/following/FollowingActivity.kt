@@ -14,7 +14,7 @@ import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.common.CommonViewHolder
 import com.nutrition.express.databinding.ActivityFollowingBinding
 import com.nutrition.express.databinding.ItemFollowingBlogBinding
-import com.nutrition.express.model.api.Status
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.api.bean.FollowingBlog
 import com.nutrition.express.ui.post.blog.PostListActivity
 import com.nutrition.express.util.setTumblrAvatarUri
@@ -49,8 +49,8 @@ class FollowingActivity : BaseActivity() {
         binding.recyclerView.adapter = adapter
 
         followingViewModel.followingData.observe(this, Observer {
-            when (it.status) {
-                Status.SUCCESS -> {
+            when (it) {
+                is Resource.Success -> {
                     if (it.data == null) {
                         adapter.showLoadingFinish()
                     } else {
@@ -58,8 +58,8 @@ class FollowingActivity : BaseActivity() {
                         adapter.append(it.data.blogs.toTypedArray(), true)
                     }
                 }
-                Status.ERROR -> adapter.showLoadingFailure(it.message)
-                Status.LOADING -> { }
+                is Resource.Error -> adapter.showLoadingFailure(it.message)
+                is Resource.Loading -> {}
             }
         })
         followingViewModel.getFollowingList(offset)

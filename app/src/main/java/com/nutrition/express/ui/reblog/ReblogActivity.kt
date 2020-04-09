@@ -13,7 +13,7 @@ import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
 import com.nutrition.express.application.toast
 import com.nutrition.express.databinding.ActivityReblogBinding
-import com.nutrition.express.model.api.Status
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.api.bean.UserInfoItem
 import com.nutrition.express.ui.main.UserViewModel
@@ -43,9 +43,10 @@ class ReblogActivity : BaseActivity() {
         }
         if (AppData.users == null) {
             userViewModel.userInfoData.observe(this, Observer {
-                when (it.status) {
-                    Status.SUCCESS -> it.data?.user?.let { user -> setNames(user) }
-                    Status.ERROR -> it.message?.let { msg -> toast(msg) }
+                when (it) {
+                    is Resource.Success -> it.data?.user?.let { user -> setNames(user) }
+                    is Resource.Error -> toast(it.message)
+                    is Resource.Loading -> {}
                 }
             })
             userViewModel.fetchUserInfo()
@@ -53,17 +54,17 @@ class ReblogActivity : BaseActivity() {
             setNames(AppData.users!!)
         }
         reblogViewModel.reblogResult.observe(this, Observer {
-            when (it.status) {
-                Status.ERROR -> {
-                    binding.post.visibility = View.VISIBLE
-                    binding.progressBar.visibility = View.GONE
-                    it.message?.let { toast(it) }
-                }
-                Status.SUCCESS -> {
+            when (it) {
+                is Resource.Success -> {
                     toast(R.string.reblog_success)
                     finish()
                 }
-                Status.LOADING -> {
+                is Resource.Error -> {
+                    binding.post.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
+                    toast(it.message)
+                }
+                is Resource.Loading -> {
                     binding.post.visibility = View.GONE
                     binding.progressBar.visibility = View.VISIBLE
                 }

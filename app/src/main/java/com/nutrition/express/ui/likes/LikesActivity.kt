@@ -9,13 +9,15 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
+import com.nutrition.express.application.toast
 import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.databinding.ActivityLikesBinding
-import com.nutrition.express.model.api.Status
-import com.nutrition.express.model.data.bean.PhotoPostsItem
-import com.nutrition.express.model.data.bean.VideoPostsItem
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.api.bean.BlogLikes
 import com.nutrition.express.model.api.bean.PostsItem
+import com.nutrition.express.model.data.bean.PhotoPostsItem
+import com.nutrition.express.model.data.bean.VideoPostsItem
+import com.nutrition.express.ui.post.blog.BlogViewModel
 import com.nutrition.express.ui.post.blog.PhotoPostVH
 import com.nutrition.express.ui.post.blog.VideoPostVH
 import java.util.*
@@ -24,6 +26,7 @@ class LikesActivity : BaseActivity() {
     private lateinit var binding: ActivityLikesBinding
     private var blogName: String? = null
     private val likesViewModel: LikesViewModel by viewModels()
+    private val blogViewModel: BlogViewModel by viewModels()
     private lateinit var adapter: CommonRVAdapter
     private var before = 0L
     private var total = 0
@@ -70,19 +73,34 @@ class LikesActivity : BaseActivity() {
     }
 
     private fun initViewModel() {
-        likesViewModel.likesPostsData.observe(this, Observer {
-            when (it.status) {
-                Status.LOADING -> {}
-                Status.ERROR -> {
-                    adapter.showLoadingFailure(it.message)
+        blogViewModel.deletePostData.observe(this, Observer {
+            when (it) {
+                is Resource.Success -> {
+                    val list = adapter.getData()
+                    for (index in list.indices) {
+                        val item = list[index]
+                        if (item is PostsItem) {
+                            if (it.data == item.id.toString()) {
+                                adapter.remove(index)
+                            }
+                        }
+                    }
                 }
-                Status.SUCCESS -> {
+                is Resource.Error -> toast(it.message)
+                is Resource.Loading -> {}
+            }
+        })
+        likesViewModel.likesPostsData.observe(this, Observer {
+            when (it) {
+                is Resource.Success -> {
                     if (it.data != null) {
                         showPosts(it.data)
                     } else {
                         adapter.showLoadingFinish()
                     }
                 }
+                is Resource.Error -> adapter.showLoadingFailure(it.message)
+                is Resource.Loading -> {}
             }
         })
         likesViewModel.fetchLikesPosts(blogName)

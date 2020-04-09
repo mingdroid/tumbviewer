@@ -53,7 +53,7 @@ class TestViewModel : ViewModel() {
                 val response: ApiResponse<UserInfo> = service.getUserInfo()
                 Log.d("TestViewModel", "response: ${Thread.currentThread().name}")
                 Log.d("TestViewModel", "response: ${response.response?.user?.name}")
-                userInfoData1.value = Resource.success(response.response)
+                userInfoData1.value = Resource.Success(response.response)
             } catch (e: Throwable) {
                 Log.d("TestViewModel", "e: ${e.message}")
             }

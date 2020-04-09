@@ -6,20 +6,23 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
+import com.nutrition.express.application.toast
 import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.common.MyExoPlayer
 import com.nutrition.express.databinding.FragmentDashboardBinding
-import com.nutrition.express.model.api.Status
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.data.bean.PhotoPostsItem
 import com.nutrition.express.model.data.bean.VideoPostsItem
 import com.nutrition.express.model.api.bean.BlogPosts
 import com.nutrition.express.model.api.bean.PostsItem
+import com.nutrition.express.ui.post.blog.BlogViewModel
 import com.nutrition.express.ui.post.blog.PhotoPostVH
 import com.nutrition.express.ui.post.blog.VideoPostVH
 import java.util.*
@@ -33,6 +36,7 @@ open class DashboardFragment : Fragment() {
     private var type: String = "video"
 
     private val userViewModel: UserViewModel by viewModels()
+    private val blogViewModel: BlogViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -76,34 +80,43 @@ open class DashboardFragment : Fragment() {
     }
 
     private fun initViewModel() {
+        blogViewModel.deletePostData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Resource.Success -> {
+                    val list = adapter.getData()
+                    for (index in list.indices) {
+                        val item = list[index]
+                        if (item is PostsItem) {
+                            if (it.data == item.id.toString()) {
+                                adapter.remove(index)
+                            }
+                        }
+                    }
+                }
+                is Resource.Error -> Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                is Resource.Loading -> {}
+            }
+        })
         userViewModel.dashboardData.observe(viewLifecycleOwner, Observer {
-            when (it.status) {
-                Status.SUCCESS -> {
+            when (it) {
+                is Resource.Success -> {
                     binding?.refreshLayout?.isRefreshing = false
                     offset = 0
                     lastTimestamp = Long.MAX_VALUE
                     adapter.resetData(wrapPosts(it.data)?.toTypedArray(), true)
                 }
-                Status.ERROR -> {
+                is Resource.Error -> {
                     binding?.refreshLayout?.isRefreshing = false
                     adapter.showLoadingFailure(it.message)
                 }
-                Status.LOADING -> {
-
-                }
+                is Resource.Loading -> {}
             }
         })
         userViewModel.dashboardNextPageData.observe(viewLifecycleOwner, Observer {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    adapter.append(wrapPosts(it.data)?.toTypedArray(), true)
-                }
-                Status.ERROR -> {
-                    adapter.showLoadingFailure(it.message)
-                }
-                Status.LOADING -> {
-
-                }
+            when (it) {
+                is Resource.Success -> adapter.append(wrapPosts(it.data)?.toTypedArray(), true)
+                is Resource.Error -> adapter.showLoadingFailure(it.message)
+                is Resource.Loading -> {}
             }
         })
         type = arguments?.getString("type") ?: type
@@ -129,7 +142,6 @@ open class DashboardFragment : Fragment() {
             }
             if (item.timestamp > lastTimestamp) {
                 overload++
-                Log.d("DashboardFragment", "wrapPosts: $lastTimestamp -> ${item.timestamp}")
             }
         }
         lastTimestamp = postsItems[postsItems.size - 1].timestamp

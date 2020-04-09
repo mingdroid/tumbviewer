@@ -15,10 +15,11 @@ import com.nutrition.express.application.BaseActivity
 import com.nutrition.express.application.toast
 import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.databinding.ActivityBlogPostsBinding
-import com.nutrition.express.model.api.Status
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.data.bean.PhotoPostsItem
 import com.nutrition.express.model.data.bean.VideoPostsItem
 import com.nutrition.express.model.api.bean.BlogPosts
+import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.ui.likes.LikesActivity
 import com.nutrition.express.ui.main.UserViewModel
 import com.nutrition.express.util.getInt
@@ -80,37 +81,48 @@ class PostListActivity : BaseActivity() {
 
     private fun initViewModel() {
         blogViewModel.blogPostsData.observe(this, Observer {
-            when (it.status) {
-                Status.LOADING -> { }
-                Status.ERROR -> {
-                    adapter.showLoadingFailure(it.message)
-                }
-                Status.SUCCESS -> {
+            when (it) {
+                is Resource.Success -> {
                     if (it.data == null) {
                         adapter.showLoadingFinish()
                     } else {
                         showPosts(it.data)
                     }
                 }
+                is Resource.Error ->  adapter.showLoadingFailure(it.message)
+                is Resource.Loading -> {}
+            }
+        })
+        blogViewModel.deletePostData.observe(this, Observer {
+            when (it) {
+                is Resource.Success -> {
+                    val list = adapter.getData()
+                    for (index in list.indices) {
+                        val item = list[index]
+                        if (item is PostsItem) {
+                            if (it.data == item.id.toString()) {
+                                adapter.remove(index)
+                            }
+                        }
+                    }
+                }
+                is Resource.Error -> toast(it.message)
+                is Resource.Loading -> {}
             }
         })
         blogViewModel.fetchBlogPosts(blogName, TYPES[filter], offset)
         userViewModel.followData.observe(this, Observer {
-            when (it.status) {
-                Status.LOADING -> {}
-                Status.ERROR -> { it.message?.let { msg -> toast(msg) } }
-                Status.SUCCESS -> {
-                    onFollowed()
-                }
+            when (it) {
+                is Resource.Success -> onFollowed()
+                is Resource.Error -> toast(it.message)
+                is Resource.Loading -> {}
             }
         })
         userViewModel.unFollowData.observe(this, Observer {
-            when (it.status) {
-                Status.LOADING -> {}
-                Status.ERROR -> { it.message?.let { msg -> toast(msg) } }
-                Status.SUCCESS -> {
-                    onUnfollowed()
-                }
+            when (it) {
+                is Resource.Success -> onUnfollowed()
+                is Resource.Error -> toast(it.message)
+                is Resource.Loading -> {}
             }
         })
     }

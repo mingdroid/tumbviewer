@@ -2,13 +2,10 @@ package com.nutrition.express.model.api.repo
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.nutrition.express.model.api.ApiClient
-import com.nutrition.express.model.api.Resource
-import com.nutrition.express.model.api.Status
+import com.nutrition.express.model.api.*
 import com.nutrition.express.model.api.bean.BlogInfo
 import com.nutrition.express.model.api.bean.BlogLikes
 import com.nutrition.express.model.api.bean.BlogPosts
-import com.nutrition.express.model.api.callFromNet
 import com.nutrition.express.model.api.service.BlogService
 import retrofit2.create
 import kotlin.coroutines.CoroutineContext
@@ -18,7 +15,7 @@ class BlogRepo constructor(val context: CoroutineContext) {
 
     fun getBlogInfo(id: String, key: String): LiveData<Resource<BlogInfo>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             emit(callFromNet {
                 blogService.getBlogInfo(id, key)
             })
@@ -27,7 +24,7 @@ class BlogRepo constructor(val context: CoroutineContext) {
 
     fun getBlogLikes(id: String, map: HashMap<String, String>): LiveData<Resource<BlogLikes>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             emit(callFromNet {
                 blogService.getBlogLikes(id, map)
             })
@@ -36,7 +33,7 @@ class BlogRepo constructor(val context: CoroutineContext) {
 
     fun getBlogPosts(id: String, type: String, map: HashMap<String, String>): LiveData<Resource<BlogPosts>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             emit(callFromNet {
                 blogService.getBlogPosts(id, type, map)
             })
@@ -45,14 +42,14 @@ class BlogRepo constructor(val context: CoroutineContext) {
 
     fun deletePost(id: String, postId: String): LiveData<Resource<String>> {
         return liveData(context) {
-            emit(Resource.loading(null))
+            emit(InProgress)
             val result = callFromNet {
                 blogService.deletePost(id, postId)
             }
-            if (result.status == Status.SUCCESS) {
-                emit(Resource.success(postId))
-            } else {
-                emit(Resource.error(result.code, result.message, null))
+            when (result) {
+                is Resource.Success -> emit(Resource.Success(postId))
+                is Resource.Error -> emit(Resource.Error(result.code, result.message))
+                is Resource.Loading -> {}
             }
         }
     }

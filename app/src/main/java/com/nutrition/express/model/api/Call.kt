@@ -11,20 +11,20 @@ import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import kotlin.coroutines.CoroutineContext
 
-suspend fun <T> callFromNet(apiFunc: suspend () -> ApiResponse<T>): Resource<T> {
+suspend fun <T: Any> callFromNet(apiFunc: suspend () -> ApiResponse<T>): Resource<T> {
     return try {
         val result = apiFunc.invoke()
-        Resource.success(result.response)
+        Resource.Success(result.response)
     } catch (error: HttpException) {
         if (BuildConfig.DEBUG) error.printStackTrace()
         handleError(error)
     } catch (throwable: Throwable) {
         if (BuildConfig.DEBUG) throwable.printStackTrace()
-        Resource.error(0, throwable.message ?: throwable.toString(), null)
+        Resource.Error(0, throwable.message ?: throwable.toString())
     }
 }
 
-private fun <T> handleError(error: HttpException): Resource<T> {
+private fun <T: Any> handleError(error: HttpException): Resource<T> {
     var code: Int? = null
     var errorMsg: String? = null
     try {
@@ -56,7 +56,7 @@ private fun <T> handleError(error: HttpException): Resource<T> {
             }
         }
     }
-    return Resource.error(code ?: error.code(), errorMsg ?: error.message(), null)
+    return Resource.Error(code ?: error.code(), errorMsg ?: error.message())
 }
 
 fun spentCPU(context: CoroutineContext, millis: Long) = runBlocking(context) {
