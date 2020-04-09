@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuItemCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
@@ -45,7 +46,7 @@ class SearchActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_search, menu)
         val searchItem: MenuItem? = menu.findItem(R.id.action_search)
-        val searchView: SearchView? = searchItem?.actionView as SearchView
+        val searchView: SearchView? = searchItem?.actionView as? SearchView
         searchView?.run {
             val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
             setSearchableInfo(searchManager.getSearchableInfo(componentName))

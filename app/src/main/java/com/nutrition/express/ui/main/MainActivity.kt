@@ -45,6 +45,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private lateinit var photoItem: MenuItem
 
     private val userModel : UserViewModel by viewModels()
+    private val testViewModel : TestViewModel by viewModels()
+
+    private fun getUserInfo(uid: String) {
+        testViewModel.userInfoData.observe(this, Observer {
+            when (it.status) {
+                Status.SUCCESS -> TODO()
+                Status.ERROR -> TODO()
+                Status.LOADING -> TODO()
+            }
+        })
+        testViewModel.setUserId(uid)
+    }
 
     private lateinit var videoFragment: DashboardFragment
     private lateinit var photoFragment: DashboardFragment

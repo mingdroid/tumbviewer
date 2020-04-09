@@ -62,18 +62,13 @@ class TestViewModel : ViewModel() {
         Log.d("TestViewModel", "fetchUserInfo: not block")
     }
 
-    private val fetchLiveData = MutableLiveData<String>()
-    val userInfoData = fetchLiveData.switchMap {
-        Log.d("TestViewModel", "switchMap: ${Thread.currentThread().name}")
+    private val _uidData = MutableLiveData<String>()
+    val userInfoData = _uidData.switchMap {
         testRepo.getUserInfo(it)
     }
 
-    fun fetch(uid: String) {
-        fetchLiveData.value = uid
-    }
-
-    override fun onCleared() {
-        viewModelScope.cancel()
+    fun setUserId(uid: String) {
+        _uidData.value = uid
     }
 
 }

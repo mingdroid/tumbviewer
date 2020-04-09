@@ -5,10 +5,11 @@ package com.nutrition.express.model.api
  * A generic class that holds a value with its loading status.
  * @param <T>
 </T> */
-data class Resource<out T>(val status: Status, val data: T?, val code: Int?, val message: String?) {
+private const val empty = ""
+data class Resource<out T>(val status: Status, val data: T?, val code: Int = 0, val message: String = empty) {
     companion object {
         fun <T> success(data: T?): Resource<T> {
-            return Resource(Status.SUCCESS, data, null, null)
+            return Resource(Status.SUCCESS, data)
         }
 
         fun <T> error(code: Int, msg: String, data: T?): Resource<T> {
@@ -16,7 +17,7 @@ data class Resource<out T>(val status: Status, val data: T?, val code: Int?, val
         }
 
         fun <T> loading(data: T?): Resource<T> {
-            return Resource(Status.LOADING, data, null, null)
+            return Resource(Status.LOADING, data)
         }
     }
 }

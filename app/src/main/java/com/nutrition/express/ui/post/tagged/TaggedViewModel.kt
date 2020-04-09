@@ -1,6 +1,5 @@
 package com.nutrition.express.ui.post.tagged
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
