@@ -81,9 +81,9 @@ class TaggedActivity : BaseActivity() {
     }
 
     private fun getAdapter() : CommonRVAdapter {
-        return CommonRVAdapter.Builder().run {
-            addItemType(PhotoPostsItem::class.java, R.layout.item_post) { PhotoPostVH(it) }
-            addItemType(VideoPostsItem::class.java, R.layout.item_video_post) { VideoPostVH(it) }
+        return CommonRVAdapter.adapter {
+            addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it) }
+            addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it) }
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     taggedViewModel.retryIfFailed()
@@ -93,7 +93,6 @@ class TaggedActivity : BaseActivity() {
                     taggedViewModel.getNextPage(featuredTimestamp)
                 }
             }
-            build()
         }
     }
 

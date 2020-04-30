@@ -70,13 +70,9 @@ class SettingsActivity : BaseActivity() {
         accounts.clear()
         accounts.addAll(tumblrAccounts)
 
-        adapter = CommonRVAdapter.Builder().run {
-            addItemType(TumblrAccount::class.java, R.layout.item_settings_account) {
-                view ->
-                AccountVH(view)
-            }
+        adapter = CommonRVAdapter.adapter {
+            addViewType(TumblrAccount::class, R.layout.item_settings_account) { AccountVH(it) }
             data = accounts
-            build()
         }
 
         binding.settingsAccounts.isNestedScrollingEnabled = false
@@ -183,7 +179,7 @@ class SettingsActivity : BaseActivity() {
 
     }
 
-    private inner class AccountVH(view: View) : CommonViewHolder(view) {
+    private inner class AccountVH(view: View) : CommonViewHolder<TumblrAccount>(view) {
         private val binding = ItemSettingsAccountBinding.bind(itemView)
         private lateinit var account: TumblrAccount
 
@@ -201,8 +197,8 @@ class SettingsActivity : BaseActivity() {
             }
         }
 
-        override fun bindView(account: Any) {
-            this.account = account as TumblrAccount
+        override fun bindView(account: TumblrAccount) {
+            this.account = account
             if (account.isUsing) {
                 binding.accountChecked.visibility = View.VISIBLE
             } else {

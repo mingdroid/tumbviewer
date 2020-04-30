@@ -31,6 +31,7 @@ import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.api.bean.PhotoItem
 import com.nutrition.express.model.api.bean.PostsItem
+import com.nutrition.express.model.data.bean.PhotoPostsItem
 import com.nutrition.express.ui.main.UserViewModel
 import com.nutrition.express.ui.reblog.ReblogActivity
 import com.nutrition.express.util.dp2Pixels
@@ -38,7 +39,7 @@ import com.nutrition.express.util.setTumblrAvatarUri
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
-abstract class BasePostVH(view: View) : CommonViewHolder(view) {
+abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
     protected var isSimpleMode: Boolean = false
     protected val userViewModel: UserViewModel
     protected val blogViewModel: BlogViewModel

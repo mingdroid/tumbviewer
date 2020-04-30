@@ -97,9 +97,9 @@ class PhotoFragment : Fragment() {
         } else {
             initPhotoDataAll()
         }
-        val adapter = CommonRVAdapter.Builder()
-                .addItemType(LocalPhoto::class.java, R.layout.item_download_photo) { PhotoViewHolder(it) }
-                .build()
+        val adapter = CommonRVAdapter.adapter {
+            addViewType(LocalPhoto::class, R.layout.item_download_photo) { PhotoViewHolder(it) }
+        }
         adapter.resetData(photoList.toTypedArray(), false)
         binding.recyclerView.adapter = adapter
 
@@ -253,7 +253,7 @@ class PhotoFragment : Fragment() {
         binding?.recyclerView?.scrollToPosition(0)
     }
 
-    inner class PhotoViewHolder constructor(view: View) : CommonViewHolder(view) {
+    inner class PhotoViewHolder constructor(view: View) : CommonViewHolder<LocalPhoto>(view) {
         private val binding = ItemDownloadPhotoBinding.bind(view)
         private val defaultWidth = halfWidth - dp2Pixels(view.context, 8)
         private lateinit var photo: LocalPhoto
@@ -287,8 +287,8 @@ class PhotoFragment : Fragment() {
             }
         }
 
-        override fun bindView(localPhoto: Any) {
-            photo = localPhoto as LocalPhoto
+        override fun bindView(localPhoto: LocalPhoto) {
+            photo = localPhoto
             val height: Int = localPhoto.height * defaultWidth / localPhoto.width
             val params: ViewGroup.LayoutParams = binding.photoView.layoutParams ?: ViewGroup.LayoutParams(defaultWidth, height)
             params.width = defaultWidth

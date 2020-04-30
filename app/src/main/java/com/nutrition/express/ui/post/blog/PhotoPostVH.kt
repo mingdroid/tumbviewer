@@ -9,7 +9,7 @@ import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.util.setTumblrAvatarUri
 import okhttp3.internal.toLongOrDefault
 
-open class PhotoPostVH(view: View): BasePostVH(view) {
+open class PhotoPostVH(view: View): BasePostVH<PhotoPostsItem>(view) {
     protected val binding: ItemPostBinding = ItemPostBinding.bind(view)
     private var postsItem: PostsItem? = null
 
@@ -51,8 +51,8 @@ open class PhotoPostVH(view: View): BasePostVH(view) {
         }
     }
 
-    override fun bindView(item: Any) {
-        val postsItem = (item as PhotoPostsItem).postsItem
+    override fun bindView(item: PhotoPostsItem) {
+        val postsItem = item.postsItem
         this.postsItem = postsItem
         setTumblrAvatarUri(binding.postAvatar, postsItem.blog_name, 128)
         binding.postName.text = postsItem.blog_name

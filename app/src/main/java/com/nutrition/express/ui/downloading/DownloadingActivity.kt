@@ -31,9 +31,8 @@ class DownloadingActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setTitle(R.string.downloading)
 
-        adapter = CommonRVAdapter.Builder().run {
-            addItemType(Record::class.java, R.layout.item_download) { RxDownloadVH(it) }
-            build()
+        adapter = CommonRVAdapter.adapter {
+            addViewType(Record::class, R.layout.item_download) { RxDownloadVH(it) }
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
@@ -55,13 +54,13 @@ class DownloadingActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    inner class RxDownloadVH(view: View) : CommonViewHolder(view), ProgressResponseBody.ProgressListener {
+    inner class RxDownloadVH(view: View) : CommonViewHolder<Record>(view), ProgressResponseBody.ProgressListener {
         private val binding = ItemDownloadBinding.bind(view)
         private val progressDrawable: ClipDrawable = itemView.background as ClipDrawable
         private lateinit var record: Record
 
-        override fun bindView(any: Any) {
-            record = any as Record
+        override fun bindView(any: Record) {
+            record = any
             binding.url.text = record.url
         }
 

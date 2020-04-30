@@ -2,7 +2,6 @@ package com.nutrition.express.ui.main
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
-import com.nutrition.express.application.toast
 import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.common.MyExoPlayer
 import com.nutrition.express.databinding.FragmentDashboardBinding
@@ -25,7 +23,6 @@ import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.ui.post.blog.BlogViewModel
 import com.nutrition.express.ui.post.blog.PhotoPostVH
 import com.nutrition.express.ui.post.blog.VideoPostVH
-import java.util.*
 
 
 open class DashboardFragment : Fragment() {
@@ -42,9 +39,9 @@ open class DashboardFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val _binding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
         binding = _binding
-        adapter = CommonRVAdapter.Builder().run {
-            addItemType(PhotoPostsItem::class.java, R.layout.item_post) { PhotoPostVH(it) }
-            addItemType(VideoPostsItem::class.java, R.layout.item_video_post) { VideoPostVH(it)}
+        adapter = CommonRVAdapter.adapter {
+            addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it) }
+            addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it)}
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     userViewModel.fetchDashboardNextPageData(offset)
@@ -54,7 +51,6 @@ open class DashboardFragment : Fragment() {
                     userViewModel.fetchDashboardNextPageData(offset)
                 }
             }
-            build()
         }
         _binding.recyclerView.layoutManager = LinearLayoutManager(context)
         _binding.recyclerView.adapter = adapter
@@ -146,15 +142,11 @@ open class DashboardFragment : Fragment() {
         }
         lastTimestamp = postsItems[postsItems.size - 1].timestamp
         offset += postsItems.size + overload
-        val list: MutableList<PhotoPostsItem> = ArrayList(postsItems.size)
-        if (TextUtils.equals("video", type)) {
-            for (index in overload until postsItems.size) {
-                list.add(VideoPostsItem(postsItems[index]))
-            }
+        val validSize = postsItems.size - overload
+        val list = if (TextUtils.equals("video", type)) {
+            postsItems.takeLast(validSize).map { VideoPostsItem(it) }
         } else {
-            for (index in overload until postsItems.size) {
-                list.add(PhotoPostsItem(postsItems[index]))
-            }
+            postsItems.takeLast(validSize).map { VideoPostsItem(it) }
         }
         if (list.isEmpty()) {
             userViewModel.fetchDashboardNextPageData(offset)

@@ -95,9 +95,8 @@ class VideoFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentDownloadVideoBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = CommonRVAdapter.Builder().run {
-            addItemType(LocalVideo::class.java, R.layout.item_download_video) { VideoViewHolder(it) }
-            build()
+        val adapter = CommonRVAdapter.adapter {
+            addViewType(LocalVideo::class, R.layout.item_download_video) { VideoViewHolder(it) }
         }
         adapter.resetData(videoList.toTypedArray(), false)
         binding.recyclerView.adapter = adapter
@@ -266,7 +265,7 @@ class VideoFragment : Fragment() {
         binding?.recyclerView?.scrollToPosition(0)
     }
 
-    inner class VideoViewHolder(view: View) : CommonViewHolder(view) {
+    inner class VideoViewHolder(view: View) : CommonViewHolder<LocalVideo>(view) {
         private val binding = ItemDownloadVideoBinding.bind(view)
         private lateinit var video: LocalVideo
 
@@ -293,8 +292,8 @@ class VideoFragment : Fragment() {
             }
         }
 
-        override fun bindView(localVideo: Any) {
-            video = localVideo as LocalVideo
+        override fun bindView(localVideo: LocalVideo) {
+            video = localVideo
             binding.playerView.bindVideo(localVideo)
             if (isChoiceState && video.isChecked) {
                 binding.checkView.visibility = View.VISIBLE

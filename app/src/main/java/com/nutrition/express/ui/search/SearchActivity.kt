@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.MenuItemCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
@@ -34,9 +33,8 @@ class SearchActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = null
 
-        adapter = CommonRVAdapter.Builder().run {
-            addItemType(String::class.java, R.layout.item_search_refer_blog) { BaseVH(it) }
-            build()
+        adapter = CommonRVAdapter.adapter {
+            addViewType(String::class, R.layout.item_search_refer_blog) { BaseVH(it) }
         }
         binding.blogList.layoutManager = LinearLayoutManager(this)
         binding.blogList.adapter = adapter
@@ -90,7 +88,7 @@ class SearchActivity : BaseActivity() {
         }
     }
 
-    inner class BaseVH(view: View) : CommonViewHolder(view) {
+    inner class BaseVH(view: View) : CommonViewHolder<String>(view) {
         private val binding: ItemSearchReferBlogBinding = ItemSearchReferBlogBinding.bind(view)
         private lateinit var name: String;
 
@@ -102,8 +100,8 @@ class SearchActivity : BaseActivity() {
             }
         }
 
-        override fun bindView(name: Any) {
-            binding.blogName.text = name as String
+        override fun bindView(name: String) {
+            binding.blogName.text = name
             setTumblrAvatarUri(binding.blogAvatar, name, 128)
         }
     }

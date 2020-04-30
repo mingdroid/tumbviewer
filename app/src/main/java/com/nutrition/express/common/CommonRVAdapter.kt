@@ -1,21 +1,19 @@
 package com.nutrition.express.common
 
 import android.graphics.Color
-import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.nutrition.express.R
+import com.nutrition.express.model.data.bean.LocalPhoto
+import com.nutrition.express.ui.download.PhotoFragment
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.set
+import kotlin.reflect.KClass
 
 
-private const val TYPE_DATA_BASE = 1000
 private const val TYPE_UNKNOWN = 0 //未知类型
 
 private const val EMPTY = 10 /*显示EMPTY VIEW*/
@@ -25,9 +23,7 @@ private const val LOADING_NEXT = 13 /*显示LOADING NEXT VIEW*/
 private const val LOADING_NEXT_FAILURE = 14 /*显示LOADING NEXT FAILURE VIEW*/
 private const val LOADING_FINISH = 15 //显示LOADING FINISH VIEW
 
-typealias Creator = (View) -> CommonViewHolder
-
-class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapter<CommonViewHolder>() {
+class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapter<CommonViewHolder<Any>>() {
 
     /* 状态 */
 
@@ -36,32 +32,31 @@ class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapt
     private var isFinishViewEnabled = false
     private var isEmptyViewEnabled = false
     private var isLoadingViewEnabled = false
+    private val loadListener: OnLoadListener?
+    private val data: MutableList<Any>
+    private val itemFactory: ItemViewHolderFactory
+    private val stateFactory: StateViewHolderFactory
 
-    //保存了layout_id与MultiType键值对
-    private var typeArray: SparseArray<MultiType>
-
-    //保存了数据类型名称与layout_id的键值对
-    private lateinit var typeMap: HashMap<String, Int>
-    private var loadListener: OnLoadListener? = null
-    private lateinit var data: MutableList<Any>
     private var extra: Any? = null
 
-    private val onRetryListener = View.OnClickListener {
-        loadListener?.let {
-            it.retry()
-            state = if (data.isNotEmpty()) LOADING_NEXT else LOADING
-            notifyItemChanged(data.size)
-        }
-    }
+    private var onRetryListener: View.OnClickListener
 
     init {
         isFinishViewEnabled = builder.isFinishViewEnabled
         isEmptyViewEnabled = builder.isEmptyViewEnabled
         isLoadingViewEnabled = builder.isLoadingViewEnabled
-        typeArray = builder.typeArray
-        typeMap = builder.typeMap
         loadListener = builder.loadListener
         data = builder.data ?: ArrayList()
+        itemFactory = builder.itemFactory
+        stateFactory = builder.stateFactory
+
+        onRetryListener = View.OnClickListener {
+            loadListener?.let {
+                it.retry()
+                state = if (data.isNotEmpty()) LOADING_NEXT else LOADING
+                notifyItemChanged(data.size)
+            }
+        }
         if (builder.data == null) {
             state = LOADING
         } else if (data.isEmpty()) {
@@ -69,43 +64,45 @@ class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapt
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val type: MultiType? = typeArray[viewType]
-        return if (type == null) {     //check if unknown type
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder<Any> {
+        val vh = if (viewType in 10..15)
+            stateFactory.createViewHolder(parent, viewType)
+        else
+            itemFactory.createViewHolder(parent, viewType)
+        return if (vh== null) {     //check if unknown type
+            val inflater = LayoutInflater.from(parent.context)
             val textView = inflater
-                    .inflate(android.R.layout.simple_list_item_1, parent, false) as TextView
+                .inflate(android.R.layout.simple_list_item_1, parent, false) as TextView
             textView.text = "Error!!! Unknown type!!!"
             textView.setTextColor(Color.parseColor("#ff0000"))
             CommonViewHolder(textView)
         } else {
-            val view: View = inflater.inflate(type.layout, parent, false)
             if (viewType == LOADING_FAILURE) {
-                view.setOnClickListener(onRetryListener)
+                vh.itemView.setOnClickListener(onRetryListener)
             } else if (viewType == LOADING_NEXT_FAILURE) {
-                view.setOnClickListener(onRetryListener)
+                vh.itemView.setOnClickListener(onRetryListener)
             }
-            type.creator.invoke(view)
+            vh as CommonViewHolder<Any>
         }
     }
 
-    override fun onViewAttachedToWindow(holder: CommonViewHolder) {
+    override fun onViewAttachedToWindow(holder: CommonViewHolder<Any>) {
         holder.onViewAttachedToWindow()
     }
 
-    override fun onViewDetachedFromWindow(holder: CommonViewHolder) {
+    override fun onViewDetachedFromWindow(holder: CommonViewHolder<Any>) {
         holder.onViewDetachedFromWindow()
     }
 
-    override fun onBindViewHolder(holder: CommonViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CommonViewHolder<Any>, position: Int) {
         bindViewHolder(holder, position, null)
     }
 
-    override fun onBindViewHolder(holder: CommonViewHolder, position: Int, payloads: List<Any>) {
+    override fun onBindViewHolder(holder: CommonViewHolder<Any>, position: Int, payloads: List<Any>) {
         bindViewHolder(holder, position, payloads)
     }
 
-    private fun bindViewHolder(holder: CommonViewHolder, position: Int, payloads: List<Any>?) {
+    private fun bindViewHolder(holder: CommonViewHolder<Any>, position: Int, payloads: List<Any>?) {
         if (position < data.size) {
             if (payloads.isNullOrEmpty()) {
                 holder.bindView(data[position])
@@ -124,8 +121,7 @@ class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapt
         return if (position == data.size) {
             state
         } else {
-            val type = typeMap[data[position].javaClass.name]
-            type ?: TYPE_UNKNOWN
+            itemFactory.getItemViewType(data[position]) ?: TYPE_UNKNOWN
         }
     }
 
@@ -257,87 +253,92 @@ class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapt
         fun loadNextPage()
     }
 
-    data class MultiType(val layout: Int, val creator: Creator)
+    interface ItemViewHolderFactory {
+        fun getItemViewType(data: Any): Int? //the return viewType should not less than 1000
+        fun createViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder<*>?
+    }
+
+    open class StateViewHolderFactory {
+        fun createViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder<*>? {
+            val inflater = LayoutInflater.from(parent.context)
+            return when (viewType) {
+                EMPTY ->
+                    createEmptyView(inflater, parent)
+                LOADING_FINISH ->
+                    createFinishView(inflater, parent)
+                LOADING, LOADING_NEXT ->
+                    createLoadingView(inflater, parent)
+                LOADING_FAILURE, LOADING_NEXT_FAILURE ->
+                    createFailureView(inflater, parent)
+                else -> null
+            }
+        }
+
+        open fun createEmptyView(inflater: LayoutInflater, parent: ViewGroup): CommonViewHolder<Any> {
+            return CommonViewHolder(inflater.inflate(R.layout.item_empty, parent, false))
+        }
+
+        open fun createFinishView(inflater: LayoutInflater, parent: ViewGroup): CommonViewHolder<Any> {
+            return CommonViewHolder(inflater.inflate(R.layout.item_finish, parent, false))
+        }
+
+        open fun createLoadingView(inflater: LayoutInflater, parent: ViewGroup): CommonViewHolder<Any> {
+            return CommonViewHolder(inflater.inflate(R.layout.item_loading, parent, false))
+        }
+
+        open fun createFailureView(inflater: LayoutInflater, parent: ViewGroup): CommonViewHolder<Any> {
+            return ErrorViewHolder(inflater.inflate(R.layout.item_loading_failure, parent, false))
+        }
+    }
+
+    companion object {
+        private val defaultStateFactory = StateViewHolderFactory()
+        private const val base = 1000
+
+        fun adapter(init: Builder.() ->  Unit): CommonRVAdapter {
+            val builder = Builder()
+            builder.init()
+            return CommonRVAdapter(builder)
+        }
+    }
 
     class Builder {
-        private var emptyView = R.layout.item_empty
-        private var loadingView = R.layout.item_loading
-        private var failureView = R.layout.item_loading_failure
-        private var nextView = R.layout.item_loading
-        private var nextFailureView = R.layout.item_loading_failure
-        private var finishView = R.layout.item_finish
-        private var emptyCreator: Creator? = null
-        private var loadingCreator: Creator? = null
-        private var failureCreator: Creator? = null
-        private var nextCreator: Creator? = null
-        private var nextFailureCreator: Creator? = null
-        private var finishCreator: Creator? = null
+        private val classList = ArrayList<KClass<*>>()
+        private val layoutList = ArrayList<Int>()
+        private val viewHolderList = ArrayList<(View) -> CommonViewHolder<*>>()
+
         var isFinishViewEnabled = false
         var isEmptyViewEnabled = false
         var isLoadingViewEnabled = false
         var loadListener: OnLoadListener? = null
         var data: MutableList<Any>? = null
-        internal var typeArray = SparseArray<MultiType>()
-        internal var typeMap = HashMap<String, Int>()
-        private var base = TYPE_DATA_BASE
-        private var defaultCreator: Creator = { CommonViewHolder(it) }
-        private var errorCreator: Creator = { ErrorViewHolder(it) }
+        var stateFactory: StateViewHolderFactory = defaultStateFactory
+        val itemFactory: ItemViewHolderFactory = object : ItemViewHolderFactory {
+            override fun getItemViewType(data: Any): Int? {
+                for (i in classList.indices) {
+                    if (classList[i].isInstance(data)) {
+                        return base + i
+                    }
+                }
+                return null
+            }
 
-        fun setEmptyView(@LayoutRes emptyView: Int, creator: Creator): Builder {
-            this.emptyView = emptyView
-            this.emptyCreator = creator
-            return this
+            override fun createViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder<*>? {
+                val index = viewType - base
+                if (index in 0 until layoutList.size) {
+                    val view = LayoutInflater.from(parent.context)
+                            .inflate(layoutList[index], parent, false)
+                    return viewHolderList[index].invoke(view)
+                }
+                return null
+            }
         }
 
-        fun setLoadingView(@LayoutRes loadingView: Int, creator: Creator): Builder {
-            this.loadingView = loadingView
-            this.loadingCreator = creator
-            return this
+        fun addViewType(clazz: KClass<*>, layout: Int, creator: (View) -> CommonViewHolder<*>) {
+            classList.add(clazz)
+            layoutList.add(layout)
+            viewHolderList.add(creator)
         }
 
-        fun setFailureView(@LayoutRes failureView: Int, creator: Creator): Builder {
-            this.failureView = failureView
-            this.failureCreator = creator
-            return this
-        }
-
-        fun setNextView(@LayoutRes nextView: Int, creator: Creator): Builder {
-            this.nextView = nextView
-            this.nextCreator = creator
-            return this
-        }
-
-        fun setNextFailureView(@LayoutRes nextFailureView: Int, creator: Creator): Builder {
-            this.nextFailureView = nextFailureView
-            this.nextFailureCreator = creator
-            return this
-        }
-
-        fun setFinishView(@LayoutRes finishView: Int, creator: Creator): Builder {
-            this.finishView = finishView
-            this.finishCreator = creator
-            return this
-        }
-
-        fun addItemType(c: Class<*>, layout: Int, create: Creator): Builder {
-            typeArray.put(base, MultiType(layout, create))
-            typeMap[c.name] = base
-            base++
-            return this
-        }
-
-        fun build(): CommonRVAdapter {
-            addStateType()
-            return CommonRVAdapter(this)
-        }
-
-        private fun addStateType() {
-            typeArray.put(EMPTY, MultiType(emptyView, emptyCreator ?: defaultCreator))
-            typeArray.put(LOADING, MultiType(loadingView, loadingCreator ?: defaultCreator))
-            typeArray.put(LOADING_FAILURE, MultiType(failureView, failureCreator ?: errorCreator))
-            typeArray.put(LOADING_NEXT, MultiType(nextView, nextCreator ?: defaultCreator))
-            typeArray.put(LOADING_NEXT_FAILURE, MultiType(nextFailureView, nextFailureCreator ?: errorCreator))
-            typeArray.put(LOADING_FINISH, MultiType(finishView, finishCreator ?: defaultCreator))
-        }
     }
 }

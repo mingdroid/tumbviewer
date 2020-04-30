@@ -32,8 +32,8 @@ class FollowingActivity : BaseActivity() {
         setSupportActionBar(binding.toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        adapter = CommonRVAdapter.Builder().run {
-            addItemType(FollowingBlog.Blog::class.java, R.layout.item_following_blog) { BlogVH(it) }
+        adapter = CommonRVAdapter.adapter {
+            addViewType(FollowingBlog.Blog::class, R.layout.item_following_blog) { BlogVH(it) }
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     followingViewModel.getFollowingList(offset)
@@ -43,7 +43,6 @@ class FollowingActivity : BaseActivity() {
                     followingViewModel.getFollowingList(offset)
                 }
             }
-            build()
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
@@ -73,7 +72,7 @@ class FollowingActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    class BlogVH(view: View) : CommonViewHolder(view) {
+    class BlogVH(view: View) : CommonViewHolder<FollowingBlog.Blog>(view) {
         private val binding =  ItemFollowingBlogBinding.bind(view)
         private lateinit var blog: FollowingBlog.Blog
 
@@ -85,8 +84,8 @@ class FollowingActivity : BaseActivity() {
             }
         }
 
-        override fun bindView(blog: Any) {
-            this.blog = blog as FollowingBlog.Blog
+        override fun bindView(blog: FollowingBlog.Blog) {
+            this.blog = blog
             binding.blogName.text = blog.name
             binding.blogTitle.text = blog.title
             setTumblrAvatarUri(binding.blogAvatar, blog.name, 128)

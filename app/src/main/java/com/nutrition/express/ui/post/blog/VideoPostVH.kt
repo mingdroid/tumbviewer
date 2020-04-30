@@ -19,7 +19,7 @@ import com.nutrition.express.util.canWrite2Storage
 import com.nutrition.express.util.setTumblrAvatarUri
 import okhttp3.internal.toLongOrDefault
 
-class VideoPostVH(view: View) : BasePostVH(view) {
+class VideoPostVH(view: View) : BasePostVH<VideoPostsItem>(view) {
     private val binding : ItemVideoPostBinding = ItemVideoPostBinding.bind(view)
     private lateinit var onlineVideo: OnlineVideo
     private var postsItem: PostsItem? = null
@@ -98,8 +98,8 @@ class VideoPostVH(view: View) : BasePostVH(view) {
         }
     }
 
-    override fun bindView(item: Any) {
-        onlineVideo = (item as VideoPostsItem).onlineVideo
+    override fun bindView(item: VideoPostsItem) {
+        onlineVideo = item.onlineVideo
         if (item.postsItem.video_url.isNullOrEmpty()) {
             binding.postDownload.visibility = View.GONE
         } else{
