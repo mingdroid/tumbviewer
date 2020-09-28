@@ -80,8 +80,7 @@ class SearchActivity : BaseActivity() {
     private fun showDeleteDialog(text: String, position: Int) {
         AlertDialog.Builder(this).run {
             setMessage(R.string.download_delete_title)
-            setPositiveButton(R.string.delete_positive) {
-                dialog, which ->
+            setPositiveButton(R.string.delete_positive) { dialog, which ->
                 adapter.notifyItemRemoved(position)
             }
             show()

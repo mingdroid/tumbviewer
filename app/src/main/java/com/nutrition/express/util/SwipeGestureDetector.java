@@ -1,11 +1,11 @@
 package com.nutrition.express.util;
 
 import android.content.Context;
+import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MotionEventCompat;
-import android.view.MotionEvent;
-import android.view.ViewConfiguration;
 
 /**
  * Created by huang on 2/14/17.
@@ -126,7 +126,9 @@ public class SwipeGestureDetector {
 
     public interface OnSwipeGestureListener {
         void onSwipeTopBottom(float deltaX, float deltaY);
+
         void onSwipeLeftRight(float deltaX, float deltaY);
+
         void onFinish(int direction, float distanceX, float distanceY);
     }
 

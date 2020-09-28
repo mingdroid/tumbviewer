@@ -10,7 +10,8 @@ import com.nutrition.express.R
 class ErrorViewHolder(view: View) : CommonViewHolder<Any>(view) {
     override fun bindView(any: Any) {
         if (itemView is TextView) {
-            val text = if (any is String) any else itemView.getContext().getString(R.string.load_failed)
+            val text =
+                if (any is String) any else itemView.getContext().getString(R.string.load_failed)
             itemView.text = text
         }
     }

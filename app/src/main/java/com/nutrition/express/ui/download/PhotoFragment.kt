@@ -80,9 +80,14 @@ class PhotoFragment : Fragment() {
         showUserPhoto = getBoolean(SHOW_USER_PHOTO, false)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val binding = FragmentDownloadPhotoBinding.inflate(inflater, container, false)
-        binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding.recyclerView.layoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -228,7 +233,7 @@ class PhotoFragment : Fragment() {
     }
 
     private fun checkAllPhotos() {
-        photoList.forEach{ it.isChecked = true }
+        photoList.forEach { it.isChecked = true }
         checkedCount = photoList.size
         actionMode?.title = checkedCount.toString()
         adapter?.notifyDataSetChanged()
@@ -237,8 +242,7 @@ class PhotoFragment : Fragment() {
     private fun showDeleteDialog() {
         context?.let {
             AlertDialog.Builder(it).run {
-                setPositiveButton(R.string.delete_positive) {
-                    dialog, which ->
+                setPositiveButton(R.string.delete_positive) { dialog, which ->
                     deleteCheckedPhotos()
                     finishMultiChoice()
                 }
@@ -271,7 +275,8 @@ class PhotoFragment : Fragment() {
                 }
                 val intent = Intent(activity, PhotoViewActivity::class.java)
                 val options: ActivityOptions = ActivityOptions.makeSceneTransitionAnimation(
-                        activity, binding.photoView, photo.uri.path)
+                    activity, binding.photoView, photo.uri.path
+                )
                 intent.putExtra("transition_name", photo.uri.path)
                 intent.putExtra("photo_source", photo.uri)
                 startActivity(intent, options.toBundle())
@@ -290,7 +295,8 @@ class PhotoFragment : Fragment() {
         override fun bindView(localPhoto: LocalPhoto) {
             photo = localPhoto
             val height: Int = localPhoto.height * defaultWidth / localPhoto.width
-            val params: ViewGroup.LayoutParams = binding.photoView.layoutParams ?: ViewGroup.LayoutParams(defaultWidth, height)
+            val params: ViewGroup.LayoutParams =
+                binding.photoView.layoutParams ?: ViewGroup.LayoutParams(defaultWidth, height)
             params.width = defaultWidth
             params.height = height
             binding.photoView.layoutParams = params

@@ -14,11 +14,13 @@ class UserViewModel : ViewModel() {
     val userInfoData = _userData.switchMap {
         userRepo.getInfo()
     }
+
     //follow/unFollow
     private val _followData = MutableLiveData<String>()
     private val _unFollowData = MutableLiveData<String>()
     val followData = _followData.switchMap { userRepo.follow(it) }
     val unFollowData = _unFollowData.switchMap { userRepo.unfollow(it) }
+
     //like/unLike
     private val _likeData = MutableLiveData<LikeRequest>()
     private val _unLikeData = MutableLiveData<LikeRequest>()
@@ -66,7 +68,7 @@ class UserViewModel : ViewModel() {
         _followData.value = url
     }
 
-    fun  unFollow(url: String) {
+    fun unFollow(url: String) {
         _unFollowData.value = url
     }
 

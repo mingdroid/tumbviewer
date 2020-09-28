@@ -19,8 +19,7 @@ import java.lang.reflect.Type;
 public class LocalPersistenceHelper {
 
     /**
-     *
-     * @param name store file name
+     * @param name    store file name
      * @param content write to file
      */
     private static void storeShortContent(File name, String content) {
@@ -40,7 +39,6 @@ public class LocalPersistenceHelper {
     }
 
     /**
-     *
      * @param name store file name
      */
     private static String getShortContent(File name) {
@@ -68,20 +66,18 @@ public class LocalPersistenceHelper {
     }
 
     /**
-     *
-     * @param name file name
+     * @param name   file name
      * @param object java bean object
      */
     public static void storeShortContent(String name, Object object) {
         Gson gson = new Gson();
-        String content  = gson.toJson(object);
+        String content = gson.toJson(object);
         File file = new File(TumbApp.Companion.getApp().getFilesDir(), name);
         storeShortContent(file, content);
     }
 
     /**
-     *
-     * @param name file name
+     * @param name    file name
      * @param typeOfT Example : new TypeToken<LinkedHashSet<String>>(){}.getType()
      * @return the target object, a java bean object.
      */

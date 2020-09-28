@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
     android:background="?attr/selectableItemBackground"
-    >
+    android:orientation="horizontal"
+    android:paddingLeft="16dp"
+    android:paddingTop="8dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="8dp">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/blog_avatar"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        app:actualImageScaleType="fitCenter"
         app:placeholderImage="@color/loading_color"
         app:placeholderImageScaleType="fitCenter"
-        app:actualImageScaleType="fitCenter"
-        app:roundedCornerRadius="2dp"
-        />
+        app:roundedCornerRadius="2dp" />
+
     <TextView
         android:id="@+id/blog_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        />
+        android:paddingRight="16dp" />
 </LinearLayout>

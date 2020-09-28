@@ -10,8 +10,18 @@ import com.nutrition.express.util.SwipeGestureDetector
 class DragFrameLayout : FrameLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
+
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
 
 
     private var dismissListener: OnDismissListener? = null
@@ -21,27 +31,27 @@ class DragFrameLayout : FrameLayout {
     private var initLeft = 0
     private var initTop = 0
     private val swipeGestureDetector: SwipeGestureDetector = SwipeGestureDetector(context,
-            object : SwipeGestureDetector.OnSwipeGestureListener {
-                override fun onSwipeTopBottom(deltaX: Float, deltaY: Float) {
-                    dragChildView(deltaX, deltaY)
-                }
+        object : SwipeGestureDetector.OnSwipeGestureListener {
+            override fun onSwipeTopBottom(deltaX: Float, deltaY: Float) {
+                dragChildView(deltaX, deltaY)
+            }
 
-                override fun onSwipeLeftRight(deltaX: Float, deltaY: Float) {
-                }
+            override fun onSwipeLeftRight(deltaX: Float, deltaY: Float) {
+            }
 
-                override fun onFinish(direction: Int, distanceX: Float, distanceY: Float) {
-                    dismissListener?.let {
-                        if (direction == SwipeGestureDetector.DIRECTION_TOP_BOTTOM) {
-                            if (distanceY > initHeight / 10) {
-                                it.onDismiss()
-                            } else {
-                                it.onCancel()
-                                reset()
-                            }
+            override fun onFinish(direction: Int, distanceX: Float, distanceY: Float) {
+                dismissListener?.let {
+                    if (direction == SwipeGestureDetector.DIRECTION_TOP_BOTTOM) {
+                        if (distanceY > initHeight / 10) {
+                            it.onDismiss()
+                        } else {
+                            it.onCancel()
+                            reset()
                         }
                     }
                 }
-            })
+            }
+        })
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         return swipeGestureDetector.onInterceptTouchEvent(ev)
@@ -60,7 +70,8 @@ class DragFrameLayout : FrameLayout {
     }
 
     private fun scaleAndMove(view: View, deltaX: Float, deltaY: Float) {
-        val params = (view.layoutParams ?: MarginLayoutParams(view.width, view.height)) as MarginLayoutParams
+        val params =
+            (view.layoutParams ?: MarginLayoutParams(view.width, view.height)) as MarginLayoutParams
         if (params.width <= 0 && params.height <= 0) {
             params.width = view.width
             params.height = view.height

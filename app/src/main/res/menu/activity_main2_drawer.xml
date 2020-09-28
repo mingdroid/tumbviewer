@@ -6,10 +6,12 @@
 
     <item android:title="@string/page_user">
         <menu>
-            <item android:id="@+id/nav_like"
+            <item
+                android:id="@+id/nav_like"
                 android:icon="@mipmap/ic_like"
                 android:title="@string/page_user_like" />
-            <item android:id="@+id/nav_following"
+            <item
+                android:id="@+id/nav_following"
                 android:icon="@mipmap/ic_following"
                 android:title="@string/page_user_following" />
 

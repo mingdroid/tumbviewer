@@ -16,10 +16,10 @@ import com.nutrition.express.application.toast
 import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.databinding.ActivityBlogPostsBinding
 import com.nutrition.express.model.api.Resource
-import com.nutrition.express.model.data.bean.PhotoPostsItem
-import com.nutrition.express.model.data.bean.VideoPostsItem
 import com.nutrition.express.model.api.bean.BlogPosts
 import com.nutrition.express.model.api.bean.PostsItem
+import com.nutrition.express.model.data.bean.PhotoPostsItem
+import com.nutrition.express.model.data.bean.VideoPostsItem
 import com.nutrition.express.ui.likes.LikesActivity
 import com.nutrition.express.ui.main.UserViewModel
 import com.nutrition.express.util.getInt
@@ -59,8 +59,8 @@ class PostListActivity : BaseActivity() {
         }
 
         adapter = CommonRVAdapter.adapter {
-            addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it)}
-            addViewType(VideoPostsItem::class,R.layout.item_video_post) {VideoPostVH(it)}
+            addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it) }
+            addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it) }
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     blogViewModel.fetchBlogPosts(blogName, TYPES[filter], offset)
@@ -88,8 +88,9 @@ class PostListActivity : BaseActivity() {
                         showPosts(it.data)
                     }
                 }
-                is Resource.Error ->  adapter.showLoadingFailure(it.message)
-                is Resource.Loading -> {}
+                is Resource.Error -> adapter.showLoadingFailure(it.message)
+                is Resource.Loading -> {
+                }
             }
         })
         blogViewModel.deletePostData.observe(this, Observer {
@@ -106,7 +107,8 @@ class PostListActivity : BaseActivity() {
                     }
                 }
                 is Resource.Error -> toast(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         blogViewModel.fetchBlogPosts(blogName, TYPES[filter], offset)
@@ -114,14 +116,16 @@ class PostListActivity : BaseActivity() {
             when (it) {
                 is Resource.Success -> onFollowed()
                 is Resource.Error -> toast(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         userViewModel.unFollowData.observe(this, Observer {
             when (it) {
                 is Resource.Success -> onUnfollowed()
                 is Resource.Error -> toast(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
     }

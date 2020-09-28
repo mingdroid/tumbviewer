@@ -34,7 +34,7 @@ class SettingsActivity : BaseActivity() {
 
 
     private lateinit var adapter: CommonRVAdapter
-    private var accounts  = ArrayList<Any>()
+    private var accounts = ArrayList<Any>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +63,8 @@ class SettingsActivity : BaseActivity() {
             startActivityForResult(loginIntent, REQUEST_LOGIN)
         }
         binding.settingsOptionSimple.setOnClickListener {
-            binding.settingsOptionSimpleCheckbox.isChecked = !binding.settingsOptionSimpleCheckbox.isChecked
+            binding.settingsOptionSimpleCheckbox.isChecked =
+                !binding.settingsOptionSimpleCheckbox.isChecked
         }
 
         val tumblrAccounts = AppData.getTumblrAccounts()
@@ -107,7 +108,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun showClearCacheDialog() {
         AlertDialog.Builder(this).run {
-            setPositiveButton(R.string.settings_clear_cache) {dialog, which ->
+            setPositiveButton(R.string.settings_clear_cache) { dialog, which ->
                 Fresco.getImagePipeline().clearDiskCaches()
                 toast(R.string.settings_clear_ok)
             }
@@ -119,13 +120,17 @@ class SettingsActivity : BaseActivity() {
 
     private fun showTumblrLimitInfo() {
         AlertDialog.Builder(this).run {
-            setMessage(getString(R.string.settings_limit_info,
-            AppData.dayLimit,
-            AppData.dayRemaining,
-            DateUtils.formatElapsedTime(AppData.dayReset),
-            AppData.hourLimit,
-            AppData.hourRemaining,
-            DateUtils.formatElapsedTime(AppData.hourReset)))
+            setMessage(
+                getString(
+                    R.string.settings_limit_info,
+                    AppData.dayLimit,
+                    AppData.dayRemaining,
+                    DateUtils.formatElapsedTime(AppData.dayReset),
+                    AppData.hourLimit,
+                    AppData.hourRemaining,
+                    DateUtils.formatElapsedTime(AppData.hourReset)
+                )
+            )
             show()
         }
     }
@@ -138,8 +143,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun showDeleteAccountDialog(account: TumblrAccount, accountName: String) {
         AlertDialog.Builder(this).run {
-            setPositiveButton(R.string.delete_positive) {
-                dialog, which ->
+            setPositiveButton(R.string.delete_positive) { dialog, which ->
                 AppData.removeAccount(account)
                 updateAccountsContent()
                 if (!AppData.isLogin()) {
@@ -165,8 +169,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun showSwitchDialog(account: TumblrAccount, accountName: String) {
         AlertDialog.Builder(this).run {
-            setPositiveButton(R.string.settings_switch) {
-                dialog, which ->
+            setPositiveButton(R.string.settings_switch) { dialog, which ->
                 switchToAccount(account)
             }
             setNegativeButton(R.string.pic_cancel, null)
@@ -208,8 +211,12 @@ class SettingsActivity : BaseActivity() {
                 binding.accountName.text = account.name
                 setTumblrAvatarUri(binding.accountAvatar, account.name, 128)
             } else {
-                binding.accountName.setText(getResources().getString(R.string.settings_accounts_title,
-                        adapterPosition + 1))
+                binding.accountName.setText(
+                    getResources().getString(
+                        R.string.settings_accounts_title,
+                        adapterPosition + 1
+                    )
+                )
                 binding.accountAvatar.setActualImageResource(R.mipmap.ic_account_default)
             }
             binding.accountKey.text = account.apiKey

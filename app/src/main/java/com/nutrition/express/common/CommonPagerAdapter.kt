@@ -7,8 +7,10 @@ import androidx.fragment.app.FragmentPagerAdapter
 /**
  * Created by huang on 11/2/16.
  */
-class CommonPagerAdapter(fm: FragmentManager, private val list: List<Fragment>,
-                         private val titles: List<String>) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class CommonPagerAdapter(
+    fm: FragmentManager, private val list: List<Fragment>,
+    private val titles: List<String>
+) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     override fun getItem(position: Int): Fragment {
         return list[position]
     }

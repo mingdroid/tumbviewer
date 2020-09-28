@@ -52,7 +52,7 @@ class OAuth1Interceptor : Interceptor {
         }
         val account = AppData.getPositiveAccount() ?: return request
         val auth = OAuth1SigningHelper(account.apiKey, account.apiSecret)
-                .buildAuthHeader(request.method, baseUrl, account.token, account.secret, parameters)
+            .buildAuthHeader(request.method, baseUrl, account.token, account.secret, parameters)
 
         return request.newBuilder().header("Authorization", auth).build()
     }

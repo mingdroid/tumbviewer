@@ -63,7 +63,10 @@ class LoginActivity : BaseActivity() {
         }
         binding.webView.settings.javaScriptEnabled = true
         binding.webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+            override fun shouldOverrideUrlLoading(
+                view: WebView,
+                request: WebResourceRequest
+            ): Boolean {
                 if (request.url.toString().startsWith(Constant.REDIRECT_URI)) {
                     val oauthVerifier = request.url.getQueryParameter("oauth_verifier")
                     if (!oauthVerifier.isNullOrEmpty()) {

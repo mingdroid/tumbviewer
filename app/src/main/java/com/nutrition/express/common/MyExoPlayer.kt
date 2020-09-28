@@ -1,7 +1,6 @@
 package com.nutrition.express.common
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -15,12 +14,17 @@ import com.nutrition.express.R
 import com.nutrition.express.application.TumbApp
 import okhttp3.OkHttpClient
 
-object MyExoPlayer: LifecycleObserver {
+object MyExoPlayer : LifecycleObserver {
     private val context = TumbApp.app
-    private val dataSourceFactor = DefaultDataSourceFactory(context,
-            OkHttpDataSourceFactory(OkHttpClient(), Util.getUserAgent(context, context.getString(R.string.app_name))))
-    private var player : SimpleExoPlayer? = null
-    private var listener : (() -> Unit)? = null
+    private val dataSourceFactor = DefaultDataSourceFactory(
+        context,
+        OkHttpDataSourceFactory(
+            OkHttpClient(),
+            Util.getUserAgent(context, context.getString(R.string.app_name))
+        )
+    )
+    private var player: SimpleExoPlayer? = null
+    private var listener: (() -> Unit)? = null
 
     init {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)

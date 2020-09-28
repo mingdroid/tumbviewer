@@ -125,7 +125,7 @@ public final class OAuth1SigningHelper {
     }
 
     private String buildBaseString(String method, String url, TreeMap<String, String> baseMap)
-            throws UnsupportedEncodingException{
+            throws UnsupportedEncodingException {
         StringBuilder paraBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : baseMap.entrySet()) {
             paraBuilder.append(entry.getKey());

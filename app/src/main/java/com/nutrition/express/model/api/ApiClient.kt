@@ -1,24 +1,15 @@
 package com.nutrition.express.model.api
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import com.nutrition.express.BuildConfig
 import com.nutrition.express.application.Constant
 import com.nutrition.express.application.TumbApp
-import com.nutrition.express.model.data.AppData
-import com.nutrition.express.model.data.NetErrorData
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.coroutines.CoroutineContext
 
 /*
  * okhttp + retrofit
@@ -42,8 +33,8 @@ object ApiClient {
             build()
         }
         val gson = GsonBuilder()
-                .setLenient()
-                .create()
+            .setLenient()
+            .create()
         retrofit = Retrofit.Builder().run {
             baseUrl(Constant.BASE_URL)
             addConverterFactory(GsonConverterFactory.create(gson))

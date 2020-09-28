@@ -15,43 +15,41 @@
         android:background="?attr/colorPrimary"
         android:elevation="8dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        >
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
         <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
         <ImageView
             android:id="@+id/post"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            app:srcCompat="@mipmap/ic_reblog_send"
-            android:padding="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            />
+            android:padding="8dp"
+            app:srcCompat="@mipmap/ic_reblog_send" />
+
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:padding="8dp"
             android:layout_gravity="end|center_vertical"
-            android:visibility="gone"
-            />
+            android:padding="8dp"
+            android:visibility="gone" />
     </androidx.appcompat.widget.Toolbar>
 
     <EditText
         android:id="@+id/comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="160dp"
-        android:padding="16dp"
-        android:hint="@string/reblog_comment_hint"
-        android:gravity="start"
-        android:background="@null"
         android:layout_marginTop="?attr/actionBarSize"
-        />
+        android:background="@null"
+        android:gravity="start"
+        android:hint="@string/reblog_comment_hint"
+        android:minHeight="160dp"
+        android:padding="16dp" />
 
 </FrameLayout>

@@ -86,7 +86,8 @@ class LikesActivity : BaseActivity() {
                     }
                 }
                 is Resource.Error -> toast(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         likesViewModel.likesPostsData.observe(this, Observer {
@@ -99,7 +100,8 @@ class LikesActivity : BaseActivity() {
                     }
                 }
                 is Resource.Error -> adapter.showLoadingFailure(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         likesViewModel.fetchLikesPosts(blogName)

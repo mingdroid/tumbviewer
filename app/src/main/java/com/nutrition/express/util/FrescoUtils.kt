@@ -26,23 +26,24 @@ fun setTumblrAvatarUri(view: SimpleDraweeView, name: String, size: Int) {
         url += size
     }
     val imageRequest = ImageRequestBuilder
-            .newBuilderWithSource(Uri.parse(url))
-            .setCacheChoice(ImageRequest.CacheChoice.SMALL)
-            .build()
+        .newBuilderWithSource(Uri.parse(url))
+        .setCacheChoice(ImageRequest.CacheChoice.SMALL)
+        .build()
     val controller: DraweeController = Fresco.newDraweeControllerBuilder()
-            .setOldController(view.controller)
-            .setImageRequest(imageRequest)
-            .build()
+        .setOldController(view.controller)
+        .setImageRequest(imageRequest)
+        .build()
     view.controller = controller
 }
 
-fun save(uri: Uri) : LiveData<Uri> {
+fun save(uri: Uri): LiveData<Uri> {
     val request = ImageRequest.fromUri(uri)
     val pipeline = Fresco.getImagePipeline()
     val dataSource = pipeline.fetchEncodedImage(request, null)
     return liveData(Dispatchers.IO, 30000) {
         try {
-            val result: CloseableReference<PooledByteBuffer>? = DataSources.waitForFinalResult(dataSource)
+            val result: CloseableReference<PooledByteBuffer>? =
+                DataSources.waitForFinalResult(dataSource)
             if (result != null) {
                 saveToFile(result.get(), FileUtils.createImageFile(uri))
                 emit(uri)
@@ -69,7 +70,8 @@ fun saveAll(uris: List<Uri>): LiveData<Uri> {
             val pipeline = Fresco.getImagePipeline()
             val dataSource = pipeline.fetchEncodedImage(request, null)
             try {
-                val result: CloseableReference<PooledByteBuffer>? = DataSources.waitForFinalResult(dataSource)
+                val result: CloseableReference<PooledByteBuffer>? =
+                    DataSources.waitForFinalResult(dataSource)
                 if (result != null) {
                     saveToFile(result.get(), FileUtils.createImageFile(uri))
                     emit(uri)

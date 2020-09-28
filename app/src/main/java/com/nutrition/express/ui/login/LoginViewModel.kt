@@ -1,22 +1,19 @@
 package com.nutrition.express.ui.login
 
 import androidx.lifecycle.*
-import com.nutrition.express.BuildConfig
 import com.nutrition.express.application.Constant
-import com.nutrition.express.model.api.*
+import com.nutrition.express.model.api.ApiClient
+import com.nutrition.express.model.api.InProgress
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.data.bean.TumblrApp
 import com.nutrition.express.model.helper.OAuth1SigningHelper
 import com.nutrition.express.ui.login.LoginType.NEW_ROUTE
 import com.nutrition.express.ui.login.LoginType.NORMAL
 import com.nutrition.express.ui.login.LoginType.ROUTE_SWITCH
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -24,7 +21,6 @@ import okhttp3.Response
 import java.util.*
 import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.random.Random
 
 class LoginViewModel : ViewModel() {
@@ -44,6 +40,7 @@ class LoginViewModel : ViewModel() {
     fun setOauthVerifier(oauthVerifier: String) {
         _oauthVerifier.value = oauthVerifier
     }
+
     /*
      * init api key/secret
      */
@@ -102,7 +99,7 @@ class LoginViewModel : ViewModel() {
         return liveData {
             emit(InProgress)
             val auth = OAuth1SigningHelper(tumblrApp.apiKey, tumblrApp.apiSecret)
-                    .buildRequestHeader("POST", Constant.REQUEST_TOKEN_URL)
+                .buildRequestHeader("POST", Constant.REQUEST_TOKEN_URL)
             val request = Request.Builder().run {
                 url(Constant.REQUEST_TOKEN_URL)
                 method("POST", "".toRequestBody("text/plain; charset=utf-8".toMediaType()))
@@ -123,8 +120,7 @@ class LoginViewModel : ViewModel() {
                         continuation.resume(Result.failure<Response>(it))
                     }
                 }
-            }.onSuccess {
-                response ->
+            }.onSuccess { response ->
                 if (response.isSuccessful) {
                     val body = response.body?.string()
                     val hashMap = convert(body)
@@ -153,13 +149,15 @@ class LoginViewModel : ViewModel() {
 
         loginResult.value = InProgress
         val auth = OAuth1SigningHelper(tumblrApp.apiKey, tumblrApp.apiSecret)
-                .buildAccessHeader("POST", Constant.ACCESS_TOKEN_URL,
-                        oauth.token, oauthVerifier, oauth.secret)
+            .buildAccessHeader(
+                "POST", Constant.ACCESS_TOKEN_URL,
+                oauth.token, oauthVerifier, oauth.secret
+            )
         val request = Request.Builder()
-                .url(Constant.ACCESS_TOKEN_URL)
-                .method("POST", "".toRequestBody("text/plain; charset=utf-8".toMediaType()))
-                .header("Authorization", auth)
-                .build()
+            .url(Constant.ACCESS_TOKEN_URL)
+            .method("POST", "".toRequestBody("text/plain; charset=utf-8".toMediaType()))
+            .header("Authorization", auth)
+            .build()
         return liveData(viewModelScope.coroutineContext) {
             emit(InProgress)
             withContext(coroutineContext + Dispatchers.IO) {
@@ -176,8 +174,7 @@ class LoginViewModel : ViewModel() {
                         continuation.resume(Result.failure<Response>(it))
                     }
                 }
-            }.onSuccess {
-                response ->
+            }.onSuccess { response ->
                 if (response.isSuccessful) {
                     val body = response.body?.string()
                     val hashMap = convert(body)
@@ -185,7 +182,8 @@ class LoginViewModel : ViewModel() {
                     val oauthTokenSecret = hashMap["oauth_token_secret"]
                     if (oauthToken != null && oauthTokenSecret != null) {
                         val tumblrAccount = AppData.addAccount(
-                                tumblrApp.apiKey, tumblrApp.apiSecret, oauthToken, oauthTokenSecret)
+                            tumblrApp.apiKey, tumblrApp.apiSecret, oauthToken, oauthTokenSecret
+                        )
                         if (type == NEW_ROUTE || type == ROUTE_SWITCH) {
                             AppData.switchToAccount(tumblrAccount)
                         }

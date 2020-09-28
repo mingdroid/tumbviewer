@@ -11,7 +11,7 @@ import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import kotlin.coroutines.CoroutineContext
 
-suspend fun <T: Any> callFromNet(apiFunc: suspend () -> ApiResponse<T>): Resource<T> {
+suspend fun <T : Any> callFromNet(apiFunc: suspend () -> ApiResponse<T>): Resource<T> {
     return try {
         val result = apiFunc.invoke()
         Resource.Success(result.response)
@@ -24,13 +24,15 @@ suspend fun <T: Any> callFromNet(apiFunc: suspend () -> ApiResponse<T>): Resourc
     }
 }
 
-private fun <T: Any> handleError(error: HttpException): Resource<T> {
+private fun <T : Any> handleError(error: HttpException): Resource<T> {
     var code: Int? = null
     var errorMsg: String? = null
     try {
         val body = error.response()?.errorBody()?.string()
-        val errorResponse: ApiResponse<Any>? = Gson().fromJson(body,
-                object : TypeToken<ApiResponse<Any>?>() {}.type)
+        val errorResponse: ApiResponse<Any>? = Gson().fromJson(
+            body,
+            object : TypeToken<ApiResponse<Any>?>() {}.type
+        )
         code = errorResponse?.meta?.status
         errorMsg = errorResponse?.meta?.msg
     } catch (throwable: Throwable) {
@@ -51,7 +53,7 @@ private fun <T: Any> handleError(error: HttpException): Resource<T> {
             ApiClient.cancelAllCall()
             if (AppData.switchToNextRoute()) {
                 errorMsg = "Failed, touch to retry"
-            } else{
+            } else {
                 NetErrorData.setError429(true)
             }
         }

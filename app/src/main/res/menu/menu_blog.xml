@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/blog_follow"
+    <item
+        android:id="@+id/blog_follow"
         android:title="@string/blog_follow"
-        app:showAsAction="never"
-        />
+        app:showAsAction="never" />
 
-    <item android:id="@+id/blog_likes"
+    <item
+        android:id="@+id/blog_likes"
         android:title="@string/page_user_like"
-        app:showAsAction="never"
-        />
+        app:showAsAction="never" />
 
-    <item android:id="@+id/post_filter"
+    <item
+        android:id="@+id/post_filter"
         android:title="@string/post_filter"
-        app:showAsAction="never"
-        />
+        app:showAsAction="never" />
 </menu>

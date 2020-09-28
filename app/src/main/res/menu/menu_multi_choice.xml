@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/delete"
-        android:title="@string/delete_positive"
+    <item
+        android:id="@+id/delete"
         android:icon="@mipmap/ic_delete_forever_white"
-        app:showAsAction="always"
-        />
-    <item android:id="@+id/select_all"
-        android:title="@string/download_select_all"
+        android:title="@string/delete_positive"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/select_all"
         android:icon="@mipmap/ic_select_all"
-        app:showAsAction="always"
-        />
+        android:title="@string/download_select_all"
+        app:showAsAction="always" />
 </menu>

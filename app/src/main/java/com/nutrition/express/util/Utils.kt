@@ -27,8 +27,10 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 fun dp2Pixels(context: Context, dp: Int): Int {
-    val pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(),
-            context.resources.displayMetrics)
+    val pixels = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(),
+        context.resources.displayMetrics
+    )
     return (pixels + 0.5f).toInt()
 }
 
@@ -40,8 +42,11 @@ fun copy2Clipboard(context: Context, text: String) {
 }
 
 fun canWrite2Storage(context: Context): Boolean {
-    if (ContextCompat.checkSelfPermission(TumbApp.app,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+    if (ContextCompat.checkSelfPermission(
+            TumbApp.app,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
         if (context is BaseActivity) {
             context.requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }

@@ -20,15 +20,18 @@ public class ProgressResponseBody extends ResponseBody {
         this.progressListener = progressListener;
     }
 
-    @Override public MediaType contentType() {
+    @Override
+    public MediaType contentType() {
         return responseBody.contentType();
     }
 
-    @Override public long contentLength() {
+    @Override
+    public long contentLength() {
         return responseBody.contentLength();
     }
 
-    @Override public BufferedSource source() {
+    @Override
+    public BufferedSource source() {
         if (bufferedSource == null) {
             bufferedSource = Okio.buffer(source(responseBody.source()));
         }
@@ -40,7 +43,8 @@ public class ProgressResponseBody extends ResponseBody {
             long totalBytesRead = 0L;
             long time = System.currentTimeMillis();
 
-            @Override public long read(Buffer sink, long byteCount) throws IOException {
+            @Override
+            public long read(Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
                 // read() returns the number of bytes read, or -1 if this source is exhausted.
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;

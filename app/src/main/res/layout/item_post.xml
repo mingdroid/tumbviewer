@@ -1,130 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/post_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:clickable="true"
         android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        >
+        android:paddingRight="16dp">
+
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/post_avatar"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="center_vertical"
+            app:actualImageScaleType="fitCenter"
             app:placeholderImage="@color/loading_color"
             app:placeholderImageScaleType="fitCenter"
-            app:actualImageScaleType="fitCenter"
-            app:roundedCornerRadius="1dp"
-            />
+            app:roundedCornerRadius="1dp" />
+
         <TextView
             android:id="@+id/post_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
             android:paddingLeft="8dp"
+            android:paddingTop="16dp"
             android:paddingRight="8dp"
-            android:textSize="@dimen/cn_text_size_body"
-            />
+            android:paddingBottom="16dp"
+            android:textSize="@dimen/cn_text_size_body" />
+
         <TextView
             android:id="@+id/post_time"
-            android:gravity="end"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="end"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
-            android:textSize="@dimen/cn_text_size_body"
-            />
+            android:textSize="@dimen/cn_text_size_body" />
     </LinearLayout>
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/post_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:dividerDrawableHorizontal="@drawable/shape_flexbox_divider"
         app:flexDirection="row"
         app:flexWrap="wrap"
         app:justifyContent="space_between"
-        app:showDividerHorizontal="middle"
-        app:dividerDrawableHorizontal="@drawable/shape_flexbox_divider"
-        />
+        app:showDividerHorizontal="middle" />
 
     <LinearLayout
         android:id="@+id/post_trail"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
 
     <TextView
         android:id="@+id/post_source"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
         android:paddingLeft="16dp"
+        android:paddingTop="8dp"
         android:paddingRight="16dp"
-        android:textSize="@dimen/cn_text_size_caption"
-        />
+        android:textSize="@dimen/cn_text_size_caption" />
+
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:paddingRight="8dp"
+        android:orientation="horizontal"
         android:paddingLeft="8dp"
-        >
+        android:paddingRight="8dp">
+
         <TextView
             android:id="@+id/note_count"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/cn_text_size_body"
-            />
+            android:textSize="@dimen/cn_text_size_body" />
 
         <ImageView
             android:id="@+id/post_reblog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:layout_gravity="center"
-            app:srcCompat="@mipmap/ic_reblog"
             android:background="?attr/selectableItemBackgroundBorderless"
-            />
+            android:padding="8dp"
+            app:srcCompat="@mipmap/ic_reblog" />
 
         <ImageView
             android:id="@+id/post_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/selector_like"
             android:background="?attr/selectableItemBackgroundBorderless"
-            />
+            android:padding="8dp"
+            app:srcCompat="@drawable/selector_like" />
+
         <ImageView
             android:id="@+id/post_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:layout_gravity="center"
-            app:srcCompat="@mipmap/ic_delete_forever"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
             android:visibility="gone"
-            />
+            app:srcCompat="@mipmap/ic_delete_forever" />
     </LinearLayout>
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:src="@color/divider_color"
-        />
+        android:src="@color/divider_color" />
 </LinearLayout>

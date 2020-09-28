@@ -1,47 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/video_control_layout"
-    android:orientation="horizontal"
-    android:layout_gravity="bottom"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/time_current"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
         android:layout_gravity="center_vertical"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        android:paddingLeft="4dp"
         android:paddingStart="4dp"
-        />
+        android:paddingLeft="4dp"
+        android:textColor="@android:color/white"
+        android:textSize="13sp"
+        android:textStyle="bold" />
 
     <SeekBar
         android:id="@+id/video_controller_progress"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="32dp"
         style="?android:attr/progressBarStyleHorizontal"
-        />
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_weight="1" />
 
-    <TextView android:id="@+id/time"
+    <TextView
+        android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:textColor="@android:color/white"
         android:textSize="13sp"
-        android:textStyle="bold"
-        />
+        android:textStyle="bold" />
+
     <ImageView
         android:id="@+id/video_fullscreen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_fullscreen"
         android:layout_gravity="center"
         android:padding="4dp"
-        />
+        android:src="@mipmap/ic_fullscreen" />
 
 </LinearLayout>

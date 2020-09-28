@@ -4,12 +4,12 @@ import android.text.format.DateUtils
 import android.view.View
 import com.nutrition.express.R
 import com.nutrition.express.databinding.ItemPostBinding
-import com.nutrition.express.model.data.bean.PhotoPostsItem
 import com.nutrition.express.model.api.bean.PostsItem
+import com.nutrition.express.model.data.bean.PhotoPostsItem
 import com.nutrition.express.util.setTumblrAvatarUri
 import okhttp3.internal.toLongOrDefault
 
-open class PhotoPostVH(view: View): BasePostVH<PhotoPostsItem>(view) {
+open class PhotoPostVH(view: View) : BasePostVH<PhotoPostsItem>(view) {
     protected val binding: ItemPostBinding = ItemPostBinding.bind(view)
     private var postsItem: PostsItem? = null
 
@@ -27,7 +27,7 @@ open class PhotoPostVH(view: View): BasePostVH<PhotoPostsItem>(view) {
             postsItem?.let {
                 if (binding.postLike.isSelected) {
                     userViewModel.unLike(it.id, it.reblog_key)
-                } else{
+                } else {
                     userViewModel.like(it.id, it.reblog_key)
                 }
             }
@@ -56,19 +56,26 @@ open class PhotoPostVH(view: View): BasePostVH<PhotoPostsItem>(view) {
         this.postsItem = postsItem
         setTumblrAvatarUri(binding.postAvatar, postsItem.blog_name, 128)
         binding.postName.text = postsItem.blog_name
-        binding.postTime.text = DateUtils.getRelativeTimeSpanString(postsItem.getTimestamp() * 1000,
-                System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
+        binding.postTime.text = DateUtils.getRelativeTimeSpanString(
+            postsItem.getTimestamp() * 1000,
+            System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS
+        )
         if (postsItem.source_title.isNullOrEmpty()) {
             binding.postSource.visibility = View.GONE
         } else {
             binding.postSource.visibility = View.VISIBLE
-            binding.postSource.text = itemView.context.getString(R.string.source_title, postsItem.source_title)
+            binding.postSource.text =
+                itemView.context.getString(R.string.source_title, postsItem.source_title)
         }
         if (postsItem.duration.isNullOrEmpty()) {
-            binding.noteCount.text = itemView.context.getString(R.string.note_count, postsItem.note_count)
+            binding.noteCount.text =
+                itemView.context.getString(R.string.note_count, postsItem.note_count)
         } else {
-            binding.noteCount.text = itemView.context.getString(R.string.note_count_description,
-                    postsItem.note_count, DateUtils.formatElapsedTime(postsItem.duration.toLongOrDefault(0)))
+            binding.noteCount.text = itemView.context.getString(
+                R.string.note_count_description,
+                postsItem.note_count,
+                DateUtils.formatElapsedTime(postsItem.duration.toLongOrDefault(0))
+            )
         }
         if (postsItem.isCan_like) {
             binding.postLike.visibility = View.VISIBLE

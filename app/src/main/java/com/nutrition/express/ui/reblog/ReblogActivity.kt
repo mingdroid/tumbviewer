@@ -14,8 +14,8 @@ import com.nutrition.express.application.BaseActivity
 import com.nutrition.express.application.toast
 import com.nutrition.express.databinding.ActivityReblogBinding
 import com.nutrition.express.model.api.Resource
-import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.api.bean.UserInfoItem
+import com.nutrition.express.model.data.AppData
 import com.nutrition.express.ui.main.UserViewModel
 
 class ReblogActivity : BaseActivity() {
@@ -46,7 +46,8 @@ class ReblogActivity : BaseActivity() {
                 when (it) {
                     is Resource.Success -> it.data?.user?.let { user -> setNames(user) }
                     is Resource.Error -> toast(it.message)
-                    is Resource.Loading -> {}
+                    is Resource.Loading -> {
+                    }
                 }
             })
             userViewModel.fetchUserInfo()
@@ -87,7 +88,12 @@ class ReblogActivity : BaseActivity() {
             val adapter: SpinnerAdapter = ArrayAdapter(this, R.layout.item_text, R.id.text, names)
             binding.spinner.adapter = adapter
             binding.spinner.onItemSelectedListener = object : OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
                     name = parent.getItemAtPosition(position) as String
                 }
 

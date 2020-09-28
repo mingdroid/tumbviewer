@@ -29,7 +29,7 @@ public class TrailItem {
     public class Blog {
         private String name;
         private boolean active;
-//        private Theme theme;
+        //        private Theme theme;
         private boolean share_likes;
         private boolean share_following;
         private boolean can_be_followed;

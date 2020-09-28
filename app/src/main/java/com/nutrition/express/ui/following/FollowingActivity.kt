@@ -58,7 +58,8 @@ class FollowingActivity : BaseActivity() {
                     }
                 }
                 is Resource.Error -> adapter.showLoadingFailure(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         followingViewModel.getFollowingList(offset)
@@ -73,7 +74,7 @@ class FollowingActivity : BaseActivity() {
     }
 
     class BlogVH(view: View) : CommonViewHolder<FollowingBlog.Blog>(view) {
-        private val binding =  ItemFollowingBlogBinding.bind(view)
+        private val binding = ItemFollowingBlogBinding.bind(view)
         private lateinit var blog: FollowingBlog.Blog
 
         init {
@@ -89,10 +90,14 @@ class FollowingActivity : BaseActivity() {
             binding.blogName.text = blog.name
             binding.blogTitle.text = blog.title
             setTumblrAvatarUri(binding.blogAvatar, blog.name, 128)
-            binding.blogLastUpdate.text = itemView.resources.getString(R.string.update_des,
-                    DateUtils.getRelativeTimeSpanString(blog.updated * 1000,
-                            System.currentTimeMillis(),
-                            DateUtils.SECOND_IN_MILLIS))
+            binding.blogLastUpdate.text = itemView.resources.getString(
+                R.string.update_des,
+                DateUtils.getRelativeTimeSpanString(
+                    blog.updated * 1000,
+                    System.currentTimeMillis(),
+                    DateUtils.SECOND_IN_MILLIS
+                )
+            )
         }
     }
 

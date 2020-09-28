@@ -8,21 +8,25 @@ import androidx.lifecycle.viewModelScope
 import com.nutrition.express.model.api.ApiClient
 import com.nutrition.express.model.api.ApiResponse
 import com.nutrition.express.model.api.Resource
+import com.nutrition.express.model.api.bean.UserInfo
 import com.nutrition.express.model.api.repo.TestRepo
 import com.nutrition.express.model.api.service.TestService
-import com.nutrition.express.model.api.bean.UserInfo
 import kotlinx.coroutines.*
 import retrofit2.create
 
 class TestViewModel : ViewModel() {
-    private val testRepo =  TestRepo(viewModelScope.coroutineContext)
+    private val testRepo = TestRepo(viewModelScope.coroutineContext)
+
     init {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 spendCPU(5000)
                 Log.d("TestViewModel", "spendCPU: end")
             }
-            Log.d("TestViewModel", "spendCPU: this block code continue in ${Thread.currentThread().name}")
+            Log.d(
+                "TestViewModel",
+                "spendCPU: this block code continue in ${Thread.currentThread().name}"
+            )
         }
         Log.d("TestViewModel", "init: not block by spendCPU -> ${Thread.currentThread().name}")
     }

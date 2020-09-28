@@ -3,47 +3,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
     android:background="@drawable/clip_download_progress"
-    >
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/url"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_toLeftOf="@+id/download_state"
+        android:layout_marginLeft="16dp"
         android:layout_toStartOf="@+id/download_state"
+        android:layout_toLeftOf="@+id/download_state"
+        android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
-        android:ellipsize="end"
-        tools:text="@string/blog_follow"
-        />
+        tools:text="@string/blog_follow" />
 
     <TextView
         android:id="@+id/progress"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_toLeftOf="@+id/download_state"
-        android:layout_toStartOf="@+id/download_state"
         android:layout_below="@id/url"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_toStartOf="@+id/download_state"
+        android:layout_toLeftOf="@+id/download_state"
         android:gravity="center_vertical"
-        tools:text="@string/blog_follow"
-        />
+        tools:text="@string/blog_follow" />
 
     <ImageView
         android:id="@+id/download_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:padding="8dp"
         android:src="@mipmap/ic_pause_black_24dp"
-        android:tint="@color/colorAccent"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        />
+        android:tint="@color/colorAccent" />
 
 </RelativeLayout>

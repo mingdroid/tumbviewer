@@ -15,11 +15,11 @@ import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.common.MyExoPlayer
 import com.nutrition.express.databinding.FragmentDashboardBinding
 import com.nutrition.express.model.api.Resource
+import com.nutrition.express.model.api.bean.BlogPosts
+import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.data.bean.PhotoPostsItem
 import com.nutrition.express.model.data.bean.VideoPostsItem
-import com.nutrition.express.model.api.bean.BlogPosts
-import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.ui.post.blog.BlogViewModel
 import com.nutrition.express.ui.post.blog.PhotoPostVH
 import com.nutrition.express.ui.post.blog.VideoPostVH
@@ -35,13 +35,15 @@ open class DashboardFragment : Fragment() {
     private val userViewModel: UserViewModel by viewModels()
     private val blogViewModel: BlogViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val _binding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
         binding = _binding
         adapter = CommonRVAdapter.adapter {
             addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it) }
-            addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it)}
+            addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it) }
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     userViewModel.fetchDashboardNextPageData(offset)
@@ -90,7 +92,8 @@ open class DashboardFragment : Fragment() {
                     }
                 }
                 is Resource.Error -> Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         userViewModel.dashboardData.observe(viewLifecycleOwner, Observer {
@@ -105,14 +108,16 @@ open class DashboardFragment : Fragment() {
                     binding?.refreshLayout?.isRefreshing = false
                     adapter.showLoadingFailure(it.message)
                 }
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         userViewModel.dashboardNextPageData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Resource.Success -> adapter.append(wrapPosts(it.data)?.toTypedArray(), true)
                 is Resource.Error -> adapter.showLoadingFailure(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         type = arguments?.getString("type") ?: type

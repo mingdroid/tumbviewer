@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,10 +27,9 @@ import com.nutrition.express.common.CommonViewHolder
 import com.nutrition.express.databinding.ItemTrailBinding
 import com.nutrition.express.imageviewer.ImageViewerActivity
 import com.nutrition.express.model.api.Resource
-import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.api.bean.PhotoItem
 import com.nutrition.express.model.api.bean.PostsItem
-import com.nutrition.express.model.data.bean.PhotoPostsItem
+import com.nutrition.express.model.data.AppData
 import com.nutrition.express.ui.main.UserViewModel
 import com.nutrition.express.ui.reblog.ReblogActivity
 import com.nutrition.express.util.dp2Pixels
@@ -49,7 +47,7 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
     private val atomicInteger = AtomicInteger(0)
     private val photos = ArrayList<String>()
     private val dividerWidth: Int
-    private val screenWidth : Int
+    private val screenWidth: Int
 
     init {
         val activity = itemView.context as AppCompatActivity
@@ -86,7 +84,7 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
         val size = photos.size
         createPhotoView(size)
         val layout = postsItem.photoset_layout
-        if (layout!= null && layout.isDigitsOnly()) {
+        if (layout != null && layout.isDigitsOnly()) {
             var index = 0
             var count: Int
             var w: Int
@@ -103,12 +101,14 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
                         return
                     }
                     addSimpleDraweeView(postContent, contentViewCache[index], w, h)
-                    setUri(contentViewCache[index],
-                            postsItem.photos[index].original_size.url)
+                    setUri(
+                        contentViewCache[index],
+                        postsItem.photos[index].original_size.url
+                    )
                     index++
                 }
             }
-        } else{
+        } else {
             var info: PhotoItem.PhotoInfo
             var w: Int
             var h: Int
@@ -183,7 +183,12 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
         return (screenWidth - (count - 1) * dividerWidth) / count
     }
 
-    private fun addSimpleDraweeView(postContent: FlexboxLayout, view: SimpleDraweeView, width: Int, height: Int) {
+    private fun addSimpleDraweeView(
+        postContent: FlexboxLayout,
+        view: SimpleDraweeView,
+        width: Int,
+        height: Int
+    ) {
         var params = view.layoutParams
         if (params == null) {
             params = ViewGroup.LayoutParams(width, height)
@@ -237,7 +242,8 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
             intent.putExtra("selected_index", tag)
             intent.putStringArrayListExtra("image_urls", photos)
             val options = ActivityOptions.makeSceneTransitionAnimation(
-                    context as AppCompatActivity, view, "name$tag")
+                context as AppCompatActivity, view, "name$tag"
+            )
             context.startActivity(intent, options.toBundle())
             setCallback(tag)
         }
@@ -246,8 +252,12 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
     private fun setCallback(index: Int) {
         val context = itemView.context
         AppData.photoIndex = index
-        (context as AppCompatActivity).setExitSharedElementCallback(object : SharedElementCallback() {
-            override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
+        (context as AppCompatActivity).setExitSharedElementCallback(object :
+            SharedElementCallback() {
+            override fun onMapSharedElements(
+                names: List<String>,
+                sharedElements: MutableMap<String, View>
+            ) {
                 val returnIndex = AppData.photoIndex
                 if (index != returnIndex && names.isNotEmpty()) {
                     sharedElements[names[0]] = contentViewCache[returnIndex]

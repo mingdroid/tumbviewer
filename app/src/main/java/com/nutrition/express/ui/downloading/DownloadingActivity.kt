@@ -54,7 +54,8 @@ class DownloadingActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    inner class RxDownloadVH(view: View) : CommonViewHolder<Record>(view), ProgressResponseBody.ProgressListener {
+    inner class RxDownloadVH(view: View) : CommonViewHolder<Record>(view),
+        ProgressResponseBody.ProgressListener {
         private val binding = ItemDownloadBinding.bind(view)
         private val progressDrawable: ClipDrawable = itemView.background as ClipDrawable
         private lateinit var record: Record

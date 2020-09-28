@@ -1,57 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/trail_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
     android:background="?attr/selectableItemBackground"
+    android:clickable="true"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    >
+    android:paddingRight="16dp">
+
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/trail_avatar"
         android:layout_width="28dp"
         android:layout_height="28dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        app:actualImageScaleType="fitCenter"
         app:placeholderImage="@color/loading_color"
         app:placeholderImageScaleType="fitCenter"
-        app:actualImageScaleType="fitCenter"
-        app:roundedCornerRadius="1dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        app:roundedCornerRadius="1dp" />
 
     <TextView
         android:id="@+id/trail_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:textSize="@dimen/cn_text_size_body"
         android:layout_alignTop="@id/trail_avatar"
         android:layout_alignBottom="@id/trail_avatar"
-        android:layout_toRightOf="@id/trail_avatar"
         android:layout_toEndOf="@id/trail_avatar"
+        android:layout_toRightOf="@id/trail_avatar"
         android:gravity="center"
-        />
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="@dimen/cn_text_size_body" />
 
     <TextView
         android:id="@+id/trail_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/trail_avatar"
-        android:layout_alignLeft="@id/trail_avatar"
         android:layout_alignStart="@id/trail_avatar"
-        android:autoLink="all"
-        />
+        android:layout_alignLeft="@id/trail_avatar"
+        android:autoLink="all" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="2px"
-        android:src="@color/divider_color_gray"
         android:layout_below="@id/trail_content"
-        />
+        android:src="@color/divider_color_gray" />
 
 </RelativeLayout>

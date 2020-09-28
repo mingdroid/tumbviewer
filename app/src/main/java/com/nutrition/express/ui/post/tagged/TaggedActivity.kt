@@ -18,9 +18,9 @@ import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.common.MyExoPlayer
 import com.nutrition.express.databinding.ActivityTaggedBinding
 import com.nutrition.express.model.api.Resource
+import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.model.data.bean.PhotoPostsItem
 import com.nutrition.express.model.data.bean.VideoPostsItem
-import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.ui.post.blog.BlogViewModel
 import com.nutrition.express.ui.post.blog.PhotoPostVH
 import com.nutrition.express.ui.post.blog.VideoPostVH
@@ -57,8 +57,15 @@ class TaggedActivity : BaseActivity() {
                     featuredTimestamp?.let { time -> hasNextPage = time > 0 }
                     adapter.append(list?.toTypedArray(), hasNextPage)
                 }
-                is Resource.Error -> adapter.showLoadingFailure(getString(R.string.load_failure_des, it.code, it.message))
-                is Resource.Loading -> {}
+                is Resource.Error -> adapter.showLoadingFailure(
+                    getString(
+                        R.string.load_failure_des,
+                        it.code,
+                        it.message
+                    )
+                )
+                is Resource.Loading -> {
+                }
             }
         })
         blogViewModel.deletePostData.observe(this, Observer {
@@ -75,12 +82,13 @@ class TaggedActivity : BaseActivity() {
                     }
                 }
                 is Resource.Error -> toast(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
     }
 
-    private fun getAdapter() : CommonRVAdapter {
+    private fun getAdapter(): CommonRVAdapter {
         return CommonRVAdapter.adapter {
             addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it) }
             addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it) }

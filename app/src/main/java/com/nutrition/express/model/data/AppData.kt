@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.nutrition.express.application.Constant
+import com.nutrition.express.model.api.bean.UserInfoItem
 import com.nutrition.express.model.data.bean.TumblrAccount
 import com.nutrition.express.model.data.bean.TumblrApp
 import com.nutrition.express.model.helper.LocalPersistenceHelper
-import com.nutrition.express.model.api.bean.UserInfoItem
 import com.nutrition.express.util.getBoolean
 
 object AppData {
@@ -20,7 +20,7 @@ object AppData {
     private var positiveAccount: TumblrAccount? = null
     private var referenceBlog: MutableList<String> = ArrayList()
     private var referenceBlogSet: HashSet<String> = HashSet()
-    private var followingSet : HashSet<String> = HashSet()
+    private var followingSet: HashSet<String> = HashSet()
 
     var users: UserInfoItem? = null
     var photoIndex: Int = 0
@@ -33,8 +33,10 @@ object AppData {
     val modeData = MutableLiveData<Boolean>()
 
     init {
-        val list: List<TumblrAccount>? = LocalPersistenceHelper.getShortContent(TUMBLR_ACCOUNT,
-                object : TypeToken<ArrayList<TumblrAccount>>() {}.type)
+        val list: List<TumblrAccount>? = LocalPersistenceHelper.getShortContent(
+            TUMBLR_ACCOUNT,
+            object : TypeToken<ArrayList<TumblrAccount>>() {}.type
+        )
         if (list != null) {
             tumblrAccountList.addAll(list)
         }
@@ -65,7 +67,12 @@ object AppData {
         return tumblrAccountList
     }
 
-    fun addAccount(apiKey: String, apiSecret: String, token: String, secret: String): TumblrAccount {
+    fun addAccount(
+        apiKey: String,
+        apiSecret: String,
+        token: String,
+        secret: String
+    ): TumblrAccount {
         val account = TumblrAccount(apiKey, apiSecret, token, secret)
         if (positiveAccount == null) {
             account.isUsing = true
@@ -102,7 +109,7 @@ object AppData {
         if (positiveAccount?.name == null) {
             return false
         }
-        val list : ArrayList<TumblrAccount> = ArrayList()
+        val list: ArrayList<TumblrAccount> = ArrayList()
         for (item in tumblrAccountList) {
             if (item.name == positiveAccount?.name) {
                 list.add(item)
@@ -133,8 +140,10 @@ object AppData {
 
 
     fun getTumblrApp(): TumblrApp? {
-        val tumblrAppList = LocalPersistenceHelper.getShortContent<ArrayList<TumblrApp>>(TUMBLR_APP,
-                object : TypeToken<ArrayList<TumblrApp>>() {}.type)
+        val tumblrAppList = LocalPersistenceHelper.getShortContent<ArrayList<TumblrApp>>(
+            TUMBLR_APP,
+            object : TypeToken<ArrayList<TumblrApp>>() {}.type
+        )
         if (!tumblrAppList.isNullOrEmpty()) {
             return tumblrAppList[0];
         }
@@ -142,8 +151,10 @@ object AppData {
     }
 
     fun saveTumblrApp(key: String, secret: String) {
-        var tumblrAppList = LocalPersistenceHelper.getShortContent<ArrayList<TumblrApp>>(TUMBLR_APP,
-                object : TypeToken<ArrayList<TumblrApp>>() {}.type)
+        var tumblrAppList = LocalPersistenceHelper.getShortContent<ArrayList<TumblrApp>>(
+            TUMBLR_APP,
+            object : TypeToken<ArrayList<TumblrApp>>() {}.type
+        )
         if (tumblrAppList == null) {
             tumblrAppList = ArrayList()
         }
@@ -152,8 +163,10 @@ object AppData {
     }
 
     fun getDefaultTumplrApps(): HashMap<String, String> {
-        return Gson().fromJson(Constant.API_KEYS,
-                object : TypeToken<HashMap<String, String>>() {}.type)
+        return Gson().fromJson(
+            Constant.API_KEYS,
+            object : TypeToken<HashMap<String, String>>() {}.type
+        )
     }
 
     fun getReferenceBlog(): List<String> {
