@@ -8,7 +8,7 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 /*
@@ -38,7 +38,7 @@ object ApiClient {
         retrofit = Retrofit.Builder().run {
             baseUrl(Constant.BASE_URL)
             addConverterFactory(GsonConverterFactory.create(gson))
-            addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            addCallAdapterFactory(RxJava3CallAdapterFactory.createSynchronous())
             client(okHttpClient)
             build()
         }
