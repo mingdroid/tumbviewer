@@ -6,7 +6,6 @@ import android.text.format.DateUtils
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
@@ -47,7 +46,7 @@ class FollowingActivity : BaseActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
 
-        followingViewModel.followingData.observe(this, Observer {
+        followingViewModel.followingData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     if (it.data == null) {
@@ -85,15 +84,15 @@ class FollowingActivity : BaseActivity() {
             }
         }
 
-        override fun bindView(blog: FollowingBlog.Blog) {
-            this.blog = blog
-            binding.blogName.text = blog.name
-            binding.blogTitle.text = blog.title
-            setTumblrAvatarUri(binding.blogAvatar, blog.name, 128)
+        override fun bindView(any: FollowingBlog.Blog) {
+            this.blog = any
+            binding.blogName.text = any.name
+            binding.blogTitle.text = any.title
+            setTumblrAvatarUri(binding.blogAvatar, any.name, 128)
             binding.blogLastUpdate.text = itemView.resources.getString(
                 R.string.update_des,
                 DateUtils.getRelativeTimeSpanString(
-                    blog.updated * 1000,
+                    any.updated * 1000,
                     System.currentTimeMillis(),
                     DateUtils.SECOND_IN_MILLIS
                 )

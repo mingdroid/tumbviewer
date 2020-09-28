@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
@@ -72,7 +71,7 @@ class LikesActivity : BaseActivity() {
     }
 
     private fun initViewModel() {
-        blogViewModel.deletePostData.observe(this, Observer {
+        blogViewModel.deletePostData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     val list = adapter.getData()
@@ -90,7 +89,7 @@ class LikesActivity : BaseActivity() {
                 }
             }
         })
-        likesViewModel.likesPostsData.observe(this, Observer {
+        likesViewModel.likesPostsData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     if (it.data != null) {

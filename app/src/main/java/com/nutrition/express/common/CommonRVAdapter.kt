@@ -185,29 +185,29 @@ class CommonRVAdapter private constructor(builder: Builder) :
     }
 
     fun remove(position: Int) {
-        data.remove(position);
-        notifyItemRemoved(position);
+        data.remove(position)
+        notifyItemRemoved(position)
     }
 
     fun remove(start: Int, count: Int) {
-        data.subList(start, start + count).clear();
-        notifyItemRangeRemoved(start, count);
+        data.subList(start, start + count).clear()
+        notifyItemRangeRemoved(start, count)
     }
 
     fun insert(start: Int, array: Array<Any>) {
         data.addAll(start, array.toMutableList())
-        notifyItemRangeInserted(start, array.size);
+        notifyItemRangeInserted(start, array.size)
     }
 
     fun move(fromPosition: Int, toPosition: Int) {
-        Collections.swap(data, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
+        Collections.swap(data, fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
     }
 
     fun replace(index: Int, any: Any) {
         if (index >= 0 && index < data.size) {
-            data[index] = any;
-            notifyItemChanged(index);
+            data[index] = any
+            notifyItemChanged(index)
         }
     }
 

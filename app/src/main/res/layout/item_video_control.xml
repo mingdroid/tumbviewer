@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:paddingStart="4dp"
-        android:paddingLeft="4dp"
         android:textColor="@android:color/white"
         android:textSize="13sp"
         android:textStyle="bold" />

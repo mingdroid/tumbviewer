@@ -77,10 +77,10 @@ class SearchActivity : BaseActivity() {
         adapter.notifyDataSetChanged()
     }
 
-    private fun showDeleteDialog(text: String, position: Int) {
+    private fun showDeleteDialog(position: Int) {
         AlertDialog.Builder(this).run {
             setMessage(R.string.download_delete_title)
-            setPositiveButton(R.string.delete_positive) { dialog, which ->
+            setPositiveButton(R.string.delete_positive) { _, _ ->
                 adapter.notifyItemRemoved(position)
             }
             show()
@@ -89,19 +89,19 @@ class SearchActivity : BaseActivity() {
 
     inner class BaseVH(view: View) : CommonViewHolder<String>(view) {
         private val binding: ItemSearchReferBlogBinding = ItemSearchReferBlogBinding.bind(view)
-        private lateinit var name: String;
+        private lateinit var name: String
 
         init {
             binding.root.setOnClickListener { openBlogPosts(name) }
             binding.root.setOnLongClickListener {
-                showDeleteDialog(name, adapterPosition)
+                showDeleteDialog(adapterPosition)
                 return@setOnLongClickListener true
             }
         }
 
-        override fun bindView(name: String) {
-            binding.blogName.text = name
-            setTumblrAvatarUri(binding.blogAvatar, name, 128)
+        override fun bindView(any: String) {
+            binding.blogName.text = any
+            setTumblrAvatarUri(binding.blogAvatar, any, 128)
         }
     }
 }

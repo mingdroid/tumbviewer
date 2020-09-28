@@ -22,8 +22,6 @@ import com.nutrition.express.util.FileUtils.videoDir
 import com.nutrition.express.util.getBoolean
 import com.nutrition.express.util.putBoolean
 import java.io.File
-import java.util.*
-import kotlin.collections.ArrayList
 
 class VideoFragment : Fragment() {
     private val SHOW_USER_VIDEO = "SUV"
@@ -82,14 +80,6 @@ class VideoFragment : Fragment() {
             it.finish()
             adapter?.notifyDataSetChanged()
         }
-    }
-
-    override fun onResume(): Unit {
-        super.onResume()
-    }
-
-    override fun onStop(): Unit {
-        super.onStop()
     }
 
     override fun onCreateView(
@@ -194,11 +184,11 @@ class VideoFragment : Fragment() {
     }
 
     private fun sortPhotoData(videos: List<LocalVideo>) {
-        videos.sortedWith(Comparator { o1, o2 ->
+        videos.sortedWith { o1, o2 ->
             val x = o1.file.lastModified()
             val y = o2.file.lastModified()
             if (x < y) 1 else if (x == y) 0 else -1
-        })
+        }
     }
 
     private fun startMultiChoice() {
@@ -252,7 +242,7 @@ class VideoFragment : Fragment() {
     private fun showDeleteDialog() {
         context?.let {
             AlertDialog.Builder(it).run {
-                setPositiveButton(R.string.delete_positive) { dialog, which ->
+                setPositiveButton(R.string.delete_positive) { _, _ ->
                     deleteCheckedVideos()
                     finishMultiChoice()
                 }
@@ -294,9 +284,9 @@ class VideoFragment : Fragment() {
             }
         }
 
-        override fun bindView(localVideo: LocalVideo) {
-            video = localVideo
-            binding.playerView.bindVideo(localVideo)
+        override fun bindView(any: LocalVideo) {
+            video = any
+            binding.playerView.bindVideo(any)
             if (isChoiceState && video.isChecked) {
                 binding.checkView.visibility = View.VISIBLE
             } else {

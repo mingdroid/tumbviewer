@@ -1,6 +1,5 @@
 package com.nutrition.express.common
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -12,7 +11,6 @@ import android.view.TextureView
 import android.view.View
 import android.widget.*
 import androidx.annotation.AttrRes
-import androidx.annotation.StyleRes
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.*
@@ -101,13 +99,6 @@ class MyExoPlayerView : FrameLayout {
         defStyleAttr
     )
 
-    @TargetApi(21)
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        @AttrRes defStyleAttr: Int,
-        @StyleRes defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     init {
         controlBinding.videoControllerProgress.setOnSeekBarChangeListener(
@@ -204,12 +195,12 @@ class MyExoPlayerView : FrameLayout {
         uri = video.sourceUri
         var params = layoutParams
         if (params == null) {
-            params = LayoutParams(video.getWidth(), video.getHeight())
+            params = LayoutParams(video.width, video.height)
         }
-        params.width = video.getWidth()
-        params.height = video.getHeight()
+        params.width = video.width
+        params.height = video.height
         layoutParams = params
-        thumbnailView.setImageURI(video.getThumbnailUri(), context)
+        thumbnailView.setImageURI(video.thumbnailUri, context)
         thumbnailView.visibility = View.VISIBLE
         hide()
         disconnect()

@@ -61,22 +61,29 @@ class VideoPostVH(view: View) : BasePostVH<VideoPostsItem>(view) {
         binding.postDownload.setOnClickListener {
             postsItem?.let {
                 if (canWrite2Storage(itemView.context)) {
-                    val status = RxDownload.getInstance().start(it.video_url, null)
-                    if (status == RxDownload.PROCESSING) {
-                        Toast.makeText(
-                            itemView.context,
-                            R.string.download_start,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else if (status == RxDownload.FILE_EXIST) {
-                        Toast.makeText(itemView.context, R.string.video_exist, Toast.LENGTH_SHORT)
-                            .show()
-                    } else {
-                        Toast.makeText(
-                            itemView.context,
-                            R.string.reblog_failure,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    when (RxDownload.getInstance().start(it.video_url, null)) {
+                        RxDownload.PROCESSING -> {
+                            Toast.makeText(
+                                itemView.context,
+                                R.string.download_start,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        RxDownload.FILE_EXIST -> {
+                            Toast.makeText(
+                                itemView.context,
+                                R.string.video_exist,
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                        else -> {
+                            Toast.makeText(
+                                itemView.context,
+                                R.string.reblog_failure,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             }
@@ -110,19 +117,19 @@ class VideoPostVH(view: View) : BasePostVH<VideoPostsItem>(view) {
         }
     }
 
-    override fun bindView(item: VideoPostsItem) {
-        onlineVideo = item.onlineVideo
-        if (item.postsItem.video_url.isNullOrEmpty()) {
+    override fun bindView(any: VideoPostsItem) {
+        onlineVideo = any.onlineVideo
+        if (any.postsItem.video_url.isNullOrEmpty()) {
             binding.postDownload.visibility = View.GONE
         } else {
             binding.postDownload.visibility = View.VISIBLE
         }
-        val postsItem = item.postsItem
+        val postsItem = any.postsItem
         this.postsItem = postsItem
         setTumblrAvatarUri(binding.postAvatar, postsItem.blog_name, 128)
         binding.postName.text = postsItem.blog_name
         binding.postTime.text = DateUtils.getRelativeTimeSpanString(
-            postsItem.getTimestamp() * 1000,
+            postsItem.timestamp * 1000,
             System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS
         )
         if (postsItem.source_title.isNullOrEmpty()) {

@@ -16,7 +16,7 @@ class OAuth1Interceptor : Interceptor {
             request = signRequest(request)
         }
         val response = chain.proceed(request)
-        val headers = response.headers;
+        val headers = response.headers
         AppData.dayLimit = headers["X-RateLimit-PerDay-Limit"]?.toLongOrNull() ?: 0
         AppData.dayRemaining = headers["X-RateLimit-PerDay-Remaining"]?.toLongOrNull() ?: 0
         AppData.dayReset = headers["X-RateLimit-PerDay-Reset"]?.toLongOrNull() ?: 0

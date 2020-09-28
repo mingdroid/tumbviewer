@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.common.CommonRVAdapter
@@ -39,8 +38,8 @@ open class DashboardFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val _binding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
-        binding = _binding
+        val dashboardBinding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
+        binding = dashboardBinding
         adapter = CommonRVAdapter.adapter {
             addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it) }
             addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it) }
@@ -54,13 +53,13 @@ open class DashboardFragment : Fragment() {
                 }
             }
         }
-        _binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        _binding.recyclerView.adapter = adapter
-        _binding.refreshLayout.setOnRefreshListener {
+        dashboardBinding.recyclerView.layoutManager = LinearLayoutManager(context)
+        dashboardBinding.recyclerView.adapter = adapter
+        dashboardBinding.refreshLayout.setOnRefreshListener {
             userViewModel.fetchDashboardData(type)
         }
 
-        return _binding.root
+        return dashboardBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,7 +77,7 @@ open class DashboardFragment : Fragment() {
     }
 
     private fun initViewModel() {
-        blogViewModel.deletePostData.observe(viewLifecycleOwner, Observer {
+        blogViewModel.deletePostData.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
                     val list = adapter.getData()
@@ -96,7 +95,7 @@ open class DashboardFragment : Fragment() {
                 }
             }
         })
-        userViewModel.dashboardData.observe(viewLifecycleOwner, Observer {
+        userViewModel.dashboardData.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
                     binding?.refreshLayout?.isRefreshing = false
@@ -112,7 +111,7 @@ open class DashboardFragment : Fragment() {
                 }
             }
         })
-        userViewModel.dashboardNextPageData.observe(viewLifecycleOwner, Observer {
+        userViewModel.dashboardNextPageData.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> adapter.append(wrapPosts(it.data)?.toTypedArray(), true)
                 is Resource.Error -> adapter.showLoadingFailure(it.message)

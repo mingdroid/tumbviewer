@@ -14,7 +14,6 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:actualImageScaleType="fitCenter"
@@ -29,7 +28,6 @@
         android:layout_alignTop="@id/trail_avatar"
         android:layout_alignBottom="@id/trail_avatar"
         android:layout_toEndOf="@id/trail_avatar"
-        android:layout_toRightOf="@id/trail_avatar"
         android:gravity="center"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
@@ -41,7 +39,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/trail_avatar"
         android:layout_alignStart="@id/trail_avatar"
-        android:layout_alignLeft="@id/trail_avatar"
         android:autoLink="all" />
 
     <ImageView

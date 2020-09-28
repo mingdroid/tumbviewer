@@ -17,7 +17,7 @@ class LikesViewModel : ViewModel() {
             val options = HashMap<String, String>(2)
             options["limit"] = (20).toString()
             options["before"] = it.before.toString()
-            blogRepo.getBlogLikes(it.blogName, options);
+            blogRepo.getBlogLikes(it.blogName, options)
         } else {
             userRepo.getLikes(20, it.before)
         }

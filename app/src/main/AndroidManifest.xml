@@ -16,7 +16,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.downloading.DownloadingActivity"></activity>
+        <activity android:name=".ui.downloading.DownloadingActivity" />
         <activity android:name=".ui.download.DownloadedActivity" />
         <activity android:name=".ui.post.blog.PostListActivity" />
         <activity android:name=".ui.following.FollowingActivity" />

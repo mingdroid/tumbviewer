@@ -51,13 +51,13 @@ open class PhotoPostVH(view: View) : BasePostVH<PhotoPostsItem>(view) {
         }
     }
 
-    override fun bindView(item: PhotoPostsItem) {
-        val postsItem = item.postsItem
+    override fun bindView(any: PhotoPostsItem) {
+        val postsItem = any.postsItem
         this.postsItem = postsItem
         setTumblrAvatarUri(binding.postAvatar, postsItem.blog_name, 128)
         binding.postName.text = postsItem.blog_name
         binding.postTime.text = DateUtils.getRelativeTimeSpanString(
-            postsItem.getTimestamp() * 1000,
+            postsItem.timestamp * 1000,
             System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS
         )
         if (postsItem.source_title.isNullOrEmpty()) {

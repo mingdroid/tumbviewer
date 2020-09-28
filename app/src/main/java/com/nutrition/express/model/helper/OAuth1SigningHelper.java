@@ -41,14 +41,13 @@ public final class OAuth1SigningHelper {
 
     private TreeMap<String, String> oauthMap = new TreeMap<>();
     private String signature;
-    private String apiKey, apiSecret;
+    private String apiSecret;
 
     public OAuth1SigningHelper(String key, String secret) {
         String timestamp = Long.toString(System.currentTimeMillis() / 1000);
         String nonce = Long.toString(System.currentTimeMillis() % 100000000);
-        apiKey = key;
         apiSecret = secret;
-        oauthMap.put(OAUTH_CONSUMER_KEY, apiKey);
+        oauthMap.put(OAUTH_CONSUMER_KEY, key);
         oauthMap.put(OAUTH_NONCE, nonce);
         oauthMap.put(OAUTH_TIMESTAMP, timestamp);
         oauthMap.put(OAUTH_SIGNATURE_METHOD, SIGNATURE_METHOD);
@@ -135,13 +134,11 @@ public final class OAuth1SigningHelper {
         }
         paraBuilder.deleteCharAt(paraBuilder.length() - 1);
 
-        StringBuilder builder = new StringBuilder();
-        builder.append(method);
-        builder.append("&");
-        builder.append(URLEncoder.encode(url, ENC));
-        builder.append("&");
-        builder.append(URLEncoder.encode(paraBuilder.toString(), ENC));
-        return builder.toString();
+        return method +
+                "&" +
+                URLEncoder.encode(url, ENC) +
+                "&" +
+                URLEncoder.encode(paraBuilder.toString(), ENC);
     }
 
     private String getSignature(String key, String text) {

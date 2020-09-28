@@ -45,7 +45,7 @@ class LoginViewModel : ViewModel() {
      * init api key/secret
      */
     fun setType(type: Int) {
-        this.type = type;
+        this.type = type
         var tumblrApp: TumblrApp? = null
         if (type == NEW_ROUTE) {
             tumblrApp = AppData.getTumblrApp()

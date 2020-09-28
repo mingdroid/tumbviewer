@@ -224,13 +224,13 @@ public class DataManager {
     public void updateTumblrAppInfo(String dayLimit, String dayRemaining, String dayReset,
                                     String hourLimit, String hourRemaining, String hourReset) {
         try {
-            this.dayLimit = Long.valueOf(dayLimit);
-            this.dayRemaining = Long.valueOf(dayRemaining);
-            this.dayReset = Long.valueOf(dayReset);
-            this.hourLimit = Long.valueOf(hourLimit);
-            this.hourRemaining = Long.valueOf(hourRemaining);
-            this.hourReset = Long.valueOf(hourReset);
-        } catch (NumberFormatException e) {
+            this.dayLimit = Long.parseLong(dayLimit);
+            this.dayRemaining = Long.parseLong(dayRemaining);
+            this.dayReset = Long.parseLong(dayReset);
+            this.hourLimit = Long.parseLong(hourLimit);
+            this.hourRemaining = Long.parseLong(hourRemaining);
+            this.hourReset = Long.parseLong(hourReset);
+        } catch (NumberFormatException ignored) {
         }
     }
 

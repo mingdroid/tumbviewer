@@ -65,12 +65,7 @@ public class ZoomableDraweeView extends DraweeView<GenericDraweeHierarchy>
     private long startClickTime;
     private float initialMotionX, initialMotionY;
     private int touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-    private Runnable longClick = new Runnable() {
-        @Override
-        public void run() {
-            performLongClick();
-        }
-    };
+    private Runnable longClick = this::performLongClick;
 
     public ZoomableDraweeView(Context context) {
         super(context);

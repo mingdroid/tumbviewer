@@ -69,7 +69,7 @@ class RegisterActivity : AppCompatActivity() {
         binding.apiSecret.setText(secret)
         AlertDialog.Builder(this).run {
             setTitle(R.string.register_tumblr_app)
-            setPositiveButton(R.string.pic_save) { dialog, which ->
+            setPositiveButton(R.string.pic_save) { _, _ ->
                 if (!binding.apiKey.text.isNullOrEmpty() && !binding.apiSecret.text.isNullOrEmpty()) {
                     AppData.saveTumblrApp(
                         binding.apiKey.text.toString(),
@@ -83,7 +83,7 @@ class RegisterActivity : AppCompatActivity() {
                     finish()
                 }
             }
-            setNeutralButton(R.string.register_continue_copy) { dialog, which ->
+            setNeutralButton(R.string.register_continue_copy) { _, _ ->
                 key = binding.apiKey.text.toString()
                 secret = binding.apiSecret.text.toString()
             }

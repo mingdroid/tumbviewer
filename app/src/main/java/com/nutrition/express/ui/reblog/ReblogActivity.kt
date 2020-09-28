@@ -8,7 +8,6 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.SpinnerAdapter
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
 import com.nutrition.express.application.toast
@@ -42,7 +41,7 @@ class ReblogActivity : BaseActivity() {
             }
         }
         if (AppData.users == null) {
-            userViewModel.userInfoData.observe(this, Observer {
+            userViewModel.userInfoData.observe(this, {
                 when (it) {
                     is Resource.Success -> it.data?.user?.let { user -> setNames(user) }
                     is Resource.Error -> toast(it.message)
@@ -54,7 +53,7 @@ class ReblogActivity : BaseActivity() {
         } else {
             setNames(AppData.users!!)
         }
-        reblogViewModel.reblogResult.observe(this, Observer {
+        reblogViewModel.reblogResult.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     toast(R.string.reblog_success)

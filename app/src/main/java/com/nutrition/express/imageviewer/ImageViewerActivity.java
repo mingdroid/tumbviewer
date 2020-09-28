@@ -20,9 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -56,7 +54,7 @@ public class ImageViewerActivity extends BaseActivity
     private final String ACTION = "SAVE_IMAGE";
     private ViewPager viewPager;
     private LinearLayout indicator;
-    private ImageView mImageViews[];
+    private ImageView[] mImageViews;
     private List<Uri> photoUris;
     private int savedCount, failureCount;
     private int selectedIndex;
@@ -117,29 +115,26 @@ public class ImageViewerActivity extends BaseActivity
 
         final CoordinatorLayout container = findViewById(R.id.container);
         colorDrawable = new ColorDrawable(getResources().getColor(R.color.divider_color));
-        container.setBackgroundDrawable(colorDrawable);
-        ViewCompat.setOnApplyWindowInsetsListener(container, new OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-                if (v instanceof CoordinatorLayout) {
-                    CoordinatorLayout layout = (CoordinatorLayout) v;
-                    final int count = layout.getChildCount();
-                    for (int i = 0; i < count; i++) {
-                        View view = layout.getChildAt(i);
-                        if (view instanceof FloatingActionButton) {
-                            ViewGroup.LayoutParams lp = view.getLayoutParams();
-                            if (lp instanceof CoordinatorLayout.LayoutParams) {
-                                ((CoordinatorLayout.LayoutParams) lp).bottomMargin += insets.getSystemWindowInsetBottom();
-                            }
-                        } else {
-                            view.setPadding(view.getLeft(), view.getTop(), view.getRight(),
-                                    view.getBottom() + insets.getSystemWindowInsetBottom());
+        container.setBackground(colorDrawable);
+        ViewCompat.setOnApplyWindowInsetsListener(container, (v, insets) -> {
+            if (v instanceof CoordinatorLayout) {
+                CoordinatorLayout layout = (CoordinatorLayout) v;
+                final int count = layout.getChildCount();
+                for (int i = 0; i < count; i++) {
+                    View view = layout.getChildAt(i);
+                    if (view instanceof FloatingActionButton) {
+                        ViewGroup.LayoutParams lp = view.getLayoutParams();
+                        if (lp instanceof CoordinatorLayout.LayoutParams) {
+                            ((CoordinatorLayout.LayoutParams) lp).bottomMargin += insets.getSystemWindowInsetBottom();
                         }
+                    } else {
+                        view.setPadding(view.getLeft(), view.getTop(), view.getRight(),
+                                view.getBottom() + insets.getSystemWindowInsetBottom());
                     }
-                    ViewCompat.setOnApplyWindowInsetsListener(container, null);
                 }
-                return insets;
+                ViewCompat.setOnApplyWindowInsetsListener(container, null);
             }
+            return insets;
         });
         viewPager = findViewById(R.id.viewPager);
         indicator = findViewById(R.id.indicator_container);

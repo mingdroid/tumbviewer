@@ -39,7 +39,6 @@ public class DefaultZoomableController
     private boolean mIsRotationEnabled = false;
     private boolean mIsScaleEnabled = true;
     private boolean mIsTranslationEnabled = true;
-    private float mMinScaleFactor = 1.0f;
 
     public DefaultZoomableController(TransformGestureDetector gestureDetector) {
         mGestureDetector = gestureDetector;
@@ -179,7 +178,7 @@ public class DefaultZoomableController
      */
     private void mapAbsoluteToRelative(float[] destPoints, float[] srcPoints, int numPoints) {
         for (int i = 0; i < numPoints; i++) {
-            destPoints[i * 2 + 0] = (srcPoints[i * 2 + 0] - mImageBounds.left) / mImageBounds.width();
+            destPoints[i * 2] = (srcPoints[i * 2] - mImageBounds.left) / mImageBounds.width();
             destPoints[i * 2 + 1] = (srcPoints[i * 2 + 1] - mImageBounds.top) / mImageBounds.height();
         }
     }
@@ -195,7 +194,7 @@ public class DefaultZoomableController
      */
     private void mapRelativeToAbsolute(float[] destPoints, float[] srcPoints, int numPoints) {
         for (int i = 0; i < numPoints; i++) {
-            destPoints[i * 2 + 0] = srcPoints[i * 2 + 0] * mImageBounds.width() + mImageBounds.left;
+            destPoints[i * 2] = srcPoints[i * 2] * mImageBounds.width() + mImageBounds.left;
             destPoints[i * 2 + 1] = srcPoints[i * 2 + 1] * mImageBounds.height() + mImageBounds.top;
         }
     }
@@ -263,6 +262,7 @@ public class DefaultZoomableController
 
     private void limitScale(float pivotX, float pivotY) {
         float currentScale = getScaleFactor();
+        float mMinScaleFactor = 1.0f;
         if (currentScale < mMinScaleFactor) {
             float scale = mMinScaleFactor / currentScale;
             mActiveTransform.postScale(scale, scale, pivotX, pivotY);

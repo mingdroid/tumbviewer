@@ -46,7 +46,7 @@ class SettingsActivity : BaseActivity() {
 
         val mode = getBoolean(POST_SIMPLE_MODE, false)
         binding.settingsOptionSimpleCheckbox.isChecked = mode
-        binding.settingsOptionSimpleCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.settingsOptionSimpleCheckbox.setOnCheckedChangeListener { _, isChecked ->
             putBoolean(POST_SIMPLE_MODE, isChecked)
             AppData.modeData.value = isChecked
         }
@@ -108,7 +108,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun showClearCacheDialog() {
         AlertDialog.Builder(this).run {
-            setPositiveButton(R.string.settings_clear_cache) { dialog, which ->
+            setPositiveButton(R.string.settings_clear_cache) { _, _ ->
                 Fresco.getImagePipeline().clearDiskCaches()
                 toast(R.string.settings_clear_ok)
             }
@@ -143,7 +143,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun showDeleteAccountDialog(account: TumblrAccount, accountName: String) {
         AlertDialog.Builder(this).run {
-            setPositiveButton(R.string.delete_positive) { dialog, which ->
+            setPositiveButton(R.string.delete_positive) { _, _ ->
                 AppData.removeAccount(account)
                 updateAccountsContent()
                 if (!AppData.isLogin()) {
@@ -169,7 +169,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun showSwitchDialog(account: TumblrAccount, accountName: String) {
         AlertDialog.Builder(this).run {
-            setPositiveButton(R.string.settings_switch) { dialog, which ->
+            setPositiveButton(R.string.settings_switch) { _, _ ->
                 switchToAccount(account)
             }
             setNegativeButton(R.string.pic_cancel, null)
@@ -191,35 +191,33 @@ class SettingsActivity : BaseActivity() {
                 if (account.isUsing) {
                     showRoute()
                 } else {
-                    showSwitchDialog(account, binding.accountName.getText().toString())
+                    showSwitchDialog(account, binding.accountName.text.toString())
                 }
             }
             itemView.setOnLongClickListener {
-                showDeleteAccountDialog(account, binding.accountName.getText().toString())
+                showDeleteAccountDialog(account, binding.accountName.text.toString())
                 return@setOnLongClickListener true
             }
         }
 
-        override fun bindView(account: TumblrAccount) {
-            this.account = account
-            if (account.isUsing) {
+        override fun bindView(any: TumblrAccount) {
+            this.account = any
+            if (any.isUsing) {
                 binding.accountChecked.visibility = View.VISIBLE
             } else {
                 binding.accountChecked.visibility = View.GONE
             }
-            if (!TextUtils.isEmpty(account.name)) {
-                binding.accountName.text = account.name
-                setTumblrAvatarUri(binding.accountAvatar, account.name, 128)
+            if (!TextUtils.isEmpty(any.name)) {
+                binding.accountName.text = any.name
+                setTumblrAvatarUri(binding.accountAvatar, any.name, 128)
             } else {
-                binding.accountName.setText(
-                    getResources().getString(
-                        R.string.settings_accounts_title,
-                        adapterPosition + 1
-                    )
+                binding.accountName.text = resources.getString(
+                    R.string.settings_accounts_title,
+                    adapterPosition + 1
                 )
                 binding.accountAvatar.setActualImageResource(R.mipmap.ic_account_default)
             }
-            binding.accountKey.text = account.apiKey
+            binding.accountKey.text = any.apiKey
         }
     }
 

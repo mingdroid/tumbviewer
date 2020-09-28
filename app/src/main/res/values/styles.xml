@@ -44,6 +44,6 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="AppTheme.Drawer" parent="AppTheme"></style>
+    <style name="AppTheme.Drawer" parent="AppTheme" />
 
 </resources>

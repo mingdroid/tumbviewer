@@ -4,8 +4,6 @@ import android.app.ActivityOptions
 import android.app.SharedElementCallback
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
-import android.text.Html
 import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +12,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.isDigitsOnly
-import androidx.lifecycle.Observer
+import androidx.core.text.parseAsHtml
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import com.facebook.drawee.backends.pipeline.Fresco
@@ -40,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger
 abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
     protected var isSimpleMode: Boolean = false
     protected val userViewModel: UserViewModel
-    protected val blogViewModel: BlogViewModel
+    private val blogViewModel: BlogViewModel
 
     private val contentViewCache = ArrayList<SimpleDraweeView>()
     private val trailViewCache = ArrayList<ItemTrailBinding>()
@@ -54,12 +52,12 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
         val provider = ViewModelProvider(activity)
         userViewModel = provider.get()
         blogViewModel = provider.get()
-        userViewModel.likeData.observe(activity, Observer {
+        userViewModel.likeData.observe(activity, {
             if (it is Resource.Success) {
                 onLike(it.data)
             }
         })
-        userViewModel.unLikeData.observe(activity, Observer {
+        userViewModel.unLikeData.observe(activity, {
             if (it is Resource.Success) {
                 onUnLike(it.data)
             }
@@ -150,7 +148,7 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
                 val trailBinding = trailViewCache[i]
                 setTumblrAvatarUri(trailBinding.trailAvatar, trails[i].blog.name, 128)
                 trailBinding.trailName.text = trails[i].blog.name
-                trailBinding.trailContent.text = fromHtlmCompat(trails[i].content_raw)
+                trailBinding.trailContent.text = fromHtmlCompat(trails[i].content_raw)
                 trailBinding.root.tag = trails[i].blog.name
                 postTrail.addView(trailBinding.root)
             }
@@ -160,13 +158,9 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
         }
     }
 
-    private fun fromHtlmCompat(html: String?): Spanned {
+    private fun fromHtmlCompat(html: String?): Spanned {
         val content = html ?: "..."
-        return if (Build.VERSION.SDK_INT >= 24) {
-            Html.fromHtml(content, Html.FROM_HTML_MODE_COMPACT) // for 24 api and more
-        } else {
-            Html.fromHtml(content) // or for older api
-        }
+        return content.parseAsHtml()
     }
 
     private fun createTrailView(count: Int) {
@@ -285,7 +279,7 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
 
     protected fun showDeleteDialog(postsItem: PostsItem) {
         val builder = AlertDialog.Builder(itemView.context)
-        builder.setPositiveButton(R.string.delete_positive) { dialog, which ->
+        builder.setPositiveButton(R.string.delete_positive) { _, _ ->
             blogViewModel.deletePost(postsItem.blog_name, postsItem.id.toString())
         }
         builder.setNegativeButton(R.string.pic_cancel, null)

@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
@@ -46,7 +45,7 @@ class TaggedActivity : BaseActivity() {
 
         volumeControlStream = STREAM_MUSIC
 
-        taggedViewModel.postData.observe(this, Observer {
+        taggedViewModel.postData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     val list = it.data
@@ -68,7 +67,7 @@ class TaggedActivity : BaseActivity() {
                 }
             }
         })
-        blogViewModel.deletePostData.observe(this, Observer {
+        blogViewModel.deletePostData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     val list = adapter.getData()

@@ -13,7 +13,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.ViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
@@ -47,7 +46,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private val testViewModel: TestViewModel by viewModels()
 
     private fun getUserInfo(uid: String) {
-        testViewModel.userInfoData.observe(this, Observer {
+        testViewModel.userInfoData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                 }
@@ -86,11 +85,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         photoItem = binding.navView.menu.getItem(1)
 
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.content.content) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.content.content) { _, insets ->
             return@setOnApplyWindowInsetsListener insets
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.content.appBarLayout) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.content.appBarLayout) { _, insets ->
             return@setOnApplyWindowInsetsListener insets
         }
 
@@ -164,7 +163,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun initViewModel() {
-        userModel.userInfoData.observe(this, Observer {
+        userModel.userInfoData.observe(this, {
             when (it) {
                 is Resource.Success -> it.data?.let { userInfo -> setUserInfo(userInfo) }
                 is Resource.Error -> {

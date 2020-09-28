@@ -12,7 +12,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.nutrition.express.model.data.NetErrorData
 import com.nutrition.express.ui.login.LoginActivity
 import com.nutrition.express.ui.login.LoginType.ROUTE_SWITCH
@@ -26,21 +25,21 @@ fun Context.toast(@StringRes resId: Int) {
 }
 
 open class BaseActivity : AppCompatActivity() {
-    private val permissionMap: HashMap<String, MutableLiveData<Boolean>> = HashMap();
+    private val permissionMap: HashMap<String, MutableLiveData<Boolean>> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         if (listenNetError()) {
-            NetErrorData.apiError401.observe(this, Observer { aBoolean: Boolean ->
+            NetErrorData.apiError401.observe(this, { aBoolean: Boolean ->
                 if (aBoolean) {
                     NetErrorData.apiError401.removeObservers(this)
                     toast("Unauthorized, please login")
                     gotoLogin()
                 }
             })
-            NetErrorData.apiError429.observe(this, Observer { aBoolean: Boolean ->
+            NetErrorData.apiError429.observe(this, { aBoolean: Boolean ->
                 if (aBoolean) {
                     NetErrorData.apiError429.removeObservers(this)
                     toast("Unauthorized, please login")
@@ -62,7 +61,7 @@ open class BaseActivity : AppCompatActivity() {
     fun requestPermission(permission: String): LiveData<Boolean> {
         var liveData: MutableLiveData<Boolean>? = permissionMap[permission]
         if (liveData == null) {
-            liveData = MutableLiveData();
+            liveData = MutableLiveData()
             permissionMap[permission] = liveData
         }
         if (ContextCompat.checkSelfPermission(
@@ -72,7 +71,7 @@ open class BaseActivity : AppCompatActivity() {
         ) {
             liveData.setValue(true)
         } else {
-            ActivityCompat.requestPermissions(this, arrayOf(permission), 1);
+            ActivityCompat.requestPermissions(this, arrayOf(permission), 1)
         }
         return liveData
     }

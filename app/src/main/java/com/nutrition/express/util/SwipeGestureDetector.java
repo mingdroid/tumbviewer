@@ -5,7 +5,6 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.MotionEventCompat;
 
 /**
  * Created by huang on 2/14/17.
@@ -28,7 +27,7 @@ public class SwipeGestureDetector {
     }
 
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        int action = MotionEventCompat.getActionMasked(event);
+        int action = event.getActionMasked();
 //        Log.d("onInterceptTouchEvent", "action-" + action);
 
         float x = event.getRawX();
@@ -70,7 +69,7 @@ public class SwipeGestureDetector {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        int action = MotionEventCompat.getActionMasked(event);
+        int action = event.getActionMasked();
         float x = event.getRawX();
         float y = event.getRawY();
 
@@ -108,8 +107,6 @@ public class SwipeGestureDetector {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                reset(x, y);
-                break;
             case MotionEvent.ACTION_CANCEL:
                 reset(x, y);
                 break;

@@ -76,7 +76,7 @@ object AppData {
         val account = TumblrAccount(apiKey, apiSecret, token, secret)
         if (positiveAccount == null) {
             account.isUsing = true
-            positiveAccount = account;
+            positiveAccount = account
         }
         tumblrAccountList.add(account)
         LocalPersistenceHelper.storeShortContent(TUMBLR_ACCOUNT, tumblrAccountList)
@@ -95,8 +95,8 @@ object AppData {
     fun switchToAccount(account: TumblrAccount) {
         for (item in tumblrAccountList) {
             if (item.token == account.token) {
-                positiveAccount?.isUsing = false;
-                item.isUsing = true;
+                positiveAccount?.isUsing = false
+                item.isUsing = true
                 positiveAccount = item
                 break
             }
@@ -128,7 +128,7 @@ object AppData {
     fun getAccountCount(): Int {
         val hashSet: HashSet<String> = HashSet()
         for (account in tumblrAccountList) {
-            hashSet.add(account.name);
+            hashSet.add(account.name)
         }
         return hashSet.size
     }
@@ -145,7 +145,7 @@ object AppData {
             object : TypeToken<ArrayList<TumblrApp>>() {}.type
         )
         if (!tumblrAppList.isNullOrEmpty()) {
-            return tumblrAppList[0];
+            return tumblrAppList[0]
         }
         return null
     }

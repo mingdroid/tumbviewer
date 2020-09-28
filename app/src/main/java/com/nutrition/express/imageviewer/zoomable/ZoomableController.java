@@ -85,7 +85,7 @@ public interface ZoomableController {
     /**
      * Listener interface.
      */
-    public interface Listener {
+    interface Listener {
 
         /**
          * Notifies the view that the transform changed.

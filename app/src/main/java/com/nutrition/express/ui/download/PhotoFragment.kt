@@ -25,8 +25,6 @@ import com.nutrition.express.util.dp2Pixels
 import com.nutrition.express.util.getBoolean
 import com.nutrition.express.util.putBoolean
 import java.io.File
-import java.util.*
-import kotlin.collections.ArrayList
 
 class PhotoFragment : Fragment() {
     private val SHOW_USER_PHOTO = "SUP"
@@ -183,11 +181,11 @@ class PhotoFragment : Fragment() {
     }
 
     private fun sortPhotoData(photos: MutableList<LocalPhoto>) {
-        photos.sortWith(Comparator { o1, o2 ->
+        photos.sortWith { o1, o2 ->
             val x = o1.file.lastModified()
             val y = o2.file.lastModified()
             if (x < y) 1 else if (x == y) 0 else -1
-        })
+        }
     }
 
     private fun startMultiChoice() {
@@ -242,7 +240,7 @@ class PhotoFragment : Fragment() {
     private fun showDeleteDialog() {
         context?.let {
             AlertDialog.Builder(it).run {
-                setPositiveButton(R.string.delete_positive) { dialog, which ->
+                setPositiveButton(R.string.delete_positive) { _, _ ->
                     deleteCheckedPhotos()
                     finishMultiChoice()
                 }
@@ -292,15 +290,15 @@ class PhotoFragment : Fragment() {
             }
         }
 
-        override fun bindView(localPhoto: LocalPhoto) {
-            photo = localPhoto
-            val height: Int = localPhoto.height * defaultWidth / localPhoto.width
+        override fun bindView(any: LocalPhoto) {
+            photo = any
+            val height: Int = any.height * defaultWidth / any.width
             val params: ViewGroup.LayoutParams =
                 binding.photoView.layoutParams ?: ViewGroup.LayoutParams(defaultWidth, height)
             params.width = defaultWidth
             params.height = height
             binding.photoView.layoutParams = params
-            binding.photoView.setImageURI(localPhoto.uri, context)
+            binding.photoView.setImageURI(any.uri, context)
             if (isChoiceState && photo.isChecked) {
                 binding.checkView.visibility = View.VISIBLE
             } else {

@@ -12,7 +12,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
 import com.nutrition.express.application.Constant
@@ -101,7 +100,7 @@ class LoginActivity : BaseActivity() {
                 }
             }
         }
-        loginViewModel.requestToken.observe(this, Observer {
+        loginViewModel.requestToken.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     dismissProgress()
@@ -116,7 +115,7 @@ class LoginActivity : BaseActivity() {
                 is Resource.Loading -> showProgress()
             }
         })
-        loginViewModel.accessToken.observe(this, Observer {
+        loginViewModel.accessToken.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     dismissProgress()

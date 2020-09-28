@@ -23,18 +23,9 @@ public class LocalPersistenceHelper {
      * @param content write to file
      */
     private static void storeShortContent(File name, String content) {
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(name);
+        try (FileWriter writer = new FileWriter(name)) {
             writer.write(content);
-        } catch (IOException e) {
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-            }
+        } catch (IOException ignored) {
         }
     }
 
@@ -42,9 +33,7 @@ public class LocalPersistenceHelper {
      * @param name store file name
      */
     private static String getShortContent(File name) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(name));
+        try (BufferedReader reader = new BufferedReader(new FileReader(name))) {
             StringBuilder builder = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -53,14 +42,6 @@ public class LocalPersistenceHelper {
             return builder.toString();
         } catch (IOException e) {
             return "";
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-
-            }
         }
 
     }

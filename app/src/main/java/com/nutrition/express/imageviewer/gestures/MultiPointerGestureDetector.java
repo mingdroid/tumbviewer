@@ -26,11 +26,11 @@ import android.view.MotionEvent;
 public class MultiPointerGestureDetector {
 
     private static final int MAX_POINTERS = 2;
-    private final int mId[] = new int[MAX_POINTERS];
-    private final float mStartX[] = new float[MAX_POINTERS];
-    private final float mStartY[] = new float[MAX_POINTERS];
-    private final float mCurrentX[] = new float[MAX_POINTERS];
-    private final float mCurrentY[] = new float[MAX_POINTERS];
+    private final int[] mId = new int[MAX_POINTERS];
+    private final float[] mStartX = new float[MAX_POINTERS];
+    private final float[] mStartY = new float[MAX_POINTERS];
+    private final float[] mCurrentX = new float[MAX_POINTERS];
+    private final float[] mCurrentY = new float[MAX_POINTERS];
     private boolean mGestureInProgress;
     private int mCount;
     private Listener mListener = null;
@@ -63,8 +63,7 @@ public class MultiPointerGestureDetector {
         mGestureInProgress = false;
         mCount = 0;
         for (int i = 0; i < MAX_POINTERS; i++) {
-            mId[i] = Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH ?
-                    -1 : MotionEvent.INVALID_POINTER_ID;
+            mId[i] = MotionEvent.INVALID_POINTER_ID;
         }
     }
 
@@ -246,16 +245,16 @@ public class MultiPointerGestureDetector {
         /**
          * Responds to the beginning of a gesture.
          */
-        public void onGestureBegin(MultiPointerGestureDetector detector);
+        void onGestureBegin(MultiPointerGestureDetector detector);
 
         /**
          * Responds to the update of a gesture in progress.
          */
-        public void onGestureUpdate(MultiPointerGestureDetector detector);
+        void onGestureUpdate(MultiPointerGestureDetector detector);
 
         /**
          * Responds to the end of a gesture.
          */
-        public void onGestureEnd(MultiPointerGestureDetector detector);
+        void onGestureEnd(MultiPointerGestureDetector detector);
     }
 }

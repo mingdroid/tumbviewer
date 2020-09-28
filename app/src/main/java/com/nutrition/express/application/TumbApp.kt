@@ -17,8 +17,7 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.nutrition.express.BuildConfig
 
 class TumbApp : Application() {
-    lateinit var imagePipelineConfig: ImagePipelineConfig
-        private set
+    private lateinit var imagePipelineConfig: ImagePipelineConfig
     var width = 0
         private set
     var height = 0

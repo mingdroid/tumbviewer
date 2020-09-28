@@ -31,6 +31,6 @@ class TaggedViewModel : ViewModel() {
         _postData.value?.let { _postData.value = TaggedRequest(it.tag, featuredTimestamp) }
     }
 
-    data class TaggedRequest(val tag: String, val featuredTimestamp: Long?);
+    data class TaggedRequest(val tag: String, val featuredTimestamp: Long?)
 
 }
