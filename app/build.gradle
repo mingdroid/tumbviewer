@@ -99,7 +99,7 @@ dependencies {
 // Third-party
     implementation 'com.google.android:flexbox:1.1.1'
 
-    def exoplayer_version = "2.11.8"
+    def exoplayer_version = "2.12.0"
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer_version"
     implementation "com.google.android.exoplayer:extension-okhttp:$exoplayer_version"

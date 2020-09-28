@@ -5,6 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -46,8 +47,10 @@ object MyExoPlayer : LifecycleObserver {
         listener?.invoke()
         listener = disconnect
 
-        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactor).createMediaSource(uri)
-        player.prepare(mediaSource)
+        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactor)
+            .createMediaSource(MediaItem.Builder().setUri(uri).build())
+        player.setMediaSource(mediaSource)
+        player.prepare()
         player.playWhenReady = false
         return player
     }
