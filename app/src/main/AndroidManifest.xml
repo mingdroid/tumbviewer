@@ -69,9 +69,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Drawer"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".downloading.DownloadingActivity"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
