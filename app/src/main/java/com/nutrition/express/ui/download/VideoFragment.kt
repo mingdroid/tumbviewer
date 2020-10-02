@@ -90,7 +90,11 @@ class VideoFragment : Fragment() {
         val binding = FragmentDownloadVideoBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         val adapter = CommonRVAdapter.adapter {
-            addViewType(LocalVideo::class, R.layout.item_download_video, this@VideoFragment::VideoViewHolder)
+            addViewType(
+                LocalVideo::class,
+                R.layout.item_download_video,
+                this@VideoFragment::VideoViewHolder
+            )
         }
         adapter.resetData(videoList.toTypedArray(), false)
         binding.recyclerView.adapter = adapter

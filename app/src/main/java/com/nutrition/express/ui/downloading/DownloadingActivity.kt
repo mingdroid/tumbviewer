@@ -32,7 +32,11 @@ class DownloadingActivity : BaseActivity() {
         supportActionBar?.setTitle(R.string.downloading)
 
         adapter = CommonRVAdapter.adapter {
-            addViewType(Record::class, R.layout.item_download, this@DownloadingActivity::RxDownloadVH)
+            addViewType(
+                Record::class,
+                R.layout.item_download,
+                this@DownloadingActivity::RxDownloadVH
+            )
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter

@@ -72,7 +72,11 @@ class SettingsActivity : BaseActivity() {
         accounts.addAll(tumblrAccounts)
 
         adapter = CommonRVAdapter.adapter {
-            addViewType(TumblrAccount::class, R.layout.item_settings_account, this@SettingsActivity::AccountVH)
+            addViewType(
+                TumblrAccount::class,
+                R.layout.item_settings_account,
+                this@SettingsActivity::AccountVH
+            )
             data = accounts
         }
 

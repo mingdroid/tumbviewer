@@ -101,7 +101,11 @@ class PhotoFragment : Fragment() {
             initPhotoDataAll()
         }
         val adapter = CommonRVAdapter.adapter {
-            addViewType(LocalPhoto::class, R.layout.item_download_photo, this@PhotoFragment::PhotoViewHolder)
+            addViewType(
+                LocalPhoto::class,
+                R.layout.item_download_photo,
+                this@PhotoFragment::PhotoViewHolder
+            )
         }
         adapter.resetData(photoList.toTypedArray(), false)
         binding.recyclerView.adapter = adapter
