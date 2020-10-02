@@ -76,9 +76,7 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
     protected fun setPhotoContent(postContent: FlexboxLayout, postsItem: PostsItem) {
         postContent.removeAllViews()
         photos.clear()
-        for (item in postsItem.photos) {
-            photos.add(item.original_size.url)
-        }
+        postsItem.photos.mapTo(photos) { it.original_size.url }
         val size = photos.size
         createPhotoView(size)
         val layout = postsItem.photoset_layout
@@ -223,7 +221,7 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
         }
         view.hierarchy = hierarchy
         view.tag = atomicInteger.getAndIncrement()
-        view.setOnClickListener { onPhotoClick(it) }
+        view.setOnClickListener(this::onPhotoClick)
         return view
     }
 

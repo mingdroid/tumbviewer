@@ -26,12 +26,8 @@ import kotlin.random.Random
 class LoginViewModel : ViewModel() {
     private var _tumblrApp = MutableLiveData<TumblrApp>()
     private var _oauthVerifier = MutableLiveData<String>()
-    val requestToken = _tumblrApp.switchMap {
-        getRequestToken(it)
-    }
-    val accessToken = _oauthVerifier.switchMap {
-        getAccessToken(it)
-    }
+    val requestToken = _tumblrApp.switchMap(this::getRequestToken)
+    val accessToken = _oauthVerifier.switchMap(this::getAccessToken)
 
     private var type = NORMAL
     private var oauthToken: OauthToken? = null

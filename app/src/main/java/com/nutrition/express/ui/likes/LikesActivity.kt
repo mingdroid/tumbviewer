@@ -54,8 +54,8 @@ class LikesActivity : BaseActivity() {
 
     private fun initRecyclerView() {
         adapter = CommonRVAdapter.adapter {
-            addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it) }
-            addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it) }
+            addViewType(PhotoPostsItem::class, R.layout.item_post, ::PhotoPostVH)
+            addViewType(VideoPostsItem::class, R.layout.item_video_post, ::VideoPostVH)
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     likesViewModel.fetchNextPage(before)

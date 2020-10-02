@@ -293,13 +293,13 @@ public class ImageViewerActivity extends BaseActivity
     }
 
     private void onSaveSuccess(Uri uri) {
-        if (uri != Uri.EMPTY) {
+        if (uri == Uri.EMPTY) {
+            failureCount++;
+        } else {
             savedCount++;
             if (photoUris.get(viewPager.getCurrentItem()).equals(uri)) {
                 saveButton.hide();
             }
-        } else {
-            failureCount++;
         }
         if (savedCount + failureCount == desiredSavedCount) {
             if (failureCount > 0) {
@@ -338,10 +338,10 @@ public class ImageViewerActivity extends BaseActivity
     }
 
     private class ViewImageAdapter extends PagerAdapter implements View.OnClickListener {
-        private List<Uri> uris;
+        private List<? extends Uri> uris;
         private LinkedList<View> viewCache = new LinkedList<>();
 
-        public ViewImageAdapter(List<Uri> uris) {
+        public ViewImageAdapter(List<? extends Uri> uris) {
             this.uris = uris;
         }
 
@@ -359,7 +359,7 @@ public class ImageViewerActivity extends BaseActivity
         public Object instantiateItem(ViewGroup container, int position) {
             DragFrameLayout layout;
             ZoomableDraweeView draweeView;
-            if (viewCache.size() == 0) {
+            if (viewCache.isEmpty()) {
                 draweeView = new ZoomableDraweeView(container.getContext());
                 draweeView.setLayoutParams(new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

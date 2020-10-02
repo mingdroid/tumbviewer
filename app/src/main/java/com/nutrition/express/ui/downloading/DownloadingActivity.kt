@@ -32,7 +32,7 @@ class DownloadingActivity : BaseActivity() {
         supportActionBar?.setTitle(R.string.downloading)
 
         adapter = CommonRVAdapter.adapter {
-            addViewType(Record::class, R.layout.item_download) { RxDownloadVH(it) }
+            addViewType(Record::class, R.layout.item_download, this@DownloadingActivity::RxDownloadVH)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
@@ -41,8 +41,8 @@ class DownloadingActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        for (entry: Map.Entry<String, ProgressResponseBody.ProgressListener> in listeners.entries) {
-            RxDownload.getInstance().removeProgressListener(entry.key, entry.value)
+        for ((key, value) in listeners) {
+            RxDownload.getInstance().removeProgressListener(key, value)
         }
     }
 

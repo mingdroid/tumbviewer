@@ -72,7 +72,7 @@ public class DataManager {
                 List<TumblrApp> tumblrAppList = LocalPersistenceHelper.getShortContent(TUMBLR_APP,
                         new TypeToken<ArrayList<TumblrApp>>() {
                         }.getType());
-                if (tumblrAppList == null || tumblrAppList.size() == 0) {
+                if (tumblrAppList == null || tumblrAppList.isEmpty()) {
                     addAccount(Constant.CONSUMER_KEY, Constant.CONSUMER_SECRET, token, secret);
                 } else {
                     for (TumblrApp app : tumblrAppList) {

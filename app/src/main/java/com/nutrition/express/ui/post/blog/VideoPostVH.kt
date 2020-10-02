@@ -32,7 +32,7 @@ class VideoPostVH(view: View) : BasePostVH<VideoPostsItem>(view) {
             postsItem?.let { openBlog(it.blog_name) }
         }
         binding.postReblog.setOnClickListener {
-            postsItem?.let { reblog(it) }
+            postsItem?.let(this::reblog)
         }
         binding.postLike.setOnClickListener {
             postsItem?.let {
@@ -44,7 +44,7 @@ class VideoPostVH(view: View) : BasePostVH<VideoPostsItem>(view) {
             }
         }
         binding.postDelete.setOnClickListener {
-            postsItem?.let { showDeleteDialog(it) }
+            postsItem?.let(this::showDeleteDialog)
         }
         binding.postVideo.setOnClickListener {
             postsItem?.let {

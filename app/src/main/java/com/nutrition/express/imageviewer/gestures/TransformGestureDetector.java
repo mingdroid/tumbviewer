@@ -143,15 +143,14 @@ public class TransformGestureDetector implements MultiPointerGestureDetector.Lis
     public float getScale() {
         if (mDetector.getCount() < 2) {
             return 1;
-        } else {
-            float startDeltaX = mDetector.getStartX()[1] - mDetector.getStartX()[0];
-            float startDeltaY = mDetector.getStartY()[1] - mDetector.getStartY()[0];
-            float currentDeltaX = mDetector.getCurrentX()[1] - mDetector.getCurrentX()[0];
-            float currentDeltaY = mDetector.getCurrentY()[1] - mDetector.getCurrentY()[0];
-            float startDist = (float) Math.hypot(startDeltaX, startDeltaY);
-            float currentDist = (float) Math.hypot(currentDeltaX, currentDeltaY);
-            return currentDist / startDist;
         }
+        float startDeltaX = mDetector.getStartX()[1] - mDetector.getStartX()[0];
+        float startDeltaY = mDetector.getStartY()[1] - mDetector.getStartY()[0];
+        float currentDeltaX = mDetector.getCurrentX()[1] - mDetector.getCurrentX()[0];
+        float currentDeltaY = mDetector.getCurrentY()[1] - mDetector.getCurrentY()[0];
+        float startDist = (float) Math.hypot(startDeltaX, startDeltaY);
+        float currentDist = (float) Math.hypot(currentDeltaX, currentDeltaY);
+        return currentDist / startDist;
     }
 
     /**
@@ -160,15 +159,14 @@ public class TransformGestureDetector implements MultiPointerGestureDetector.Lis
     public float getRotation() {
         if (mDetector.getCount() < 2) {
             return 0;
-        } else {
-            float startDeltaX = mDetector.getStartX()[1] - mDetector.getStartX()[0];
-            float startDeltaY = mDetector.getStartY()[1] - mDetector.getStartY()[0];
-            float currentDeltaX = mDetector.getCurrentX()[1] - mDetector.getCurrentX()[0];
-            float currentDeltaY = mDetector.getCurrentY()[1] - mDetector.getCurrentY()[0];
-            float startAngle = (float) Math.atan2(startDeltaY, startDeltaX);
-            float currentAngle = (float) Math.atan2(currentDeltaY, currentDeltaX);
-            return currentAngle - startAngle;
         }
+        float startDeltaX = mDetector.getStartX()[1] - mDetector.getStartX()[0];
+        float startDeltaY = mDetector.getStartY()[1] - mDetector.getStartY()[0];
+        float currentDeltaX = mDetector.getCurrentX()[1] - mDetector.getCurrentX()[0];
+        float currentDeltaY = mDetector.getCurrentY()[1] - mDetector.getCurrentY()[0];
+        float startAngle = (float) Math.atan2(startDeltaY, startDeltaX);
+        float currentAngle = (float) Math.atan2(currentDeltaY, currentDeltaX);
+        return currentAngle - startAngle;
     }
 
     /**

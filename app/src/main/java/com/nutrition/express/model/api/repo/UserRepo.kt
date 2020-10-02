@@ -38,9 +38,7 @@ class UserRepo(val context: CoroutineContext) {
     fun getInfo(): LiveData<Resource<UserInfo>> {
         return liveData(context) {
             emit(InProgress)
-            emit(callFromNet {
-                userService.getInfo()
-            })
+            emit(callFromNet(userService::getInfo))
         }
     }
 

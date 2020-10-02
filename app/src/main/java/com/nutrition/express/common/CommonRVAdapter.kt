@@ -330,12 +330,9 @@ class CommonRVAdapter private constructor(builder: Builder) :
         var stateFactory: StateViewHolderFactory = defaultStateFactory
         val itemFactory: ItemViewHolderFactory = object : ItemViewHolderFactory {
             override fun getItemViewType(data: Any): Int? {
-                for (i in classList.indices) {
-                    if (classList[i].isInstance(data)) {
-                        return base + i
-                    }
-                }
-                return null
+                return classList.indices
+                    .firstOrNull { classList[it].isInstance(data) }
+                    ?.let { base + it }
             }
 
             override fun createViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder<*>? {

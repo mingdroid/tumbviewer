@@ -43,7 +43,7 @@ class ReblogActivity : BaseActivity() {
         if (AppData.users == null) {
             userViewModel.userInfoData.observe(this, {
                 when (it) {
-                    is Resource.Success -> it.data?.user?.let { user -> setNames(user) }
+                    is Resource.Success -> it.data?.user?.let(this::setNames)
                     is Resource.Error -> toast(it.message)
                     is Resource.Loading -> {
                     }
@@ -78,9 +78,7 @@ class ReblogActivity : BaseActivity() {
 
     private fun setNames(user: UserInfoItem) {
         val names: MutableList<String> = ArrayList()
-        for (item in user.blogs) {
-            names.add(item.name)
-        }
+        user.blogs.mapTo(names) { it.name }
         if (names.isNotEmpty()) {
             name = names[0]
             binding.spinner.visibility = View.VISIBLE

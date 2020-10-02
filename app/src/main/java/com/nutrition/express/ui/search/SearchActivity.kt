@@ -34,7 +34,7 @@ class SearchActivity : BaseActivity() {
         supportActionBar?.title = null
 
         adapter = CommonRVAdapter.adapter {
-            addViewType(String::class, R.layout.item_search_refer_blog) { BaseVH(it) }
+            addViewType(String::class, R.layout.item_search_refer_blog, this@SearchActivity::BaseVH)
         }
         binding.blogList.layoutManager = LinearLayoutManager(this)
         binding.blogList.adapter = adapter
@@ -50,7 +50,7 @@ class SearchActivity : BaseActivity() {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    query?.let { openBlogPosts(it) }
+                    query?.let(this@SearchActivity::openBlogPosts)
                     return true
                 }
 

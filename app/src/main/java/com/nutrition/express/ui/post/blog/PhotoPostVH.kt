@@ -21,7 +21,7 @@ open class PhotoPostVH(view: View) : BasePostVH<PhotoPostsItem>(view) {
             postsItem?.let { openBlog(it.blog_name) }
         }
         binding.postReblog.setOnClickListener {
-            postsItem?.let { reblog(it) }
+            postsItem?.let(this::reblog)
         }
         binding.postLike.setOnClickListener {
             postsItem?.let {
@@ -33,7 +33,7 @@ open class PhotoPostVH(view: View) : BasePostVH<PhotoPostsItem>(view) {
             }
         }
         binding.postDelete.setOnClickListener {
-            postsItem?.let { showDeleteDialog(it) }
+            postsItem?.let(this::showDeleteDialog)
         }
     }
 

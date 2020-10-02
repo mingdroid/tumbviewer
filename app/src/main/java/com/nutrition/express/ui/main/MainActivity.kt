@@ -165,7 +165,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun initViewModel() {
         userModel.userInfoData.observe(this, {
             when (it) {
-                is Resource.Success -> it.data?.let { userInfo -> setUserInfo(userInfo) }
+                is Resource.Success -> it.data?.let(this::setUserInfo)
                 is Resource.Error -> {
                 }
                 is Resource.Loading -> {

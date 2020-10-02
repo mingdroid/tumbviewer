@@ -121,7 +121,7 @@ public class MultiPointerGestureDetector {
      */
     public boolean onTouchEvent(final MotionEvent event) {
         switch (event.getActionMasked()) {
-            case MotionEvent.ACTION_MOVE: {
+            case MotionEvent.ACTION_MOVE:
                 // update pointers
                 for (int i = 0; i < MAX_POINTERS; i++) {
                     int index = event.findPointerIndex(mId[i]);
@@ -139,12 +139,11 @@ public class MultiPointerGestureDetector {
                     mListener.onGestureUpdate(this);
                 }
                 break;
-            }
 
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
             case MotionEvent.ACTION_POINTER_UP:
-            case MotionEvent.ACTION_UP: {
+            case MotionEvent.ACTION_UP:
                 // we'll restart the current gesture (if any) whenever the number of pointers changes
                 // NOTE: we only restart existing gestures here, new gestures are started in ACTION_MOVE
                 boolean wasGestureInProgress = mGestureInProgress;
@@ -166,13 +165,11 @@ public class MultiPointerGestureDetector {
                     startGesture();
                 }
                 break;
-            }
 
-            case MotionEvent.ACTION_CANCEL: {
+            case MotionEvent.ACTION_CANCEL:
                 stopGesture();
                 reset();
                 break;
-            }
         }
         return true;
     }

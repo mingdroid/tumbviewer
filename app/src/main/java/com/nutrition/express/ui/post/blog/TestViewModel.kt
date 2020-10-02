@@ -67,9 +67,7 @@ class TestViewModel : ViewModel() {
     }
 
     private val _uidData = MutableLiveData<String>()
-    val userInfoData = _uidData.switchMap {
-        testRepo.getUserInfo(it)
-    }
+    val userInfoData = _uidData.switchMap(testRepo::getUserInfo)
 
     fun setUserId(uid: String) {
         _uidData.value = uid

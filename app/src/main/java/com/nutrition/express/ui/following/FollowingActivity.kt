@@ -32,7 +32,7 @@ class FollowingActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         adapter = CommonRVAdapter.adapter {
-            addViewType(FollowingBlog.Blog::class, R.layout.item_following_blog) { BlogVH(it) }
+            addViewType(FollowingBlog.Blog::class, R.layout.item_following_blog, ::BlogVH)
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     followingViewModel.getFollowingList(offset)

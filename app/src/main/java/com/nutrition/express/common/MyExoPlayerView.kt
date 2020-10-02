@@ -77,17 +77,11 @@ class MyExoPlayerView : FrameLayout {
         }
     }
 
-    private val updateProgressAction = Runnable {
-        updateProgress()
-    }
+    private val updateProgressAction = Runnable(this::updateProgress)
 
-    private val hideAction = Runnable {
-        hide()
-    }
+    private val hideAction = Runnable(this::hide)
 
-    private val updateTimeAction = Runnable {
-        updateLeftTime()
-    }
+    private val updateTimeAction = Runnable(this::updateLeftTime)
 
     constructor(context: Context) : super(context)
 
@@ -219,9 +213,7 @@ class MyExoPlayerView : FrameLayout {
     }
 
     private fun connect() {
-        val player = MyExoPlayer.preparePlayer(uri) {
-            disconnect()
-        }
+        val player = MyExoPlayer.preparePlayer(uri, this::disconnect)
         player.setVideoTextureView(videoView)
         player.addListener(eventListener)
         player.addVideoListener(videoListener)

@@ -18,8 +18,8 @@ class UserViewModel : ViewModel() {
     //follow/unFollow
     private val _followData = MutableLiveData<String>()
     private val _unFollowData = MutableLiveData<String>()
-    val followData = _followData.switchMap { userRepo.follow(it) }
-    val unFollowData = _unFollowData.switchMap { userRepo.unfollow(it) }
+    val followData = _followData.switchMap(userRepo::follow)
+    val unFollowData = _unFollowData.switchMap(userRepo::unfollow)
 
     //like/unLike
     private val _likeData = MutableLiveData<LikeRequest>()

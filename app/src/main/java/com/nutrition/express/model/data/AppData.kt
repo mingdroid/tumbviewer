@@ -110,11 +110,7 @@ object AppData {
             return false
         }
         val list: ArrayList<TumblrAccount> = ArrayList()
-        for (item in tumblrAccountList) {
-            if (item.name == positiveAccount?.name) {
-                list.add(item)
-            }
-        }
+        tumblrAccountList.filterTo(list) { it.name == positiveAccount?.name }
         positiveAccount?.isLimitExceeded = true
         for (item in list) {
             if (item != positiveAccount && !item.isLimitExceeded) {
@@ -127,9 +123,7 @@ object AppData {
 
     fun getAccountCount(): Int {
         val hashSet: HashSet<String> = HashSet()
-        for (account in tumblrAccountList) {
-            hashSet.add(account.name)
-        }
+        tumblrAccountList.mapTo(hashSet) { it.name }
         return hashSet.size
     }
 

@@ -104,8 +104,8 @@ class LoginActivity : BaseActivity() {
             when (it) {
                 is Resource.Success -> {
                     dismissProgress()
-                    it.data?.let { data ->
-                        binding.webView.loadUrl(Constant.AUTHORIZE_URL + "?oauth_token=" + data.token)
+                    it.data?.let { (token) ->
+                        binding.webView.loadUrl(Constant.AUTHORIZE_URL + "?oauth_token=" + token)
                     }
                 }
                 is Resource.Error -> {

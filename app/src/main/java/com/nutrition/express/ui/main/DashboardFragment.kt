@@ -41,8 +41,8 @@ open class DashboardFragment : Fragment() {
         val dashboardBinding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
         binding = dashboardBinding
         adapter = CommonRVAdapter.adapter {
-            addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it) }
-            addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it) }
+            addViewType(PhotoPostsItem::class, R.layout.item_post, ::PhotoPostVH)
+            addViewType(VideoPostsItem::class, R.layout.item_video_post, ::VideoPostVH)
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     userViewModel.fetchDashboardNextPageData(offset)
@@ -148,9 +148,9 @@ open class DashboardFragment : Fragment() {
         offset += postsItems.size + overload
         val validSize = postsItems.size - overload
         val list = if (TextUtils.equals("video", type)) {
-            postsItems.takeLast(validSize).map { VideoPostsItem(it) }
+            postsItems.takeLast(validSize).map(::VideoPostsItem)
         } else {
-            postsItems.takeLast(validSize).map { VideoPostsItem(it) }
+            postsItems.takeLast(validSize).map(::VideoPostsItem)
         }
         if (list.isEmpty()) {
             userViewModel.fetchDashboardNextPageData(offset)
