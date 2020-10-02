@@ -26,10 +26,10 @@ public class TrailItem {
         return content;
     }
 
-    public class Blog {
+    public static class Blog {
         private String name;
         private boolean active;
-//        private Theme theme;
+        //        private Theme theme;
         private boolean share_likes;
         private boolean share_following;
         private boolean can_be_followed;
@@ -59,7 +59,7 @@ public class TrailItem {
         }
     }
 
-    public class Post {
+    public static class Post {
         private String id;
 
         public String getId() {
@@ -67,7 +67,7 @@ public class TrailItem {
         }
     }
 
-    public class Theme {
+    public static class Theme {
         private int header_full_width;
         private int header_full_height;
         private int header_focus_width;

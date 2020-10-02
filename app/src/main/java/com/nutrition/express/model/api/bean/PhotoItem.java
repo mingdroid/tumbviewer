@@ -23,7 +23,7 @@ public class PhotoItem {
         return original_size;
     }
 
-    public class PhotoInfo {
+    public static class PhotoInfo {
         private String url;
         private int width;
         private int height;

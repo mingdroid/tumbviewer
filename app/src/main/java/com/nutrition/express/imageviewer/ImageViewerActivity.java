@@ -20,9 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -56,7 +54,7 @@ public class ImageViewerActivity extends BaseActivity
     private final String ACTION = "SAVE_IMAGE";
     private ViewPager viewPager;
     private LinearLayout indicator;
-    private ImageView mImageViews[];
+    private ImageView[] mImageViews;
     private List<Uri> photoUris;
     private int savedCount, failureCount;
     private int selectedIndex;
@@ -65,6 +63,32 @@ public class ImageViewerActivity extends BaseActivity
     private FloatingActionButton saveButton;
     private ColorDrawable colorDrawable;
     private int ALPHA_MAX = 0xFF;
+    private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            for (ImageView imageView : mImageViews) {
+                imageView.setImageResource(R.mipmap.radiobutton_default);
+            }
+            mImageViews[position].setImageResource(R.mipmap.radiobutton_select);
+            if (isTransitionEnd) {
+                if (FileUtils.INSTANCE.imageSaved(photoUris.get(position))) {
+                    saveButton.hide();
+                } else {
+                    saveButton.show();
+                }
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
 
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
@@ -91,29 +115,26 @@ public class ImageViewerActivity extends BaseActivity
 
         final CoordinatorLayout container = findViewById(R.id.container);
         colorDrawable = new ColorDrawable(getResources().getColor(R.color.divider_color));
-        container.setBackgroundDrawable(colorDrawable);
-        ViewCompat.setOnApplyWindowInsetsListener(container, new OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-                if (v instanceof CoordinatorLayout) {
-                    CoordinatorLayout layout = (CoordinatorLayout) v;
-                    final int count = layout.getChildCount();
-                    for (int i = 0; i < count; i++) {
-                        View view = layout.getChildAt(i);
-                        if (view instanceof FloatingActionButton) {
-                            ViewGroup.LayoutParams lp = view.getLayoutParams();
-                            if (lp instanceof CoordinatorLayout.LayoutParams) {
-                                ((CoordinatorLayout.LayoutParams) lp).bottomMargin += insets.getSystemWindowInsetBottom();
-                            }
-                        } else {
-                            view.setPadding(view.getLeft(), view.getTop(), view.getRight(),
-                                    view.getBottom() + insets.getSystemWindowInsetBottom());
+        container.setBackground(colorDrawable);
+        ViewCompat.setOnApplyWindowInsetsListener(container, (v, insets) -> {
+            if (v instanceof CoordinatorLayout) {
+                CoordinatorLayout layout = (CoordinatorLayout) v;
+                final int count = layout.getChildCount();
+                for (int i = 0; i < count; i++) {
+                    View view = layout.getChildAt(i);
+                    if (view instanceof FloatingActionButton) {
+                        ViewGroup.LayoutParams lp = view.getLayoutParams();
+                        if (lp instanceof CoordinatorLayout.LayoutParams) {
+                            ((CoordinatorLayout.LayoutParams) lp).bottomMargin += insets.getSystemWindowInsetBottom();
                         }
+                    } else {
+                        view.setPadding(view.getLeft(), view.getTop(), view.getRight(),
+                                view.getBottom() + insets.getSystemWindowInsetBottom());
                     }
-                    ViewCompat.setOnApplyWindowInsetsListener(container, null);
                 }
-                return insets;
+                ViewCompat.setOnApplyWindowInsetsListener(container, null);
             }
+            return insets;
         });
         viewPager = findViewById(R.id.viewPager);
         indicator = findViewById(R.id.indicator_container);
@@ -207,39 +228,12 @@ public class ImageViewerActivity extends BaseActivity
 
     }
 
-    private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            for (ImageView imageView : mImageViews) {
-                imageView.setImageResource(R.mipmap.radiobutton_default);
-            }
-            mImageViews[position].setImageResource(R.mipmap.radiobutton_select);
-            if (isTransitionEnd) {
-                if (FileUtils.INSTANCE.imageSaved(photoUris.get(position))) {
-                    saveButton.hide();
-                } else {
-                    saveButton.show();
-                }
-            }
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    };
-
     private void setIndicator(int imageCount) {
         indicator.removeAllViews();
         ImageView mImageView;
         float mScale = getResources().getDisplayMetrics().density;
         // 图片广告数量
-         mImageViews = new ImageView[imageCount];
+        mImageViews = new ImageView[imageCount];
         for (int i = 0; i < imageCount; i++) {
             mImageView = new ImageView(this);
             // int imageParams = (int) (mScale * 10 + 0.5f);// XP与DP转换，适应不同分辨率
@@ -260,11 +254,94 @@ public class ImageViewerActivity extends BaseActivity
         }
     }
 
+    @Override
+    public void finishAfterTransition() {
+        int pos = viewPager.getCurrentItem();
+        if (selectedIndex != pos) {
+            AppData.INSTANCE.setPhotoIndex(viewPager.getCurrentItem());
+            View view = viewPager.findViewWithTag("name" + pos);
+            setSharedElementCallback(view);
+        }
+        super.finishAfterTransition();
+    }
+
+    @TargetApi(21)
+    private void setSharedElementCallback(final View view) {
+        SharedElementCallback callback = new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                names.clear();
+                sharedElements.clear();
+                names.add(view.getTransitionName());
+                sharedElements.put(view.getTransitionName(), view);
+            }
+        };
+        setEnterSharedElementCallback(callback);
+    }
+
+    @TargetApi(21)
+    private void setStartPostTransition(final View sharedView) {
+        sharedView.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        sharedView.getViewTreeObserver().removeOnPreDrawListener(this);
+                        startPostponedEnterTransition();
+                        return false;
+                    }
+                });
+    }
+
+    private void onSaveSuccess(Uri uri) {
+        if (uri == Uri.EMPTY) {
+            failureCount++;
+        } else {
+            savedCount++;
+            if (photoUris.get(viewPager.getCurrentItem()).equals(uri)) {
+                saveButton.hide();
+            }
+        }
+        if (savedCount + failureCount == desiredSavedCount) {
+            if (failureCount > 0) {
+                Toast.makeText(ImageViewerActivity.this, R.string.pic_saved_failure,
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(ImageViewerActivity.this, R.string.pic_saved,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void save() {
+        requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .observe(this, granted -> {
+                    if (granted) {
+                        desiredSavedCount = 1;
+                        savedCount = 0;
+                        failureCount = 0;
+                        FrescoUtilsKt.save(photoUris.get(viewPager.getCurrentItem()))
+                                .observe(this, this::onSaveSuccess);
+                    }
+                });
+    }
+
+    private void saveAll() {
+        requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .observe(this, granted -> {
+                    if (granted) {
+                        desiredSavedCount = photoUris.size();
+                        savedCount = 0;
+                        failureCount = 0;
+                        FrescoUtilsKt.saveAll(photoUris).observe(this, this::onSaveSuccess);
+                    }
+                });
+    }
+
     private class ViewImageAdapter extends PagerAdapter implements View.OnClickListener {
-        private List<Uri> uris;
+        private List<? extends Uri> uris;
         private LinkedList<View> viewCache = new LinkedList<>();
 
-        public ViewImageAdapter(List<Uri> uris) {
+        public ViewImageAdapter(List<? extends Uri> uris) {
             this.uris = uris;
         }
 
@@ -282,7 +359,7 @@ public class ImageViewerActivity extends BaseActivity
         public Object instantiateItem(ViewGroup container, int position) {
             DragFrameLayout layout;
             ZoomableDraweeView draweeView;
-            if (viewCache.size() == 0) {
+            if (viewCache.isEmpty()) {
                 draweeView = new ZoomableDraweeView(container.getContext());
                 draweeView.setLayoutParams(new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -331,89 +408,5 @@ public class ImageViewerActivity extends BaseActivity
         public void onClick(View v) {
             finishAction((ZoomableDraweeView) v);
         }
-    }
-
-    @Override
-    public void finishAfterTransition() {
-        int pos = viewPager.getCurrentItem();
-        if (selectedIndex != pos) {
-            AppData.INSTANCE.setPhotoIndex(viewPager.getCurrentItem());
-            View view = viewPager.findViewWithTag("name" + pos);
-            setSharedElementCallback(view);
-        }
-        super.finishAfterTransition();
-    }
-
-    @TargetApi(21)
-    private void setSharedElementCallback(final View view) {
-        SharedElementCallback callback = new SharedElementCallback() {
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                names.clear();
-                sharedElements.clear();
-                names.add(view.getTransitionName());
-                sharedElements.put(view.getTransitionName(), view);
-            }
-        };
-        setEnterSharedElementCallback(callback);
-    }
-
-    @TargetApi(21)
-    private void setStartPostTransition(final View sharedView) {
-        sharedView.getViewTreeObserver().addOnPreDrawListener(
-                new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        sharedView.getViewTreeObserver().removeOnPreDrawListener(this);
-                        startPostponedEnterTransition();
-                        return false;
-                    }
-                });
-    }
-
-
-    private void onSaveSuccess(Uri uri) {
-        if (uri != Uri.EMPTY) {
-            savedCount++;
-            if (photoUris.get(viewPager.getCurrentItem()).equals(uri)) {
-                saveButton.hide();
-            }
-        } else {
-            failureCount++;
-        }
-        if (savedCount + failureCount == desiredSavedCount) {
-            if (failureCount > 0) {
-                Toast.makeText(ImageViewerActivity.this, R.string.pic_saved_failure,
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(ImageViewerActivity.this, R.string.pic_saved,
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void save() {
-        requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .observe(this, granted -> {
-                    if (granted) {
-                        desiredSavedCount = 1;
-                        savedCount = 0;
-                        failureCount = 0;
-                        FrescoUtilsKt.save(photoUris.get(viewPager.getCurrentItem()))
-                                .observe(this, this::onSaveSuccess);
-                    }
-                });
-    }
-
-    private void saveAll() {
-        requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .observe(this, granted -> {
-                    if (granted) {
-                        desiredSavedCount = photoUris.size();
-                        savedCount = 0;
-                        failureCount = 0;
-                        FrescoUtilsKt.saveAll(photoUris).observe(this, this::onSaveSuccess);
-                    }
-                });
     }
 }

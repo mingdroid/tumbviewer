@@ -1,58 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
     android:background="?attr/selectableItemBackground"
-    android:clickable="true">
+    android:clickable="true"
+    android:orientation="horizontal"
+    android:padding="16dp">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/account_avatar"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_centerVertical="true"
-        app:roundAsCircle="true"
-        />
+        app:roundAsCircle="true" />
 
     <TextView
         android:id="@+id/account_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/account_avatar"
-        android:layout_toLeftOf="@+id/account_checked"
+        android:layout_toStartOf="@+id/account_checked"
+        android:layout_toEndOf="@+id/account_avatar"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textSize="@dimen/cn_text_size_body"
-        />
+        android:textSize="@dimen/cn_text_size_body" />
 
     <TextView
         android:id="@+id/account_key"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/account_avatar"
-        android:layout_toLeftOf="@+id/account_checked"
         android:layout_below="@id/account_name"
+        android:layout_toStartOf="@+id/account_checked"
+        android:layout_toEndOf="@+id/account_avatar"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:maxLines="1"
-        android:ellipsize="end"
         android:textColor="@color/divider_color_gray"
-        android:textSize="@dimen/cn_text_size_caption"
-        />
+        android:textSize="@dimen/cn_text_size_caption" />
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/account_checked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_done"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        />
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_done" />
 
 </RelativeLayout>

@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
@@ -18,9 +17,9 @@ import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.common.MyExoPlayer
 import com.nutrition.express.databinding.ActivityTaggedBinding
 import com.nutrition.express.model.api.Resource
+import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.model.data.bean.PhotoPostsItem
 import com.nutrition.express.model.data.bean.VideoPostsItem
-import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.ui.post.blog.BlogViewModel
 import com.nutrition.express.ui.post.blog.PhotoPostVH
 import com.nutrition.express.ui.post.blog.VideoPostVH
@@ -46,7 +45,7 @@ class TaggedActivity : BaseActivity() {
 
         volumeControlStream = STREAM_MUSIC
 
-        taggedViewModel.postData.observe(this, Observer {
+        taggedViewModel.postData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     val list = it.data
@@ -57,11 +56,18 @@ class TaggedActivity : BaseActivity() {
                     featuredTimestamp?.let { time -> hasNextPage = time > 0 }
                     adapter.append(list?.toTypedArray(), hasNextPage)
                 }
-                is Resource.Error -> adapter.showLoadingFailure(getString(R.string.load_failure_des, it.code, it.message))
-                is Resource.Loading -> {}
+                is Resource.Error -> adapter.showLoadingFailure(
+                    getString(
+                        R.string.load_failure_des,
+                        it.code,
+                        it.message
+                    )
+                )
+                is Resource.Loading -> {
+                }
             }
         })
-        blogViewModel.deletePostData.observe(this, Observer {
+        blogViewModel.deletePostData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     val list = adapter.getData()
@@ -75,15 +81,16 @@ class TaggedActivity : BaseActivity() {
                     }
                 }
                 is Resource.Error -> toast(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
     }
 
-    private fun getAdapter() : CommonRVAdapter {
+    private fun getAdapter(): CommonRVAdapter {
         return CommonRVAdapter.adapter {
-            addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it) }
-            addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it) }
+            addViewType(PhotoPostsItem::class, R.layout.item_post, ::PhotoPostVH)
+            addViewType(VideoPostsItem::class, R.layout.item_video_post, ::VideoPostVH)
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     taggedViewModel.retryIfFailed()

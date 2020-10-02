@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
@@ -13,141 +14,131 @@
         android:elevation="8dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="@string/page_user_setting"
-        />
+        app:title="@string/page_user_setting" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_accounts_header"
-                android:textColor="@color/colorAccent"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:paddingTop="8dp"
+                android:paddingRight="16dp"
                 android:paddingBottom="8dp"
-                />
+                android:text="@string/settings_accounts_header"
+                android:textColor="@color/colorAccent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/settings_accounts"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:id="@+id/settings_add_account"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
                 android:background="?attr/selectableItemBackground"
-                android:clickable="true">
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:padding="16dp">
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    app:srcCompat="@mipmap/ic_person_add"
                     android:layout_gravity="center"
-                    />
+                    app:srcCompat="@drawable/ic_person_add" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:layout_gravity="center"
-                    android:textSize="@dimen/cn_text_size_body"
                     android:text="@string/settings_accounts_add"
-                    />
+                    android:textSize="@dimen/cn_text_size_body" />
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_advance"
-                android:textColor="@color/colorAccent"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:paddingTop="8dp"
+                android:paddingRight="16dp"
                 android:paddingBottom="8dp"
-                />
+                android:text="@string/settings_advance"
+                android:textColor="@color/colorAccent" />
 
             <TextView
                 android:id="@+id/settings_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="@string/settings_register"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
-                />
+                android:padding="16dp"
+                android:text="@string/settings_register" />
 
             <TextView
                 android:id="@+id/settings_clear_cache"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="@string/settings_clear_cache"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
-                />
+                android:padding="16dp"
+                android:text="@string/settings_clear_cache" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_option"
-                android:textColor="@color/colorAccent"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:paddingTop="8dp"
+                android:paddingRight="16dp"
                 android:paddingBottom="8dp"
-                />
+                android:text="@string/settings_option"
+                android:textColor="@color/colorAccent" />
 
             <RelativeLayout
                 android:id="@+id/settings_option_simple"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
-                >
+                android:padding="16dp">
+
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
                     android:ellipsize="end"
-                    android:textSize="@dimen/cn_text_size_body"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:maxLines="1"
                     android:text="@string/settings_option_simple_title"
-                    />
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/cn_text_size_body" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/title"
-                    android:paddingTop="4dp"
-                    android:maxLines="1"
                     android:ellipsize="end"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="@dimen/cn_text_size_caption"
+                    android:maxLines="1"
+                    android:paddingTop="4dp"
                     android:text="@string/settings_option_simple_des"
-                    />
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textSize="@dimen/cn_text_size_caption" />
+
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/settings_option_simple_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    />
+                    android:layout_centerVertical="true" />
             </RelativeLayout>
 
         </LinearLayout>

@@ -40,7 +40,7 @@ public class PostsItem {
     private int thumbnail_height;
     private String duration;
     private String permalink_url;
-//    private List<PlayerItem> player;
+    //    private List<PlayerItem> player;
     private String video_type;
 
     //-----------------------------------------------------------

@@ -1,52 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/page_user_account"
         android:padding="@dimen/cn_text_size_body"
-        />
+        android:text="@string/page_user_account" />
+
     <RelativeLayout
         android:id="@+id/like_layout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:clickable="true"
         android:background="?attr/selectableItemBackground"
+        android:clickable="true"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        >
+        android:paddingRight="16dp">
+
         <ImageView
             android:id="@+id/like_image"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:srcCompat="@mipmap/ic_like"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            />
+            app:srcCompat="@drawable/ic_like" />
 
         <TextView
             android:id="@+id/like"
-            android:text="@string/page_user_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/like_image"
-            android:layout_toEndOf="@+id/like_image"
             android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/like_image"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
+            android:text="@string/page_user_like"
             android:textSize="15sp" />
 
         <TextView
             android:id="@+id/like_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:textSize="15sp" />
@@ -56,38 +52,34 @@
         android:id="@+id/following_layout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:clickable="true"
         android:background="?attr/selectableItemBackground"
+        android:clickable="true"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        >
+        android:paddingRight="16dp">
+
         <ImageView
             android:id="@+id/following_image"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:srcCompat="@mipmap/ic_following"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            />
+            app:srcCompat="@drawable/ic_following" />
 
         <TextView
             android:id="@+id/following"
-            android:text="@string/page_user_following"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/following_image"
-            android:layout_toEndOf="@+id/following_image"
             android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/following_image"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
+            android:text="@string/page_user_following"
             android:textSize="15sp" />
 
         <TextView
             android:id="@+id/following_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:textSize="15sp" />
@@ -97,28 +89,27 @@
         android:id="@+id/setting_layout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:clickable="true"
         android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        >
+        android:paddingRight="16dp">
+
         <ImageView
             android:id="@+id/setting_image"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            app:srcCompat="@mipmap/ic_settings"
-            />
+            app:srcCompat="@drawable/ic_settings" />
 
         <TextView
             android:id="@+id/setting"
-            android:text="@string/page_user_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
+            android:text="@string/page_user_setting"
             android:textSize="15sp" />
     </LinearLayout>
 
@@ -126,47 +117,46 @@
         android:id="@+id/download_layout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:clickable="true"
         android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        >
-         <ImageView
-             android:id="@+id/download_image"
-             android:layout_width="24dp"
-             android:layout_height="24dp"
-             android:layout_gravity="center"
-             app:srcCompat="@mipmap/ic_file_download"
-             />
+        android:paddingRight="16dp">
+
+        <ImageView
+            android:id="@+id/download_image"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_file_download" />
+
         <TextView
             android:id="@+id/download"
-            android:text="@string/download_toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:textSize="15sp"
-            />
+            android:text="@string/download_toolbar_title"
+            android:textSize="15sp" />
     </LinearLayout>
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:src="@color/divider_color"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        />
+        android:src="@color/divider_color" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/page_user_blog"
         android:padding="@dimen/cn_text_size_body"
-        />
+        android:text="@string/page_user_blog" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_blog_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

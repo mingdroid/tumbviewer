@@ -15,7 +15,6 @@ import com.nutrition.express.R
 import com.nutrition.express.databinding.ActivityWebBinding
 import com.nutrition.express.databinding.ItemRegisterTumblrBinding
 import com.nutrition.express.model.data.AppData
-import com.nutrition.express.model.data.DataManager
 import com.nutrition.express.ui.login.LoginActivity
 import com.nutrition.express.ui.login.LoginType.NEW_ROUTE
 
@@ -70,17 +69,21 @@ class RegisterActivity : AppCompatActivity() {
         binding.apiSecret.setText(secret)
         AlertDialog.Builder(this).run {
             setTitle(R.string.register_tumblr_app)
-            setPositiveButton(R.string.pic_save) { dialog, which ->
+            setPositiveButton(R.string.pic_save) { _, _ ->
                 if (!binding.apiKey.text.isNullOrEmpty() && !binding.apiSecret.text.isNullOrEmpty()) {
-                    AppData.saveTumblrApp(binding.apiKey.text.toString(), binding.apiSecret.text.toString())
-                    Toast.makeText(this@RegisterActivity, R.string.pic_saved, Toast.LENGTH_SHORT).show()
+                    AppData.saveTumblrApp(
+                        binding.apiKey.text.toString(),
+                        binding.apiSecret.text.toString()
+                    )
+                    Toast.makeText(this@RegisterActivity, R.string.pic_saved, Toast.LENGTH_SHORT)
+                        .show()
                     val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
                     intent.putExtra("type", NEW_ROUTE)
                     startActivity(intent)
                     finish()
                 }
             }
-            setNeutralButton(R.string.register_continue_copy) { dialog, which ->
+            setNeutralButton(R.string.register_continue_copy) { _, _ ->
                 key = binding.apiKey.text.toString()
                 secret = binding.apiSecret.text.toString()
             }

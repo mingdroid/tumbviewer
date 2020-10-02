@@ -3,7 +3,6 @@ package com.nutrition.express.ui.main
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -14,7 +13,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.ViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
@@ -24,8 +22,8 @@ import com.nutrition.express.application.toast
 import com.nutrition.express.common.CommonPagerAdapter
 import com.nutrition.express.databinding.ActivityMain2Binding
 import com.nutrition.express.model.api.Resource
-import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.api.bean.UserInfo
+import com.nutrition.express.model.data.AppData
 import com.nutrition.express.ui.download.DownloadedActivity
 import com.nutrition.express.ui.downloading.DownloadingActivity
 import com.nutrition.express.ui.following.FollowingActivity
@@ -44,15 +42,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private lateinit var videoItem: MenuItem
     private lateinit var photoItem: MenuItem
 
-    private val userModel : UserViewModel by viewModels()
-    private val testViewModel : TestViewModel by viewModels()
+    private val userModel: UserViewModel by viewModels()
+    private val testViewModel: TestViewModel by viewModels()
 
     private fun getUserInfo(uid: String) {
-        testViewModel.userInfoData.observe(this, Observer {
+        testViewModel.userInfoData.observe(this, {
             when (it) {
-                is Resource.Success -> {}
-                is Resource.Error -> {}
-                is Resource.Loading -> {}
+                is Resource.Success -> {
+                }
+                is Resource.Error -> {
+                }
+                is Resource.Loading -> {
+                }
             }
         })
         testViewModel.setUserId(uid)
@@ -72,8 +73,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setContentView(binding.root)
 
         setSupportActionBar(binding.content.toolbar)
-        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.content.toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        val toggle = ActionBarDrawerToggle(
+            this, binding.drawerLayout, binding.content.toolbar,
+            R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -82,11 +85,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         photoItem = binding.navView.menu.getItem(1)
 
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.content.content) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.content.content) { _, insets ->
             return@setOnApplyWindowInsetsListener insets
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.content.appBarLayout) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.content.appBarLayout) { _, insets ->
             return@setOnApplyWindowInsetsListener insets
         }
 
@@ -110,12 +113,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         titles.add(getString(R.string.page_video))
         titles.add(getString(R.string.page_photo))
 
-        binding.content.viewPager.adapter = CommonPagerAdapter(supportFragmentManager, fragments, titles)
+        binding.content.viewPager.adapter =
+            CommonPagerAdapter(supportFragmentManager, fragments, titles)
         binding.content.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
             }
 
             override fun onPageSelected(position: Int) {
@@ -155,11 +163,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun initViewModel() {
-        userModel.userInfoData.observe(this, Observer {
+        userModel.userInfoData.observe(this, {
             when (it) {
-                is Resource.Success -> it.data?.let { userInfo -> setUserInfo(userInfo) }
-                is Resource.Error -> {}
-                is Resource.Loading -> {}
+                is Resource.Success -> it.data?.let(this::setUserInfo)
+                is Resource.Error -> {
+                }
+                is Resource.Loading -> {
+                }
             }
         })
         userModel.fetchUserInfo()
@@ -168,19 +178,26 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun setUserInfo(userInfo: UserInfo) {
         AppData.users = userInfo.user
         val blogs = userInfo.user.blogs
-        val names: Array<String> = Array(blogs.size, init = {i ->  blogs[i].name})
+        val names: Array<String> = Array(blogs.size, init = { i -> blogs[i].name })
 
-        val adapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_spinner_item, names)
+        val adapter: ArrayAdapter<String> =
+            ArrayAdapter(this, android.R.layout.simple_spinner_item, names)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.navView.user_name.adapter = adapter
-        binding.navView.user_name.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+        binding.navView.user_name.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                setTumblrAvatarUri(binding.navView.user_avatar, names[position], 128)
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    setTumblrAvatarUri(binding.navView.user_avatar, names[position], 128)
+                }
             }
-        }
         setTumblrAvatarUri(binding.navView.user_avatar, names[0], 128)
         binding.navView.user_avatar.setOnClickListener {
             val intent = Intent(this@MainActivity, PostListActivity::class.java)

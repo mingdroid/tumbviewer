@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:iconifiedByDefault="false"
-        app:queryHint="@string/search_hint"
-        />
+        app:queryHint="@string/search_hint" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
         android:paddingTop="8dp"
+        android:paddingRight="16dp"
         android:paddingBottom="8dp"
-        android:text="@string/search_reference_suggestion"
-        />
+        android:text="@string/search_reference_suggestion" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/blog_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

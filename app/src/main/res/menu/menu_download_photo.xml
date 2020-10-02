@@ -2,9 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/show_user_photo"
-        android:title="@string/download_display_current"
+    <item
+        android:id="@+id/show_user_photo"
         android:checkable="true"
+        android:title="@string/download_display_current"
         app:actionViewClass="android.widget.CheckBox"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

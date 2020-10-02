@@ -8,14 +8,13 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.SpinnerAdapter
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
 import com.nutrition.express.application.toast
 import com.nutrition.express.databinding.ActivityReblogBinding
 import com.nutrition.express.model.api.Resource
-import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.api.bean.UserInfoItem
+import com.nutrition.express.model.data.AppData
 import com.nutrition.express.ui.main.UserViewModel
 
 class ReblogActivity : BaseActivity() {
@@ -42,18 +41,19 @@ class ReblogActivity : BaseActivity() {
             }
         }
         if (AppData.users == null) {
-            userViewModel.userInfoData.observe(this, Observer {
+            userViewModel.userInfoData.observe(this, {
                 when (it) {
-                    is Resource.Success -> it.data?.user?.let { user -> setNames(user) }
+                    is Resource.Success -> it.data?.user?.let(this::setNames)
                     is Resource.Error -> toast(it.message)
-                    is Resource.Loading -> {}
+                    is Resource.Loading -> {
+                    }
                 }
             })
             userViewModel.fetchUserInfo()
         } else {
             setNames(AppData.users!!)
         }
-        reblogViewModel.reblogResult.observe(this, Observer {
+        reblogViewModel.reblogResult.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     toast(R.string.reblog_success)
@@ -78,16 +78,19 @@ class ReblogActivity : BaseActivity() {
 
     private fun setNames(user: UserInfoItem) {
         val names: MutableList<String> = ArrayList()
-        for (item in user.blogs) {
-            names.add(item.name)
-        }
+        user.blogs.mapTo(names) { it.name }
         if (names.isNotEmpty()) {
             name = names[0]
             binding.spinner.visibility = View.VISIBLE
             val adapter: SpinnerAdapter = ArrayAdapter(this, R.layout.item_text, R.id.text, names)
             binding.spinner.adapter = adapter
             binding.spinner.onItemSelectedListener = object : OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
                     name = parent.getItemAtPosition(position) as String
                 }
 

@@ -8,18 +8,17 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.common.MyExoPlayer
 import com.nutrition.express.databinding.FragmentDashboardBinding
 import com.nutrition.express.model.api.Resource
+import com.nutrition.express.model.api.bean.BlogPosts
+import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.data.bean.PhotoPostsItem
 import com.nutrition.express.model.data.bean.VideoPostsItem
-import com.nutrition.express.model.api.bean.BlogPosts
-import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.ui.post.blog.BlogViewModel
 import com.nutrition.express.ui.post.blog.PhotoPostVH
 import com.nutrition.express.ui.post.blog.VideoPostVH
@@ -35,13 +34,15 @@ open class DashboardFragment : Fragment() {
     private val userViewModel: UserViewModel by viewModels()
     private val blogViewModel: BlogViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val _binding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
-        binding = _binding
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val dashboardBinding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
+        binding = dashboardBinding
         adapter = CommonRVAdapter.adapter {
-            addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it) }
-            addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it)}
+            addViewType(PhotoPostsItem::class, R.layout.item_post, ::PhotoPostVH)
+            addViewType(VideoPostsItem::class, R.layout.item_video_post, ::VideoPostVH)
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     userViewModel.fetchDashboardNextPageData(offset)
@@ -52,13 +53,13 @@ open class DashboardFragment : Fragment() {
                 }
             }
         }
-        _binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        _binding.recyclerView.adapter = adapter
-        _binding.refreshLayout.setOnRefreshListener {
+        dashboardBinding.recyclerView.layoutManager = LinearLayoutManager(context)
+        dashboardBinding.recyclerView.adapter = adapter
+        dashboardBinding.refreshLayout.setOnRefreshListener {
             userViewModel.fetchDashboardData(type)
         }
 
-        return _binding.root
+        return dashboardBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,7 +77,7 @@ open class DashboardFragment : Fragment() {
     }
 
     private fun initViewModel() {
-        blogViewModel.deletePostData.observe(viewLifecycleOwner, Observer {
+        blogViewModel.deletePostData.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
                     val list = adapter.getData()
@@ -90,10 +91,11 @@ open class DashboardFragment : Fragment() {
                     }
                 }
                 is Resource.Error -> Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
-        userViewModel.dashboardData.observe(viewLifecycleOwner, Observer {
+        userViewModel.dashboardData.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
                     binding?.refreshLayout?.isRefreshing = false
@@ -105,14 +107,16 @@ open class DashboardFragment : Fragment() {
                     binding?.refreshLayout?.isRefreshing = false
                     adapter.showLoadingFailure(it.message)
                 }
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
-        userViewModel.dashboardNextPageData.observe(viewLifecycleOwner, Observer {
+        userViewModel.dashboardNextPageData.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> adapter.append(wrapPosts(it.data)?.toTypedArray(), true)
                 is Resource.Error -> adapter.showLoadingFailure(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         type = arguments?.getString("type") ?: type
@@ -144,9 +148,9 @@ open class DashboardFragment : Fragment() {
         offset += postsItems.size + overload
         val validSize = postsItems.size - overload
         val list = if (TextUtils.equals("video", type)) {
-            postsItems.takeLast(validSize).map { VideoPostsItem(it) }
+            postsItems.takeLast(validSize).map(::VideoPostsItem)
         } else {
-            postsItems.takeLast(validSize).map { VideoPostsItem(it) }
+            postsItems.takeLast(validSize).map(::VideoPostsItem)
         }
         if (list.isEmpty()) {
             userViewModel.fetchDashboardNextPageData(offset)

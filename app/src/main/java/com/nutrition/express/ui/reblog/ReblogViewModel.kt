@@ -21,10 +21,18 @@ class ReblogViewModel : ViewModel() {
         reblogRepo.reblogPost(it.blogName, hashMap)
     }
 
-    fun reblog(blogName: String, blogId: String, blogkey: String, blogType: String, comment: String?) {
+    fun reblog(
+        blogName: String,
+        blogId: String,
+        blogkey: String,
+        blogType: String,
+        comment: String?
+    ) {
         _reblogData.value = ReblogRequest(blogName, blogId, blogkey, blogType, comment)
     }
 
-    data class ReblogRequest(val blogName: String, val blogId: String, val blogkey: String,
-                             val blogType: String, val comment: String?)
+    data class ReblogRequest(
+        val blogName: String, val blogId: String, val blogkey: String,
+        val blogType: String, val comment: String?
+    )
 }

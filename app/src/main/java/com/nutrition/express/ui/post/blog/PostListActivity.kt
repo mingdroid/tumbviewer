@@ -8,7 +8,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
@@ -16,10 +15,10 @@ import com.nutrition.express.application.toast
 import com.nutrition.express.common.CommonRVAdapter
 import com.nutrition.express.databinding.ActivityBlogPostsBinding
 import com.nutrition.express.model.api.Resource
-import com.nutrition.express.model.data.bean.PhotoPostsItem
-import com.nutrition.express.model.data.bean.VideoPostsItem
 import com.nutrition.express.model.api.bean.BlogPosts
 import com.nutrition.express.model.api.bean.PostsItem
+import com.nutrition.express.model.data.bean.PhotoPostsItem
+import com.nutrition.express.model.data.bean.VideoPostsItem
 import com.nutrition.express.ui.likes.LikesActivity
 import com.nutrition.express.ui.main.UserViewModel
 import com.nutrition.express.util.getInt
@@ -59,8 +58,8 @@ class PostListActivity : BaseActivity() {
         }
 
         adapter = CommonRVAdapter.adapter {
-            addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it)}
-            addViewType(VideoPostsItem::class,R.layout.item_video_post) {VideoPostVH(it)}
+            addViewType(PhotoPostsItem::class, R.layout.item_post, ::PhotoPostVH)
+            addViewType(VideoPostsItem::class, R.layout.item_video_post, ::VideoPostVH)
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     blogViewModel.fetchBlogPosts(blogName, TYPES[filter], offset)
@@ -79,7 +78,7 @@ class PostListActivity : BaseActivity() {
     }
 
     private fun initViewModel() {
-        blogViewModel.blogPostsData.observe(this, Observer {
+        blogViewModel.blogPostsData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     if (it.data == null) {
@@ -88,11 +87,12 @@ class PostListActivity : BaseActivity() {
                         showPosts(it.data)
                     }
                 }
-                is Resource.Error ->  adapter.showLoadingFailure(it.message)
-                is Resource.Loading -> {}
+                is Resource.Error -> adapter.showLoadingFailure(it.message)
+                is Resource.Loading -> {
+                }
             }
         })
-        blogViewModel.deletePostData.observe(this, Observer {
+        blogViewModel.deletePostData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     val list = adapter.getData()
@@ -106,22 +106,25 @@ class PostListActivity : BaseActivity() {
                     }
                 }
                 is Resource.Error -> toast(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         blogViewModel.fetchBlogPosts(blogName, TYPES[filter], offset)
-        userViewModel.followData.observe(this, Observer {
+        userViewModel.followData.observe(this, {
             when (it) {
                 is Resource.Success -> onFollowed()
                 is Resource.Error -> toast(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
-        userViewModel.unFollowData.observe(this, Observer {
+        userViewModel.unFollowData.observe(this, {
             when (it) {
                 is Resource.Success -> onUnfollowed()
                 is Resource.Error -> toast(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
     }
@@ -210,33 +213,41 @@ class PostListActivity : BaseActivity() {
             hasNext = false
         }
         val isAdmin = blogPosts.blogInfo.isAdmin
-        if (isAdmin) {
-            followItem?.isVisible = false
-        } else if (blogPosts.blogInfo.isFollowed) {
-            onFollowed()
-        } else {
-            onUnfollowed()
+        when {
+            isAdmin -> {
+                followItem?.isVisible = false
+            }
+            blogPosts.blogInfo.isFollowed -> {
+                onFollowed()
+            }
+            else -> {
+                onUnfollowed()
+            }
         }
         val postsItems: MutableList<PhotoPostsItem> = ArrayList(blogPosts.list.size)
-        if (filter == 0) {
-            //trim to only show videos and photos
-            for (item in blogPosts.list) {
-                item.isAdmin = isAdmin
-                if (TextUtils.equals(item.type, "video")) {
-                    postsItems.add(VideoPostsItem(item))
-                } else if (TextUtils.equals(item.type, "photo")) {
-                    postsItems.add(PhotoPostsItem(item))
+        when (filter) {
+            0 -> {
+                //trim to only show videos and photos
+                for (item in blogPosts.list) {
+                    item.isAdmin = isAdmin
+                    if (TextUtils.equals(item.type, "video")) {
+                        postsItems.add(VideoPostsItem(item))
+                    } else if (TextUtils.equals(item.type, "photo")) {
+                        postsItems.add(PhotoPostsItem(item))
+                    }
                 }
             }
-        } else if (filter == 1) {
-            for (item in blogPosts.list) {
-                item.isAdmin = isAdmin
-                postsItems.add(VideoPostsItem(item))
+            1 -> {
+                for (item in blogPosts.list) {
+                    item.isAdmin = isAdmin
+                    postsItems.add(VideoPostsItem(item))
+                }
             }
-        } else if (filter == 2) {
-            for (item in blogPosts.list) {
-                item.isAdmin = isAdmin
-                postsItems.add(PhotoPostsItem(item))
+            2 -> {
+                for (item in blogPosts.list) {
+                    item.isAdmin = isAdmin
+                    postsItems.add(PhotoPostsItem(item))
+                }
             }
         }
         if (reset) {
@@ -245,10 +256,6 @@ class PostListActivity : BaseActivity() {
         } else {
             adapter.append(postsItems.toTypedArray(), hasNext)
         }
-    }
-
-    private fun wrap() {
-
     }
 
 }

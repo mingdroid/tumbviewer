@@ -18,7 +18,7 @@ public class FollowingBlog {
         return blogs;
     }
 
-    public class Blog {
+    public static class Blog {
         private String name;
         private String url;
         private long updated;

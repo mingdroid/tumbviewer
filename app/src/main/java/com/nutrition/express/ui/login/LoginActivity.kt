@@ -12,7 +12,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
 import com.nutrition.express.application.Constant
@@ -63,7 +62,10 @@ class LoginActivity : BaseActivity() {
         }
         binding.webView.settings.javaScriptEnabled = true
         binding.webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+            override fun shouldOverrideUrlLoading(
+                view: WebView,
+                request: WebResourceRequest
+            ): Boolean {
                 if (request.url.toString().startsWith(Constant.REDIRECT_URI)) {
                     val oauthVerifier = request.url.getQueryParameter("oauth_verifier")
                     if (!oauthVerifier.isNullOrEmpty()) {
@@ -98,12 +100,12 @@ class LoginActivity : BaseActivity() {
                 }
             }
         }
-        loginViewModel.requestToken.observe(this, Observer {
+        loginViewModel.requestToken.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     dismissProgress()
-                    it.data?.let { data ->
-                        binding.webView.loadUrl(Constant.AUTHORIZE_URL + "?oauth_token=" + data.token)
+                    it.data?.let { (token) ->
+                        binding.webView.loadUrl(Constant.AUTHORIZE_URL + "?oauth_token=" + token)
                     }
                 }
                 is Resource.Error -> {
@@ -113,7 +115,7 @@ class LoginActivity : BaseActivity() {
                 is Resource.Loading -> showProgress()
             }
         })
-        loginViewModel.accessToken.observe(this, Observer {
+        loginViewModel.accessToken.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     dismissProgress()

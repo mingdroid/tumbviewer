@@ -4,10 +4,7 @@ import android.app.ActivityOptions
 import android.app.SharedElementCallback
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
-import android.text.Html
 import android.text.Spanned
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +12,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.isDigitsOnly
-import androidx.lifecycle.Observer
+import androidx.core.text.parseAsHtml
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import com.facebook.drawee.backends.pipeline.Fresco
@@ -28,10 +25,9 @@ import com.nutrition.express.common.CommonViewHolder
 import com.nutrition.express.databinding.ItemTrailBinding
 import com.nutrition.express.imageviewer.ImageViewerActivity
 import com.nutrition.express.model.api.Resource
-import com.nutrition.express.model.data.AppData
 import com.nutrition.express.model.api.bean.PhotoItem
 import com.nutrition.express.model.api.bean.PostsItem
-import com.nutrition.express.model.data.bean.PhotoPostsItem
+import com.nutrition.express.model.data.AppData
 import com.nutrition.express.ui.main.UserViewModel
 import com.nutrition.express.ui.reblog.ReblogActivity
 import com.nutrition.express.util.dp2Pixels
@@ -42,26 +38,26 @@ import java.util.concurrent.atomic.AtomicInteger
 abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
     protected var isSimpleMode: Boolean = false
     protected val userViewModel: UserViewModel
-    protected val blogViewModel: BlogViewModel
+    private val blogViewModel: BlogViewModel
 
     private val contentViewCache = ArrayList<SimpleDraweeView>()
     private val trailViewCache = ArrayList<ItemTrailBinding>()
     private val atomicInteger = AtomicInteger(0)
     private val photos = ArrayList<String>()
     private val dividerWidth: Int
-    private val screenWidth : Int
+    private val screenWidth: Int
 
     init {
         val activity = itemView.context as AppCompatActivity
         val provider = ViewModelProvider(activity)
         userViewModel = provider.get()
         blogViewModel = provider.get()
-        userViewModel.likeData.observe(activity, Observer {
+        userViewModel.likeData.observe(activity, {
             if (it is Resource.Success) {
                 onLike(it.data)
             }
         })
-        userViewModel.unLikeData.observe(activity, Observer {
+        userViewModel.unLikeData.observe(activity, {
             if (it is Resource.Success) {
                 onUnLike(it.data)
             }
@@ -80,13 +76,11 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
     protected fun setPhotoContent(postContent: FlexboxLayout, postsItem: PostsItem) {
         postContent.removeAllViews()
         photos.clear()
-        for (item in postsItem.photos) {
-            photos.add(item.original_size.url)
-        }
+        postsItem.photos.mapTo(photos) { it.original_size.url }
         val size = photos.size
         createPhotoView(size)
         val layout = postsItem.photoset_layout
-        if (layout!= null && layout.isDigitsOnly()) {
+        if (layout != null && layout.isDigitsOnly()) {
             var index = 0
             var count: Int
             var w: Int
@@ -103,12 +97,14 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
                         return
                     }
                     addSimpleDraweeView(postContent, contentViewCache[index], w, h)
-                    setUri(contentViewCache[index],
-                            postsItem.photos[index].original_size.url)
+                    setUri(
+                        contentViewCache[index],
+                        postsItem.photos[index].original_size.url
+                    )
                     index++
                 }
             }
-        } else{
+        } else {
             var info: PhotoItem.PhotoInfo
             var w: Int
             var h: Int
@@ -150,7 +146,7 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
                 val trailBinding = trailViewCache[i]
                 setTumblrAvatarUri(trailBinding.trailAvatar, trails[i].blog.name, 128)
                 trailBinding.trailName.text = trails[i].blog.name
-                trailBinding.trailContent.text = fromHtlmCompat(trails[i].content_raw)
+                trailBinding.trailContent.text = fromHtmlCompat(trails[i].content_raw)
                 trailBinding.root.tag = trails[i].blog.name
                 postTrail.addView(trailBinding.root)
             }
@@ -160,13 +156,9 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
         }
     }
 
-    private fun fromHtlmCompat(html: String?): Spanned {
+    private fun fromHtmlCompat(html: String?): Spanned {
         val content = html ?: "..."
-        return if (Build.VERSION.SDK_INT >= 24) {
-            Html.fromHtml(content, Html.FROM_HTML_MODE_COMPACT) // for 24 api and more
-        } else {
-            Html.fromHtml(content) // or for older api
-        }
+        return content.parseAsHtml()
     }
 
     private fun createTrailView(count: Int) {
@@ -183,7 +175,12 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
         return (screenWidth - (count - 1) * dividerWidth) / count
     }
 
-    private fun addSimpleDraweeView(postContent: FlexboxLayout, view: SimpleDraweeView, width: Int, height: Int) {
+    private fun addSimpleDraweeView(
+        postContent: FlexboxLayout,
+        view: SimpleDraweeView,
+        width: Int,
+        height: Int
+    ) {
         var params = view.layoutParams
         if (params == null) {
             params = ViewGroup.LayoutParams(width, height)
@@ -218,13 +215,13 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
             actualImageScaleType = ScalingUtils.ScaleType.CENTER_CROP
             setPlaceholderImage(R.color.loading_color)
             placeholderImageScaleType = ScalingUtils.ScaleType.FIT_CENTER
-            setFailureImage(R.mipmap.ic_failed)
+            setFailureImage(R.drawable.ic_failed)
             failureImageScaleType = ScalingUtils.ScaleType.CENTER
             build()
         }
         view.hierarchy = hierarchy
         view.tag = atomicInteger.getAndIncrement()
-        view.setOnClickListener { onPhotoClick(it) }
+        view.setOnClickListener(this::onPhotoClick)
         return view
     }
 
@@ -237,7 +234,8 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
             intent.putExtra("selected_index", tag)
             intent.putStringArrayListExtra("image_urls", photos)
             val options = ActivityOptions.makeSceneTransitionAnimation(
-                    context as AppCompatActivity, view, "name$tag")
+                context as AppCompatActivity, view, "name$tag"
+            )
             context.startActivity(intent, options.toBundle())
             setCallback(tag)
         }
@@ -246,8 +244,12 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
     private fun setCallback(index: Int) {
         val context = itemView.context
         AppData.photoIndex = index
-        (context as AppCompatActivity).setExitSharedElementCallback(object : SharedElementCallback() {
-            override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
+        (context as AppCompatActivity).setExitSharedElementCallback(object :
+            SharedElementCallback() {
+            override fun onMapSharedElements(
+                names: List<String>,
+                sharedElements: MutableMap<String, View>
+            ) {
                 val returnIndex = AppData.photoIndex
                 if (index != returnIndex && names.isNotEmpty()) {
                     sharedElements[names[0]] = contentViewCache[returnIndex]
@@ -275,7 +277,7 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
 
     protected fun showDeleteDialog(postsItem: PostsItem) {
         val builder = AlertDialog.Builder(itemView.context)
-        builder.setPositiveButton(R.string.delete_positive) { dialog, which ->
+        builder.setPositiveButton(R.string.delete_positive) { _, _ ->
             blogViewModel.deletePost(postsItem.blog_name, postsItem.id.toString())
         }
         builder.setNegativeButton(R.string.pic_cancel, null)

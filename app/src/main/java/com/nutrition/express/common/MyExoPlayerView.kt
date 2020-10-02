@@ -1,6 +1,5 @@
 package com.nutrition.express.common
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -12,7 +11,6 @@ import android.view.TextureView
 import android.view.View
 import android.widget.*
 import androidx.annotation.AttrRes
-import androidx.annotation.StyleRes
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.*
@@ -37,7 +35,7 @@ class MyExoPlayerView : FrameLayout {
     private val progressBarMax = 1000
 
     private var controlBinding: ItemVideoControlBinding =
-            ItemVideoControlBinding.inflate(LayoutInflater.from(context), this, true)
+        ItemVideoControlBinding.inflate(LayoutInflater.from(context), this, true)
     private var videoView: TextureView
     private lateinit var thumbnailView: SimpleDraweeView
     private lateinit var loadingBar: ProgressBar
@@ -79,47 +77,43 @@ class MyExoPlayerView : FrameLayout {
         }
     }
 
-    private val updateProgressAction = Runnable {
-        updateProgress()
-    }
+    private val updateProgressAction = Runnable(this::updateProgress)
 
-    private val hideAction = Runnable {
-        hide()
-    }
+    private val hideAction = Runnable(this::hide)
 
-    private val updateTimeAction = Runnable {
-        updateLeftTime()
-    }
+    private val updateTimeAction = Runnable(this::updateLeftTime)
 
-    constructor(context: Context): super(context)
+    constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
-    @TargetApi(21)
-    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int, @StyleRes defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     init {
         controlBinding.videoControllerProgress.setOnSeekBarChangeListener(
-                object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                        if (fromUser) {
-                            controlBinding.timeCurrent.text = stringForTime(positionValue(progress))
-                        }
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    if (fromUser) {
+                        controlBinding.timeCurrent.text = stringForTime(positionValue(progress))
                     }
+                }
 
-                    override fun onStartTrackingTouch(seekBar: SeekBar) {
-                        removeCallbacks(hideAction)
-                        dragging = true
-                    }
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                    removeCallbacks(hideAction)
+                    dragging = true
+                }
 
-                    override fun onStopTrackingTouch(seekBar: SeekBar) {
-                        player?.seekTo(positionValue(seekBar.progress))
-                        hideAfterTimeout()
-                        dragging = false
-                    }
-                })
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                    player?.seekTo(positionValue(seekBar.progress))
+                    hideAfterTimeout()
+                    dragging = false
+                }
+            })
         controlBinding.videoControllerProgress.max = progressBarMax
         controlBinding.videoFullscreen.setOnClickListener {
             val playerIntent = Intent(context, VideoPlayerActivity::class.java)
@@ -147,8 +141,8 @@ class MyExoPlayerView : FrameLayout {
         thumbnailView = SimpleDraweeView(context)
         val thumbParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         val hierarchy = GenericDraweeHierarchyBuilder(resources)
-                .setPlaceholderImage(R.color.loading_color)
-                .build()
+            .setPlaceholderImage(R.color.loading_color)
+            .build()
         thumbnailView.hierarchy = hierarchy
         thumbnailView.layoutParams = thumbParams
 
@@ -195,12 +189,12 @@ class MyExoPlayerView : FrameLayout {
         uri = video.sourceUri
         var params = layoutParams
         if (params == null) {
-            params = LayoutParams(video.getWidth(), video.getHeight())
+            params = LayoutParams(video.width, video.height)
         }
-        params.width = video.getWidth()
-        params.height = video.getHeight()
+        params.width = video.width
+        params.height = video.height
         layoutParams = params
-        thumbnailView.setImageURI(video.getThumbnailUri(), context)
+        thumbnailView.setImageURI(video.thumbnailUri, context)
         thumbnailView.visibility = View.VISIBLE
         hide()
         disconnect()
@@ -219,9 +213,7 @@ class MyExoPlayerView : FrameLayout {
     }
 
     private fun connect() {
-        val player = MyExoPlayer.preparePlayer(uri) {
-            disconnect()
-        }
+        val player = MyExoPlayer.preparePlayer(uri, this::disconnect)
         player.setVideoTextureView(videoView)
         player.addListener(eventListener)
         player.addVideoListener(videoListener)
@@ -302,9 +294,11 @@ class MyExoPlayerView : FrameLayout {
         if (!isControllerVisible() || !isAttachedToWindow) {
             return
         }
-        val playing: Boolean = player?.playWhenReady == true && player?.playbackState != ExoPlayer.STATE_ENDED
+        val playing: Boolean =
+            player?.playWhenReady == true && player?.playbackState != ExoPlayer.STATE_ENDED
         val contentDescription = resources.getString(
-                if (playing) R.string.exo_controls_pause_description else R.string.exo_controls_play_description)
+            if (playing) R.string.exo_controls_pause_description else R.string.exo_controls_play_description
+        )
         playView.contentDescription = contentDescription
         playView.setImageResource(if (playing) R.drawable.exo_controls_pause else R.drawable.exo_controls_play)
     }
@@ -323,7 +317,8 @@ class MyExoPlayerView : FrameLayout {
             controlBinding.videoControllerProgress.progress = progressBarValue(position)
         }
         val bufferedPosition = player?.bufferedPosition ?: 0
-        controlBinding.videoControllerProgress.secondaryProgress = progressBarValue(bufferedPosition)
+        controlBinding.videoControllerProgress.secondaryProgress =
+            progressBarValue(bufferedPosition)
         // Remove scheduled updates.
         removeCallbacks(updateProgressAction)
         // Schedule an update if necessary.

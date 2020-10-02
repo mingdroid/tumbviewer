@@ -12,7 +12,11 @@ import com.nutrition.express.util.copy2Clipboard
 
 class PostMoreDialog : BottomSheetDialogFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val binding = BottomSheetVideoListBinding.inflate(inflater, container, false)
         val url = arguments?.getString("video_url") ?: ""
         binding.itemLink.text = url
@@ -23,7 +27,7 @@ class PostMoreDialog : BottomSheetDialogFragment() {
             dismiss()
         }
         binding.itemCopy.setOnClickListener {
-            context?.let { copy2Clipboard(it, url ) }
+            context?.let { copy2Clipboard(it, url) }
             dismiss()
         }
         return binding.root

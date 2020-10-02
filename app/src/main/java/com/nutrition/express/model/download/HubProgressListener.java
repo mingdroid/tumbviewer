@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HubProgressListener implements ProgressResponseBody.ProgressListener, Runnable {
-    private List<ProgressResponseBody.ProgressListener> listeners = new ArrayList<>();
     private static Handler handler = new Handler(Looper.getMainLooper());
+    private List<ProgressResponseBody.ProgressListener> listeners = new ArrayList<>();
     private long bytesRead, contentLength;
     private boolean done;
 

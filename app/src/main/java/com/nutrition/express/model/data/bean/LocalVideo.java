@@ -24,8 +24,8 @@ public class LocalVideo extends BaseVideoBean {
         try {
             retriever = new MediaMetadataRetriever();
             retriever.setDataSource(file.getPath());
-            int videoWidth = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-            int videoHeight = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+            int videoWidth = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+            int videoHeight = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
             width = TumbApp.Companion.getApp().getWidth();
             height = width * videoHeight / videoWidth;
 //            retriever.release();

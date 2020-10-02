@@ -6,7 +6,6 @@ import android.text.format.DateUtils
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
@@ -33,7 +32,7 @@ class FollowingActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         adapter = CommonRVAdapter.adapter {
-            addViewType(FollowingBlog.Blog::class, R.layout.item_following_blog) { BlogVH(it) }
+            addViewType(FollowingBlog.Blog::class, R.layout.item_following_blog, ::BlogVH)
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     followingViewModel.getFollowingList(offset)
@@ -47,7 +46,7 @@ class FollowingActivity : BaseActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
 
-        followingViewModel.followingData.observe(this, Observer {
+        followingViewModel.followingData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     if (it.data == null) {
@@ -58,7 +57,8 @@ class FollowingActivity : BaseActivity() {
                     }
                 }
                 is Resource.Error -> adapter.showLoadingFailure(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         followingViewModel.getFollowingList(offset)
@@ -73,7 +73,7 @@ class FollowingActivity : BaseActivity() {
     }
 
     class BlogVH(view: View) : CommonViewHolder<FollowingBlog.Blog>(view) {
-        private val binding =  ItemFollowingBlogBinding.bind(view)
+        private val binding = ItemFollowingBlogBinding.bind(view)
         private lateinit var blog: FollowingBlog.Blog
 
         init {
@@ -84,15 +84,19 @@ class FollowingActivity : BaseActivity() {
             }
         }
 
-        override fun bindView(blog: FollowingBlog.Blog) {
-            this.blog = blog
-            binding.blogName.text = blog.name
-            binding.blogTitle.text = blog.title
-            setTumblrAvatarUri(binding.blogAvatar, blog.name, 128)
-            binding.blogLastUpdate.text = itemView.resources.getString(R.string.update_des,
-                    DateUtils.getRelativeTimeSpanString(blog.updated * 1000,
-                            System.currentTimeMillis(),
-                            DateUtils.SECOND_IN_MILLIS))
+        override fun bindView(any: FollowingBlog.Blog) {
+            this.blog = any
+            binding.blogName.text = any.name
+            binding.blogTitle.text = any.title
+            setTumblrAvatarUri(binding.blogAvatar, any.name, 128)
+            binding.blogLastUpdate.text = itemView.resources.getString(
+                R.string.update_des,
+                DateUtils.getRelativeTimeSpanString(
+                    any.updated * 1000,
+                    System.currentTimeMillis(),
+                    DateUtils.SECOND_IN_MILLIS
+                )
+            )
         }
     }
 

@@ -2,10 +2,8 @@ package com.nutrition.express.util
 
 import android.content.Intent
 import android.net.Uri
-import android.text.TextUtils
 import com.nutrition.express.application.TumbApp.Companion.app
 import com.nutrition.express.model.data.AppData
-import com.nutrition.express.model.data.DataManager
 import java.io.File
 
 /**

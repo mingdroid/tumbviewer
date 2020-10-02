@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nutrition.express.R
 import com.nutrition.express.application.BaseActivity
@@ -55,8 +54,8 @@ class LikesActivity : BaseActivity() {
 
     private fun initRecyclerView() {
         adapter = CommonRVAdapter.adapter {
-            addViewType(PhotoPostsItem::class, R.layout.item_post) { PhotoPostVH(it) }
-            addViewType(VideoPostsItem::class, R.layout.item_video_post) { VideoPostVH(it) }
+            addViewType(PhotoPostsItem::class, R.layout.item_post, ::PhotoPostVH)
+            addViewType(VideoPostsItem::class, R.layout.item_video_post, ::VideoPostVH)
             loadListener = object : CommonRVAdapter.OnLoadListener {
                 override fun retry() {
                     likesViewModel.fetchNextPage(before)
@@ -72,7 +71,7 @@ class LikesActivity : BaseActivity() {
     }
 
     private fun initViewModel() {
-        blogViewModel.deletePostData.observe(this, Observer {
+        blogViewModel.deletePostData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     val list = adapter.getData()
@@ -86,10 +85,11 @@ class LikesActivity : BaseActivity() {
                     }
                 }
                 is Resource.Error -> toast(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
-        likesViewModel.likesPostsData.observe(this, Observer {
+        likesViewModel.likesPostsData.observe(this, {
             when (it) {
                 is Resource.Success -> {
                     if (it.data != null) {
@@ -99,7 +99,8 @@ class LikesActivity : BaseActivity() {
                     }
                 }
                 is Resource.Error -> adapter.showLoadingFailure(it.message)
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         })
         likesViewModel.fetchLikesPosts(blogName)

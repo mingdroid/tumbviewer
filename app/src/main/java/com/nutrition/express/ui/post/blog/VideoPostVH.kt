@@ -11,16 +11,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.nutrition.express.R
 import com.nutrition.express.databinding.ItemVideoPostBinding
+import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.model.data.bean.OnlineVideo
 import com.nutrition.express.model.data.bean.VideoPostsItem
 import com.nutrition.express.model.download.RxDownload
-import com.nutrition.express.model.api.bean.PostsItem
 import com.nutrition.express.util.canWrite2Storage
 import com.nutrition.express.util.setTumblrAvatarUri
 import okhttp3.internal.toLongOrDefault
 
 class VideoPostVH(view: View) : BasePostVH<VideoPostsItem>(view) {
-    private val binding : ItemVideoPostBinding = ItemVideoPostBinding.bind(view)
+    private val binding: ItemVideoPostBinding = ItemVideoPostBinding.bind(view)
     private lateinit var onlineVideo: OnlineVideo
     private var postsItem: PostsItem? = null
 
@@ -32,19 +32,19 @@ class VideoPostVH(view: View) : BasePostVH<VideoPostsItem>(view) {
             postsItem?.let { openBlog(it.blog_name) }
         }
         binding.postReblog.setOnClickListener {
-            postsItem?.let { reblog(it) }
+            postsItem?.let(this::reblog)
         }
         binding.postLike.setOnClickListener {
             postsItem?.let {
                 if (binding.postLike.isSelected) {
                     userViewModel.unLike(it.id, it.reblog_key)
-                } else{
+                } else {
                     userViewModel.like(it.id, it.reblog_key)
                 }
             }
         }
         binding.postDelete.setOnClickListener {
-            postsItem?.let { showDeleteDialog(it) }
+            postsItem?.let(this::showDeleteDialog)
         }
         binding.postVideo.setOnClickListener {
             postsItem?.let {
@@ -61,13 +61,29 @@ class VideoPostVH(view: View) : BasePostVH<VideoPostsItem>(view) {
         binding.postDownload.setOnClickListener {
             postsItem?.let {
                 if (canWrite2Storage(itemView.context)) {
-                    val status = RxDownload.getInstance().start(it.video_url, null)
-                    if (status == RxDownload.PROCESSING) {
-                        Toast.makeText(itemView.context, R.string.download_start, Toast.LENGTH_SHORT).show()
-                    } else if (status == RxDownload.FILE_EXIST) {
-                        Toast.makeText(itemView.context, R.string.video_exist, Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(itemView.context, R.string.reblog_failure, Toast.LENGTH_SHORT).show()
+                    when (RxDownload.getInstance().start(it.video_url, null)) {
+                        RxDownload.PROCESSING -> {
+                            Toast.makeText(
+                                itemView.context,
+                                R.string.download_start,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        RxDownload.FILE_EXIST -> {
+                            Toast.makeText(
+                                itemView.context,
+                                R.string.video_exist,
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                        else -> {
+                            Toast.makeText(
+                                itemView.context,
+                                R.string.reblog_failure,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             }
@@ -78,7 +94,10 @@ class VideoPostVH(view: View) : BasePostVH<VideoPostsItem>(view) {
                 bundle.putString("video_url", it.video_url)
                 val bottomSheet = PostMoreDialog()
                 bottomSheet.arguments = bundle
-                bottomSheet.show((itemView.context as AppCompatActivity).supportFragmentManager, bottomSheet.tag)
+                bottomSheet.show(
+                    (itemView.context as AppCompatActivity).supportFragmentManager,
+                    bottomSheet.tag
+                )
             }
             return@setOnLongClickListener true
         }
@@ -98,30 +117,37 @@ class VideoPostVH(view: View) : BasePostVH<VideoPostsItem>(view) {
         }
     }
 
-    override fun bindView(item: VideoPostsItem) {
-        onlineVideo = item.onlineVideo
-        if (item.postsItem.video_url.isNullOrEmpty()) {
+    override fun bindView(any: VideoPostsItem) {
+        onlineVideo = any.onlineVideo
+        if (any.postsItem.video_url.isNullOrEmpty()) {
             binding.postDownload.visibility = View.GONE
-        } else{
+        } else {
             binding.postDownload.visibility = View.VISIBLE
         }
-        val postsItem = item.postsItem
+        val postsItem = any.postsItem
         this.postsItem = postsItem
         setTumblrAvatarUri(binding.postAvatar, postsItem.blog_name, 128)
         binding.postName.text = postsItem.blog_name
-        binding.postTime.text = DateUtils.getRelativeTimeSpanString(postsItem.getTimestamp() * 1000,
-                System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
+        binding.postTime.text = DateUtils.getRelativeTimeSpanString(
+            postsItem.timestamp * 1000,
+            System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS
+        )
         if (postsItem.source_title.isNullOrEmpty()) {
             binding.postSource.visibility = View.GONE
         } else {
             binding.postSource.visibility = View.VISIBLE
-            binding.postSource.text = itemView.context.getString(R.string.source_title, postsItem.source_title)
+            binding.postSource.text =
+                itemView.context.getString(R.string.source_title, postsItem.source_title)
         }
         if (postsItem.duration.isNullOrEmpty()) {
-            binding.noteCount.text = itemView.context.getString(R.string.note_count, postsItem.note_count)
+            binding.noteCount.text =
+                itemView.context.getString(R.string.note_count, postsItem.note_count)
         } else {
-            binding.noteCount.text = itemView.context.getString(R.string.note_count_description,
-                    postsItem.note_count, DateUtils.formatElapsedTime(postsItem.duration.toLongOrDefault(0)))
+            binding.noteCount.text = itemView.context.getString(
+                R.string.note_count_description,
+                postsItem.note_count,
+                DateUtils.formatElapsedTime(postsItem.duration.toLongOrDefault(0))
+            )
         }
         if (postsItem.isCan_like) {
             binding.postLike.visibility = View.VISIBLE

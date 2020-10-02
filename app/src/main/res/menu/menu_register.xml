@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/tumblr_app"
-        app:showAsAction="never"
-        android:title="@string/register_tumblr_app"/>
+    <item
+        android:id="@+id/tumblr_app"
+        android:title="@string/register_tumblr_app"
+        app:showAsAction="never" />
 </menu>

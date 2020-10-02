@@ -1,11 +1,10 @@
 package com.nutrition.express.util;
 
 import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.core.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by huang on 2/14/17.
@@ -28,7 +27,7 @@ public class SwipeGestureDetector {
     }
 
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        int action = MotionEventCompat.getActionMasked(event);
+        int action = event.getActionMasked();
 //        Log.d("onInterceptTouchEvent", "action-" + action);
 
         float x = event.getRawX();
@@ -70,7 +69,7 @@ public class SwipeGestureDetector {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        int action = MotionEventCompat.getActionMasked(event);
+        int action = event.getActionMasked();
         float x = event.getRawX();
         float y = event.getRawY();
 
@@ -108,8 +107,6 @@ public class SwipeGestureDetector {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                reset(x, y);
-                break;
             case MotionEvent.ACTION_CANCEL:
                 reset(x, y);
                 break;
@@ -126,7 +123,9 @@ public class SwipeGestureDetector {
 
     public interface OnSwipeGestureListener {
         void onSwipeTopBottom(float deltaX, float deltaY);
+
         void onSwipeLeftRight(float deltaX, float deltaY);
+
         void onFinish(int direction, float distanceX, float distanceY);
     }
 

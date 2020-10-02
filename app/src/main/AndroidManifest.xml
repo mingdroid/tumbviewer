@@ -16,7 +16,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.downloading.DownloadingActivity"></activity>
+        <activity android:name=".ui.downloading.DownloadingActivity" />
         <activity android:name=".ui.download.DownloadedActivity" />
         <activity android:name=".ui.post.blog.PostListActivity" />
         <activity android:name=".ui.following.FollowingActivity" />
@@ -46,12 +46,12 @@
         <meta-data
             android:name="com.sec.android.support.multiwindow"
             android:value="true" />
-        <meta-data
+        <!--meta-data
             android:name="io.fabric.ApiKey"
             android:value="4e8da9af39f63a65a9453747840bd9e68c65f676" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1345960513966700~8570375881" />
+            android:value="ca-app-pub-1345960513966700~8570375881" /-->
 
         <activity
             android:name=".imageviewer.ImageViewerActivity"
@@ -69,9 +69,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Drawer"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".downloading.DownloadingActivity"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

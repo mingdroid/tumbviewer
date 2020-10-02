@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -34,20 +34,11 @@ import static com.nutrition.express.util.UtilsKt.md5sum;
 import static com.nutrition.express.util.UtilsKt.read;
 
 public class RxDownload {
-    private static class Holder {
-        private static RxDownload holder = new RxDownload();
-    }
-
-    public static RxDownload getInstance() {
-        return Holder.holder;
-    }
-
     public static final int EOF = -1;
     public static final int FILE_EXIST = -2;
     public static final int ERROR = -3;
     public static final int PROCESSING = 0;
     public static final String FILE_NAME = "records";
-
     private OkHttpClient okHttpClient;
     private File parent;
     private HashMap<String, HubProgressListener> downloadingMap = new HashMap<>();
@@ -60,10 +51,15 @@ public class RxDownload {
         okHttpClient = builder.build();
         parent = FileUtils.INSTANCE.getVideoDir();
         if (!parent.exists()) parent.mkdirs();
-        records = read(FILE_NAME, new TypeToken<ArrayList<Record>>(){}.getType());
+        records = read(FILE_NAME, new TypeToken<ArrayList<Record>>() {
+        }.getType());
         if (records == null) {
             records = new ArrayList<>();
         }
+    }
+
+    public static RxDownload getInstance() {
+        return Holder.holder;
     }
 
     public List<Record> getRecords() {
@@ -152,6 +148,10 @@ public class RxDownload {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    private static class Holder {
+        private static RxDownload holder = new RxDownload();
     }
 
 }

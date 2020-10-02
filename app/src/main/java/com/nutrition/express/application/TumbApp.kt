@@ -17,8 +17,7 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.nutrition.express.BuildConfig
 
 class TumbApp : Application() {
-    lateinit var imagePipelineConfig : ImagePipelineConfig
-        private set
+    private lateinit var imagePipelineConfig: ImagePipelineConfig
     var width = 0
         private set
     var height = 0
@@ -33,17 +32,17 @@ class TumbApp : Application() {
         super.onCreate()
         app = this
         val cacheConfig = DiskCacheConfig.newBuilder(this)
-                .setMaxCacheSize(300 * 1024 * 1024.toLong())
-                .build()
+            .setMaxCacheSize(300 * 1024 * 1024.toLong())
+            .build()
         val smallCacheConfig = DiskCacheConfig.newBuilder(this)
-                .setMaxCacheSize(10 * 1024 * 1024.toLong())
-                .build()
+            .setMaxCacheSize(10 * 1024 * 1024.toLong())
+            .build()
         imagePipelineConfig = ImagePipelineConfig.newBuilder(this)
-                .setMainDiskCacheConfig(cacheConfig)
-                .setSmallImageDiskCacheConfig(smallCacheConfig)
-                .setDownsampleEnabled(true) //                .setResizeAndRotateEnabledForNetwork(true)
-                .setBitmapsConfig(Bitmap.Config.RGB_565)
-                .build()
+            .setMainDiskCacheConfig(cacheConfig)
+            .setSmallImageDiskCacheConfig(smallCacheConfig)
+            .setDownsampleEnabled(true) //                .setResizeAndRotateEnabledForNetwork(true)
+            .setBitmapsConfig(Bitmap.Config.RGB_565)
+            .build()
         Fresco.initialize(this, imagePipelineConfig)
 
         //init width and height
@@ -59,11 +58,13 @@ class TumbApp : Application() {
             Log.d(ContentValues.TAG, "onCreate: " + am.memoryClass)
             Log.d(ContentValues.TAG, "onCreate: " + am.largeMemoryClass)
             Log.d(ContentValues.TAG, "onCreate: " + Runtime.getRuntime().maxMemory())
-            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+            StrictMode.setThreadPolicy(
+                StrictMode.ThreadPolicy.Builder()
                     .detectCustomSlowCalls()
                     .detectNetwork() //                    .detectResourceMismatches()
                     .penaltyLog()
-                    .build())
+                    .build()
+            )
             val vmPolicy = VmPolicy.Builder().run {
                 detectActivityLeaks()
                 detectLeakedClosableObjects()

@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.nutrition.express.R
-import com.nutrition.express.model.data.bean.LocalPhoto
-import com.nutrition.express.ui.download.PhotoFragment
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
@@ -23,7 +21,8 @@ private const val LOADING_NEXT = 13 /*显示LOADING NEXT VIEW*/
 private const val LOADING_NEXT_FAILURE = 14 /*显示LOADING NEXT FAILURE VIEW*/
 private const val LOADING_FINISH = 15 //显示LOADING FINISH VIEW
 
-class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapter<CommonViewHolder<Any>>() {
+class CommonRVAdapter private constructor(builder: Builder) :
+    RecyclerView.Adapter<CommonViewHolder<Any>>() {
 
     /* 状态 */
 
@@ -69,7 +68,7 @@ class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapt
             stateFactory.createViewHolder(parent, viewType)
         else
             itemFactory.createViewHolder(parent, viewType)
-        return if (vh== null) {     //check if unknown type
+        return if (vh == null) {     //check if unknown type
             val inflater = LayoutInflater.from(parent.context)
             val textView = inflater
                 .inflate(android.R.layout.simple_list_item_1, parent, false) as TextView
@@ -98,7 +97,11 @@ class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapt
         bindViewHolder(holder, position, null)
     }
 
-    override fun onBindViewHolder(holder: CommonViewHolder<Any>, position: Int, payloads: List<Any>) {
+    override fun onBindViewHolder(
+        holder: CommonViewHolder<Any>,
+        position: Int,
+        payloads: List<Any>
+    ) {
         bindViewHolder(holder, position, payloads)
     }
 
@@ -182,29 +185,29 @@ class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapt
     }
 
     fun remove(position: Int) {
-        data.remove(position);
-        notifyItemRemoved(position);
+        data.remove(position)
+        notifyItemRemoved(position)
     }
 
     fun remove(start: Int, count: Int) {
-        data.subList(start, start + count).clear();
-        notifyItemRangeRemoved(start, count);
+        data.subList(start, start + count).clear()
+        notifyItemRangeRemoved(start, count)
     }
 
     fun insert(start: Int, array: Array<Any>) {
         data.addAll(start, array.toMutableList())
-        notifyItemRangeInserted(start, array.size);
+        notifyItemRangeInserted(start, array.size)
     }
 
     fun move(fromPosition: Int, toPosition: Int) {
-        Collections.swap(data, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
+        Collections.swap(data, fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
     }
 
     fun replace(index: Int, any: Any) {
         if (index >= 0 && index < data.size) {
-            data[index] = any;
-            notifyItemChanged(index);
+            data[index] = any
+            notifyItemChanged(index)
         }
     }
 
@@ -274,19 +277,31 @@ class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapt
             }
         }
 
-        open fun createEmptyView(inflater: LayoutInflater, parent: ViewGroup): CommonViewHolder<Any> {
+        open fun createEmptyView(
+            inflater: LayoutInflater,
+            parent: ViewGroup
+        ): CommonViewHolder<Any> {
             return CommonViewHolder(inflater.inflate(R.layout.item_empty, parent, false))
         }
 
-        open fun createFinishView(inflater: LayoutInflater, parent: ViewGroup): CommonViewHolder<Any> {
+        open fun createFinishView(
+            inflater: LayoutInflater,
+            parent: ViewGroup
+        ): CommonViewHolder<Any> {
             return CommonViewHolder(inflater.inflate(R.layout.item_finish, parent, false))
         }
 
-        open fun createLoadingView(inflater: LayoutInflater, parent: ViewGroup): CommonViewHolder<Any> {
+        open fun createLoadingView(
+            inflater: LayoutInflater,
+            parent: ViewGroup
+        ): CommonViewHolder<Any> {
             return CommonViewHolder(inflater.inflate(R.layout.item_loading, parent, false))
         }
 
-        open fun createFailureView(inflater: LayoutInflater, parent: ViewGroup): CommonViewHolder<Any> {
+        open fun createFailureView(
+            inflater: LayoutInflater,
+            parent: ViewGroup
+        ): CommonViewHolder<Any> {
             return ErrorViewHolder(inflater.inflate(R.layout.item_loading_failure, parent, false))
         }
     }
@@ -295,7 +310,7 @@ class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapt
         private val defaultStateFactory = StateViewHolderFactory()
         private const val base = 1000
 
-        fun adapter(init: Builder.() ->  Unit): CommonRVAdapter {
+        fun adapter(init: Builder.() -> Unit): CommonRVAdapter {
             val builder = Builder()
             builder.init()
             return CommonRVAdapter(builder)
@@ -315,19 +330,16 @@ class CommonRVAdapter private constructor(builder: Builder) : RecyclerView.Adapt
         var stateFactory: StateViewHolderFactory = defaultStateFactory
         val itemFactory: ItemViewHolderFactory = object : ItemViewHolderFactory {
             override fun getItemViewType(data: Any): Int? {
-                for (i in classList.indices) {
-                    if (classList[i].isInstance(data)) {
-                        return base + i
-                    }
-                }
-                return null
+                return classList.indices
+                    .firstOrNull { classList[it].isInstance(data) }
+                    ?.let { base + it }
             }
 
             override fun createViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder<*>? {
                 val index = viewType - base
                 if (index in 0 until layoutList.size) {
                     val view = LayoutInflater.from(parent.context)
-                            .inflate(layoutList[index], parent, false)
+                        .inflate(layoutList[index], parent, false)
                     return viewHolderList[index].invoke(view)
                 }
                 return null

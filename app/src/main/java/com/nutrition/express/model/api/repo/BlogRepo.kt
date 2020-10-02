@@ -2,10 +2,13 @@ package com.nutrition.express.model.api.repo
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.nutrition.express.model.api.*
+import com.nutrition.express.model.api.ApiClient
+import com.nutrition.express.model.api.InProgress
+import com.nutrition.express.model.api.Resource
 import com.nutrition.express.model.api.bean.BlogInfo
 import com.nutrition.express.model.api.bean.BlogLikes
 import com.nutrition.express.model.api.bean.BlogPosts
+import com.nutrition.express.model.api.callFromNet
 import com.nutrition.express.model.api.service.BlogService
 import retrofit2.create
 import kotlin.coroutines.CoroutineContext
@@ -31,7 +34,11 @@ class BlogRepo constructor(val context: CoroutineContext) {
         }
     }
 
-    fun getBlogPosts(id: String, type: String, map: HashMap<String, String>): LiveData<Resource<BlogPosts>> {
+    fun getBlogPosts(
+        id: String,
+        type: String,
+        map: HashMap<String, String>
+    ): LiveData<Resource<BlogPosts>> {
         return liveData(context) {
             emit(InProgress)
             emit(callFromNet {
@@ -49,7 +56,8 @@ class BlogRepo constructor(val context: CoroutineContext) {
             when (result) {
                 is Resource.Success -> emit(Resource.Success(postId))
                 is Resource.Error -> emit(Resource.Error(result.code, result.message))
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                }
             }
         }
     }

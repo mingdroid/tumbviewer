@@ -6,11 +6,13 @@
 
     <item android:title="@string/page_user">
         <menu>
-            <item android:id="@+id/nav_like"
-                android:icon="@mipmap/ic_like"
+            <item
+                android:id="@+id/nav_like"
+                android:icon="@drawable/ic_like"
                 android:title="@string/page_user_like" />
-            <item android:id="@+id/nav_following"
-                android:icon="@mipmap/ic_following"
+            <item
+                android:id="@+id/nav_following"
+                android:icon="@drawable/ic_following"
                 android:title="@string/page_user_following" />
 
         </menu>
@@ -19,19 +21,19 @@
     <group>
         <item
             android:id="@+id/nav_downloading"
-            android:icon="@mipmap/ic_file_download"
+            android:icon="@drawable/ic_file_download"
             android:title="@string/downloading" />
         <item
             android:id="@+id/nav_downloaded"
-            android:icon="@mipmap/ic_done_all_white"
+            android:icon="@drawable/ic_done_all_white"
             android:title="@string/downloaded" />
         <item
             android:id="@+id/nav_settings"
-            android:icon="@mipmap/ic_settings"
+            android:icon="@drawable/ic_settings"
             android:title="@string/page_user_setting" />
         <item
             android:id="@+id/nav_tags_search"
-            android:icon="@mipmap/ic_search_white_24dp"
+            android:icon="@drawable/ic_search_white"
             android:title="@string/tags_search" />
 
     </group>

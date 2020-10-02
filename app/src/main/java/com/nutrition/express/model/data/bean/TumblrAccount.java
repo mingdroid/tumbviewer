@@ -2,7 +2,7 @@ package com.nutrition.express.model.data.bean;
 
 /**
  * Created by huang on 1/4/17.
- ////  2/11/17 wrong design, you don't the new login account whether the same as current
+ * ////  2/11/17 wrong design, you don't the new login account whether the same as current
  */
 
 public class TumblrAccount {

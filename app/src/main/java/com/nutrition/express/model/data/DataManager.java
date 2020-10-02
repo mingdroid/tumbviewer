@@ -9,10 +9,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nutrition.express.application.Constant;
 import com.nutrition.express.application.TumbApp;
+import com.nutrition.express.model.api.bean.UserInfoItem;
 import com.nutrition.express.model.data.bean.TumblrAccount;
 import com.nutrition.express.model.data.bean.TumblrApp;
 import com.nutrition.express.model.helper.LocalPersistenceHelper;
-import com.nutrition.express.model.api.bean.UserInfoItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,14 +44,10 @@ public class DataManager {
     private List<Object> referenceBlog = new ArrayList<>();
     private Set<Object> referenceBlogSet = new HashSet<>();
     private Set<Object> followingSet = new HashSet<>();
-
-    private static class Holder {
-        private static DataManager holder = new DataManager();
-    }
-
-    public static DataManager getInstance() {
-        return Holder.holder;
-    }
+    /**
+     * helper for shared element transition
+     */
+    private int position;
 
     private DataManager() {
         loadTumblrAccounts();
@@ -59,9 +55,14 @@ public class DataManager {
         isSimpleMode = getBoolean("post_simple_mode", false);
     }
 
+    public static DataManager getInstance() {
+        return Holder.holder;
+    }
+
     private void loadTumblrAccounts() {
         tumblrAccountList = LocalPersistenceHelper.getShortContent(TUMBLR_ACCOUNT,
-                new TypeToken<ArrayList<TumblrAccount>>(){}.getType());
+                new TypeToken<ArrayList<TumblrAccount>>() {
+                }.getType());
         if (tumblrAccountList == null) {
             tumblrAccountList = new ArrayList<>();
             //check for updating from version 0.9.3
@@ -69,8 +70,9 @@ public class DataManager {
             String secret = getString("access_secret");
             if (!TextUtils.isEmpty(token)) {
                 List<TumblrApp> tumblrAppList = LocalPersistenceHelper.getShortContent(TUMBLR_APP,
-                        new TypeToken<ArrayList<TumblrApp>>(){}.getType());
-                if (tumblrAppList == null || tumblrAppList.size() == 0) {
+                        new TypeToken<ArrayList<TumblrApp>>() {
+                        }.getType());
+                if (tumblrAppList == null || tumblrAppList.isEmpty()) {
                     addAccount(Constant.CONSUMER_KEY, Constant.CONSUMER_SECRET, token, secret);
                 } else {
                     for (TumblrApp app : tumblrAppList) {
@@ -148,6 +150,7 @@ public class DataManager {
 
     /**
      * search account that its name equals to the positive account's name;
+     *
      * @return
      */
     public boolean switchToNextRoute() {
@@ -198,7 +201,8 @@ public class DataManager {
 
     public TumblrApp getTumblrApp() {
         List<TumblrApp> tumblrAppList = LocalPersistenceHelper
-                .getShortContent(TUMBLR_APP, new TypeToken<ArrayList<TumblrApp>>(){}.getType());
+                .getShortContent(TUMBLR_APP, new TypeToken<ArrayList<TumblrApp>>() {
+                }.getType());
         if (tumblrAppList != null && tumblrAppList.size() > 0) {
             return tumblrAppList.get(0);
         }
@@ -213,19 +217,20 @@ public class DataManager {
 
     public HashMap<String, String> getDefaultTumplrApps() {
         return new Gson().fromJson(Constant.API_KEYS,
-                new TypeToken<HashMap<String, String>>(){}.getType());
+                new TypeToken<HashMap<String, String>>() {
+                }.getType());
     }
 
     public void updateTumblrAppInfo(String dayLimit, String dayRemaining, String dayReset,
                                     String hourLimit, String hourRemaining, String hourReset) {
         try {
-            this.dayLimit = Long.valueOf(dayLimit);
-            this.dayRemaining = Long.valueOf(dayRemaining);
-            this.dayReset = Long.valueOf(dayReset);
-            this.hourLimit = Long.valueOf(hourLimit);
-            this.hourRemaining = Long.valueOf(hourRemaining);
-            this.hourReset = Long.valueOf(hourReset);
-        } catch (NumberFormatException e) {
+            this.dayLimit = Long.parseLong(dayLimit);
+            this.dayRemaining = Long.parseLong(dayRemaining);
+            this.dayReset = Long.parseLong(dayReset);
+            this.hourLimit = Long.parseLong(hourLimit);
+            this.hourRemaining = Long.parseLong(hourRemaining);
+            this.hourReset = Long.parseLong(hourReset);
+        } catch (NumberFormatException ignored) {
         }
     }
 
@@ -295,16 +300,15 @@ public class DataManager {
         isSimpleMode = simpleMode;
     }
 
-    /**
-     * helper for shared element transition
-     */
-    private int position;
+    public int getPosition() {
+        return position;
+    }
 
     public void setPosition(int position) {
         this.position = position;
     }
 
-    public int getPosition() {
-        return position;
+    private static class Holder {
+        private static DataManager holder = new DataManager();
     }
 }

@@ -19,34 +19,21 @@ import java.lang.reflect.Type;
 public class LocalPersistenceHelper {
 
     /**
-     *
-     * @param name store file name
+     * @param name    store file name
      * @param content write to file
      */
     private static void storeShortContent(File name, String content) {
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(name);
+        try (FileWriter writer = new FileWriter(name)) {
             writer.write(content);
-        } catch (IOException e) {
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-            }
+        } catch (IOException ignored) {
         }
     }
 
     /**
-     *
      * @param name store file name
      */
     private static String getShortContent(File name) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(name));
+        try (BufferedReader reader = new BufferedReader(new FileReader(name))) {
             StringBuilder builder = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -55,33 +42,23 @@ public class LocalPersistenceHelper {
             return builder.toString();
         } catch (IOException e) {
             return "";
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-
-            }
         }
 
     }
 
     /**
-     *
-     * @param name file name
+     * @param name   file name
      * @param object java bean object
      */
     public static void storeShortContent(String name, Object object) {
         Gson gson = new Gson();
-        String content  = gson.toJson(object);
+        String content = gson.toJson(object);
         File file = new File(TumbApp.Companion.getApp().getFilesDir(), name);
         storeShortContent(file, content);
     }
 
     /**
-     *
-     * @param name file name
+     * @param name    file name
      * @param typeOfT Example : new TypeToken<LinkedHashSet<String>>(){}.getType()
      * @return the target object, a java bean object.
      */

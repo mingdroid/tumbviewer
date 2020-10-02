@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/post"
+        android:icon="@drawable/ic_reblog_send_white"
         android:title="@string/reblog_post"
-        android:icon="@mipmap/ic_reblog_send"
-        app:showAsAction="always"
-        />
+        app:showAsAction="always" />
 </menu>

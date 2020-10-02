@@ -25,8 +25,6 @@ import com.nutrition.express.util.dp2Pixels
 import com.nutrition.express.util.getBoolean
 import com.nutrition.express.util.putBoolean
 import java.io.File
-import java.util.*
-import kotlin.collections.ArrayList
 
 class PhotoFragment : Fragment() {
     private val SHOW_USER_PHOTO = "SUP"
@@ -80,9 +78,14 @@ class PhotoFragment : Fragment() {
         showUserPhoto = getBoolean(SHOW_USER_PHOTO, false)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val binding = FragmentDownloadPhotoBinding.inflate(inflater, container, false)
-        binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding.recyclerView.layoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -98,7 +101,11 @@ class PhotoFragment : Fragment() {
             initPhotoDataAll()
         }
         val adapter = CommonRVAdapter.adapter {
-            addViewType(LocalPhoto::class, R.layout.item_download_photo) { PhotoViewHolder(it) }
+            addViewType(
+                LocalPhoto::class,
+                R.layout.item_download_photo,
+                this@PhotoFragment::PhotoViewHolder
+            )
         }
         adapter.resetData(photoList.toTypedArray(), false)
         binding.recyclerView.adapter = adapter
@@ -178,11 +185,11 @@ class PhotoFragment : Fragment() {
     }
 
     private fun sortPhotoData(photos: MutableList<LocalPhoto>) {
-        photos.sortWith(Comparator { o1, o2 ->
+        photos.sortWith { o1, o2 ->
             val x = o1.file.lastModified()
             val y = o2.file.lastModified()
             if (x < y) 1 else if (x == y) 0 else -1
-        })
+        }
     }
 
     private fun startMultiChoice() {
@@ -228,7 +235,7 @@ class PhotoFragment : Fragment() {
     }
 
     private fun checkAllPhotos() {
-        photoList.forEach{ it.isChecked = true }
+        photoList.forEach { it.isChecked = true }
         checkedCount = photoList.size
         actionMode?.title = checkedCount.toString()
         adapter?.notifyDataSetChanged()
@@ -237,8 +244,7 @@ class PhotoFragment : Fragment() {
     private fun showDeleteDialog() {
         context?.let {
             AlertDialog.Builder(it).run {
-                setPositiveButton(R.string.delete_positive) {
-                    dialog, which ->
+                setPositiveButton(R.string.delete_positive) { _, _ ->
                     deleteCheckedPhotos()
                     finishMultiChoice()
                 }
@@ -271,7 +277,8 @@ class PhotoFragment : Fragment() {
                 }
                 val intent = Intent(activity, PhotoViewActivity::class.java)
                 val options: ActivityOptions = ActivityOptions.makeSceneTransitionAnimation(
-                        activity, binding.photoView, photo.uri.path)
+                    activity, binding.photoView, photo.uri.path
+                )
                 intent.putExtra("transition_name", photo.uri.path)
                 intent.putExtra("photo_source", photo.uri)
                 startActivity(intent, options.toBundle())
@@ -287,14 +294,15 @@ class PhotoFragment : Fragment() {
             }
         }
 
-        override fun bindView(localPhoto: LocalPhoto) {
-            photo = localPhoto
-            val height: Int = localPhoto.height * defaultWidth / localPhoto.width
-            val params: ViewGroup.LayoutParams = binding.photoView.layoutParams ?: ViewGroup.LayoutParams(defaultWidth, height)
+        override fun bindView(any: LocalPhoto) {
+            photo = any
+            val height: Int = any.height * defaultWidth / any.width
+            val params: ViewGroup.LayoutParams =
+                binding.photoView.layoutParams ?: ViewGroup.LayoutParams(defaultWidth, height)
             params.width = defaultWidth
             params.height = height
             binding.photoView.layoutParams = params
-            binding.photoView.setImageURI(localPhoto.uri, context)
+            binding.photoView.setImageURI(any.uri, context)
             if (isChoiceState && photo.isChecked) {
                 binding.checkView.visibility = View.VISIBLE
             } else {

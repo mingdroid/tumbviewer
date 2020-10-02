@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -83,12 +82,7 @@ public class PhotoViewActivity extends AppCompatActivity {
                 .setUri(uri)
                 .build();
         draweeView.setController(controller);
-        draweeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finishAction((ZoomableDraweeView) v);
-            }
-        });
+        draweeView.setOnClickListener(v -> finishAction((ZoomableDraweeView) v));
     }
 
     private void finishAction(@Nullable ZoomableDraweeView draweeView) {
