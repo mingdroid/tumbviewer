@@ -27,6 +27,6 @@
         android:layout_marginBottom="24dp"
         android:visibility="invisible"
         app:backgroundTint="@color/fabAccent"
-        app:srcCompat="@mipmap/ic_save" />
+        app:srcCompat="@drawable/ic_save" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

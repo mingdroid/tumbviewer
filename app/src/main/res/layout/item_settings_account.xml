@@ -48,6 +48,6 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:visibility="gone"
-        app:srcCompat="@mipmap/ic_done" />
+        app:srcCompat="@drawable/ic_done" />
 
 </RelativeLayout>

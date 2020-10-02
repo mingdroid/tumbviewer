@@ -217,7 +217,7 @@ abstract class BasePostVH<T>(view: View) : CommonViewHolder<T>(view) {
             actualImageScaleType = ScalingUtils.ScaleType.CENTER_CROP
             setPlaceholderImage(R.color.loading_color)
             placeholderImageScaleType = ScalingUtils.ScaleType.FIT_CENTER
-            setFailureImage(R.mipmap.ic_failed)
+            setFailureImage(R.drawable.ic_failed)
             failureImageScaleType = ScalingUtils.ScaleType.CENTER
             build()
         }

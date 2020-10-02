@@ -215,7 +215,7 @@ class SettingsActivity : BaseActivity() {
                     R.string.settings_accounts_title,
                     adapterPosition + 1
                 )
-                binding.accountAvatar.setActualImageResource(R.mipmap.ic_account_default)
+                binding.accountAvatar.setActualImageResource(R.drawable.ic_account)
             }
             binding.accountKey.text = any.apiKey
         }

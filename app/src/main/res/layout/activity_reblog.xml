@@ -30,7 +30,7 @@
             android:layout_gravity="end|center_vertical"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
-            app:srcCompat="@mipmap/ic_reblog_send" />
+            app:srcCompat="@drawable/ic_reblog_send_white" />
 
         <ProgressBar
             android:id="@+id/progressBar"

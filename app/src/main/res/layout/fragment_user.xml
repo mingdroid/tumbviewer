@@ -26,7 +26,7 @@
             android:layout_height="24dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            app:srcCompat="@mipmap/ic_like" />
+            app:srcCompat="@drawable/ic_like" />
 
         <TextView
             android:id="@+id/like"
@@ -63,7 +63,7 @@
             android:layout_height="24dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            app:srcCompat="@mipmap/ic_following" />
+            app:srcCompat="@drawable/ic_following" />
 
         <TextView
             android:id="@+id/following"
@@ -100,7 +100,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            app:srcCompat="@mipmap/ic_settings" />
+            app:srcCompat="@drawable/ic_settings" />
 
         <TextView
             android:id="@+id/setting"
@@ -128,7 +128,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            app:srcCompat="@mipmap/ic_file_download" />
+            app:srcCompat="@drawable/ic_file_download" />
 
         <TextView
             android:id="@+id/download"

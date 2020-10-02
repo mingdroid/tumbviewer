@@ -95,7 +95,7 @@
             android:layout_gravity="center"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
-            app:srcCompat="@mipmap/ic_reblog" />
+            app:srcCompat="@drawable/ic_reblog" />
 
         <ImageView
             android:id="@+id/post_like"
@@ -114,7 +114,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
             android:visibility="gone"
-            app:srcCompat="@mipmap/ic_delete_forever" />
+            app:srcCompat="@drawable/ic_delete_forever" />
     </LinearLayout>
 
     <ImageView
